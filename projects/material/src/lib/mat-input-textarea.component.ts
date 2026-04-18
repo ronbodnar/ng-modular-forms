@@ -60,7 +60,9 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     </mat-form-field>
   `,
 })
-export class InputTextareaComponent extends MatFormControlBase<string | null> {
+export class MatInputTextareaComponent extends MatFormControlBase<
+  string | null
+> {
   rows = input<number>(5);
   cols = input<number>(5);
 

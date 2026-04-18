@@ -77,7 +77,7 @@ export interface SelectOption {
     </mat-form-field>
   `,
 })
-export class InputSelectComponent extends MatFormControlBase<
+export class MatInputSelectComponent extends MatFormControlBase<
   string | number | null
 > {
   options = input<SelectOption[]>([]);

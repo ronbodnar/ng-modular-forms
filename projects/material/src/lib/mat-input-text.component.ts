@@ -29,7 +29,7 @@ import { InputTextBehavior } from '@ng-modular-forms/behavior';
   providers: [
     {
       provide: MatFormFieldControl,
-      useExisting: forwardRef(() => InputComponent),
+      useExisting: forwardRef(() => MatInputComponent),
     },
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -89,7 +89,9 @@ import { InputTextBehavior } from '@ng-modular-forms/behavior';
     </div>
   `,
 })
-export class InputComponent extends MatFormControlBase<string | number | null> {
+export class MatInputComponent extends MatFormControlBase<
+  string | number | null
+> {
   type = input<'text' | 'email' | 'tel' | 'url' | 'password'>('text');
 
   behavior = new InputTextBehavior();
