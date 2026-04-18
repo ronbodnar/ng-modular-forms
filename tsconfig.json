@@ -1,0 +1,46 @@
+/* To learn more about Typescript configuration file: https://www.typescriptlang.org/docs/handbook/tsconfig-json.html. */
+/* To learn more about Angular compiler options: https://angular.dev/reference/configs/angular-compiler-options. */
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "rootDir": "./",
+    "paths": {
+      "@ng-modular-forms/core": [
+        "./dist/core",
+        "./projects/core/src/public-api.ts"
+      ],
+      "@ng-modular-forms/behavior": [
+        "./dist/behavior",
+        "./projects/behavior/src/public-api.ts"
+      ],
+      "@ng-modular-forms/input": [
+        "./dist/input",
+        "./projects/input/src/public-api.ts"
+      ],
+      "@ng-modular-forms/material": [
+        "./dist/material",
+        "./projects/material/src/public-api.ts"
+      ]
+    },
+    "outDir": "./dist/out-tsc",
+    "strict": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "skipLibCheck": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "moduleResolution": "bundler",
+    "importHelpers": true,
+    "target": "ES2022",
+    "module": "ES2022"
+  },
+  "angularCompilerOptions": {
+    "enableI18nLegacyMessageIdFormat": false,
+    "strictInjectionParameters": true,
+    "strictInputAccessModifiers": true,
+    "strictTemplates": true
+  }
+}

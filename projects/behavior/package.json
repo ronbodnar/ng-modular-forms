@@ -1,0 +1,12 @@
+{
+  "name": "@ng-modular-forms/behavior",
+  "version": "0.0.2",
+  "peerDependencies": {
+    "@angular/core": "^19.2.0",
+    "@ng-modular-forms/core": ">=0.2.0 <2"
+  },
+  "dependencies": {
+    "tslib": "^2.3.0"
+  },
+  "sideEffects": false
+}
