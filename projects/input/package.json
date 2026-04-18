@@ -1,12 +1,12 @@
 {
   "name": "@ng-modular-forms/input",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "peerDependencies": {
-    "@angular/core": ">=17 <22",
-    "@angular/common": ">=17 <22",
-    "@angular/forms": ">=17 <22",
-    "@ng-modular-forms/core": ">=0.2.0 <2",
-    "@ng-modular-forms/behavior": ">=0.0.1"
+    "@angular/core": ">=19.0.0 <22.0.0",
+    "@angular/common": ">=19.0.0 <22.0.0",
+    "@angular/forms": ">=19.0.0 <22.0.0",
+    "@ng-modular-forms/core": "^0.3.0",
+    "@ng-modular-forms/behavior": "^0.1.0"
   },
   "dependencies": {
     "tslib": "^2.6.0"

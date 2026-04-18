@@ -1,11 +1,11 @@
 {
   "name": "@ng-modular-forms/core",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "peerDependencies": {
-    "@angular/core": ">=17 <22",
-    "@angular/common": ">=17 <22",
-    "@angular/forms": ">=17 <22",
-    "rxjs": ">=7.8.0 <8"
+    "@angular/core": ">=19.0.0 <22.0.0",
+    "@angular/common": ">=19.0.0 <22.0.0",
+    "@angular/forms": ">=19.0.0 <22.0.0",
+    "rxjs": ">=7 <8"
   },
   "dependencies": {
     "tslib": "^2.6.0"
