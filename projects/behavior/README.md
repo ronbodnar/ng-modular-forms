@@ -30,6 +30,18 @@ export class CustomCurrencyInput extends FormControlBase<string> {
 }
 ```
 
+Behaviors are just plain JavaScript objects:
+
+```ts
+class CurrencyBehavior {
+  onInput(ctx: FormControlBase<string>, value: string) {
+    const rawValue = value.replace(/[^\d\-,.]/g, "");
+    ctx.value = this.formatCurrency(rawValue);
+    ctx.onChange(ctx.value);
+  }
+}
+```
+
 ---
 
 ### When to Use
