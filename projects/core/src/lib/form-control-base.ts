@@ -20,9 +20,9 @@ export abstract class FormControlBase<T>
   extends FormControlValueAccessor<T>
   implements OnInit
 {
-  label = input<string>('');
-  classList = input<string[]>([]);
-  loading = input<boolean>(false);
+  readonly label = input<string>('');
+  readonly classList = input<string[]>([]);
+  readonly loading = input<boolean>(false);
 
   protected _form = signal<FormGroup>(new FormGroup({}));
   protected _controlName = signal<string>('');

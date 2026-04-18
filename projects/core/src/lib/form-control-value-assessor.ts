@@ -22,13 +22,13 @@ export abstract class FormControlValueAccessor<
 > implements ControlValueAccessor {
   protected readonly cdr = inject(ChangeDetectorRef);
 
-  protected readonly _name = input<string>('', { alias: 'name' });
-  protected readonly _placeholder = input<string>('', { alias: 'placeholder' });
-  protected readonly _required = input<boolean>(false, { alias: 'required' });
-  protected readonly _disabled = input<boolean>(false, { alias: 'disabled' });
-  protected readonly _readonly = input<boolean>(false, { alias: 'readonly' });
+  readonly _name = input<string>('', { alias: 'name' });
+  readonly _placeholder = input<string>('', { alias: 'placeholder' });
+  readonly _required = input<boolean>(false, { alias: 'required' });
+  readonly _disabled = input<boolean>(false, { alias: 'disabled' });
+  readonly _readonly = input<boolean>(false, { alias: 'readonly' });
 
-  protected readonly formControlName = input<string>('');
+  readonly formControlName = input<string>('');
 
   get name(): string {
     return this._name();
