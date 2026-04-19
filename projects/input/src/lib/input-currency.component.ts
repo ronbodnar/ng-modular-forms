@@ -38,7 +38,7 @@ import { InputCurrencyBehavior } from '@ng-modular-forms/behavior';
 
       <ng-content></ng-content>
 
-      @if (control().invalid && control().touched) {
+      @if (control()?.invalid && control()?.touched) {
         <p class="text-red-500 text-sm mt-1">
           {{ getErrorMessage() }}
         </p>

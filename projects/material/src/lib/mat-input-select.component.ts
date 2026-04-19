@@ -71,7 +71,7 @@ export interface SelectOption {
         <mat-hint [ngClass]="hintClassList()">{{ hint() }}</mat-hint>
       }
 
-      @if (control().invalid && control().touched) {
+      @if (control()?.invalid && control()?.touched) {
         <mat-error>{{ getErrorMessage() }}</mat-error>
       }
     </mat-form-field>

@@ -29,7 +29,7 @@ import { InputTextareaBehavior } from '@ng-modular-forms/behavior';
         (keydown.enter)="onEnter()"
       ></textarea>
 
-      @if (control().invalid && control().touched) {
+      @if (control()?.invalid && control()?.touched) {
         <p class="text-red-500 text-sm mt-1">
           {{ getErrorMessage() }}
         </p>

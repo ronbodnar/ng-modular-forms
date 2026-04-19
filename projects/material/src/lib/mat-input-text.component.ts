@@ -3,8 +3,10 @@ import {
   Component,
   forwardRef,
   input,
+  Optional,
+  Self,
 } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
+import { NgControl, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import {
   MatFormFieldControl,
@@ -49,15 +51,15 @@ import { InputTextBehavior } from '@ng-modular-forms/behavior';
         <input
           matInput
           autocomplete="off"
-          [ngClass]="classList"
           [id]="id"
+          [ngClass]="classList"
+          [value]="value"
           [name]="name === 'identificationNumber' ? 'idummyi' : name"
           [type]="behavior.hidePassword() ? type() : 'text'"
           [readonly]="readonly"
           [placeholder]="placeholder"
           (input)="onInput($event)"
           (blur)="onTouched()"
-          [formControlName]="controlName()"
           [required]="isRequired()"
           style="padding-top: 5px"
         />
@@ -82,7 +84,7 @@ import { InputTextBehavior } from '@ng-modular-forms/behavior';
 
         <ng-content></ng-content>
 
-        @if (control().invalid && control().touched) {
+        @if (control()?.invalid && control()?.touched) {
           <mat-error>{{ getErrorMessage() }}</mat-error>
         }
       </mat-form-field>
@@ -93,6 +95,17 @@ export class MatInputTextComponent extends MatFormControlBase<
   string | number | null
 > {
   type = input<'text' | 'email' | 'tel' | 'url' | 'password'>('text');
+
+  constructor(@Optional() @Self() ngControl: NgControl) {
+    super(ngControl);
+    if (ngControl) {
+      ngControl.valueAccessor = this;
+    }
+  }
+
+  override ngOnInit() {
+    super.ngOnInit();
+  }
 
   behavior = new InputTextBehavior();
 

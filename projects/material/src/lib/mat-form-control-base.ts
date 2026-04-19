@@ -1,4 +1,13 @@
-import { Directive, ElementRef, input, signal, ViewChild } from '@angular/core';
+import {
+  Directive,
+  ElementRef,
+  input,
+  Optional,
+  Self,
+  signal,
+  ViewChild,
+} from '@angular/core';
+import { NgControl } from '@angular/forms';
 import { MatFormFieldControl } from '@angular/material/form-field';
 import { FormControlBase } from '@ng-modular-forms/core';
 import { Subject } from 'rxjs';
@@ -27,12 +36,11 @@ export abstract class MatFormControlBase<T>
    */
   stateChanges = new Subject<void>();
 
-  override set value(val: T | null) {
-    super.value = val;
-    this.stateChanges.next();
-  }
-
   focused = false;
+
+  constructor(@Optional() @Self() ngControl: NgControl) {
+    super(ngControl);
+  }
 
   /**
    * Assumes derived component exposes an element with #input reference.
@@ -78,6 +86,7 @@ export abstract class MatFormControlBase<T>
 
   override writeValue(value: T): void {
     super.writeValue(value);
+    console.log('REceived override writeValue:', value);
     this.stateChanges.next();
   }
 

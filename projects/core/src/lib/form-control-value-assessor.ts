@@ -6,7 +6,6 @@ import {
   Self,
   inject,
   ChangeDetectorRef,
-  input,
 } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 
@@ -22,34 +21,6 @@ export abstract class FormControlValueAccessor<
 > implements ControlValueAccessor {
   protected readonly cdr = inject(ChangeDetectorRef);
 
-  readonly _name = input<string>('', { alias: 'name' });
-  readonly _placeholder = input<string>('', { alias: 'placeholder' });
-  readonly _required = input<boolean>(false, { alias: 'required' });
-  readonly _disabled = input<boolean>(false, { alias: 'disabled' });
-  readonly _readonly = input<boolean>(false, { alias: 'readonly' });
-
-  readonly formControlName = input<string>('');
-
-  get name(): string {
-    return this._name();
-  }
-
-  get placeholder(): string {
-    return this._placeholder();
-  }
-
-  get required(): boolean {
-    return this._required();
-  }
-
-  get disabled(): boolean {
-    return this._disabled();
-  }
-
-  get readonly(): boolean {
-    return this._readonly();
-  }
-
   static nextId = 0;
 
   @HostBinding()
@@ -61,24 +32,14 @@ export abstract class FormControlValueAccessor<
     return this._value;
   }
 
-  set value(val: T | null) {
-    this._value = val;
-  }
+  constructor(@Optional() @Self() public ngControl: NgControl) {}
 
   onChange = (_value: T) => {};
   onTouched = () => {};
 
-  constructor(
-    @Optional() @Self() public ngControl: NgControl,
-    protected elementRef: ElementRef<HTMLElement>,
-  ) {
-    if (this.ngControl != null) {
-      this.ngControl.valueAccessor = this;
-    }
-  }
-
   writeValue(value: T): void {
     this._value = value;
+    console.log('writing FCVA value:', value);
     this.cdr.markForCheck();
   }
 

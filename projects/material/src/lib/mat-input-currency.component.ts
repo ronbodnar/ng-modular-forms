@@ -30,7 +30,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
       <span
         [style.color]="
-          control().disabled || readonly
+          control()?.disabled || readonly
             ? 'var(--mat-form-field-outlined-disabled-input-text-text)'
             : 'inherit'
         "
@@ -68,7 +68,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
         <mat-hint [ngClass]="hintClassList()">{{ hint() }}</mat-hint>
       }
 
-      @if (control().invalid && control().touched) {
+      @if (control()?.invalid && control()?.touched) {
         <mat-error>
           {{ getErrorMessage() }}
         </mat-error>

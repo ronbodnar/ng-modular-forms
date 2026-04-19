@@ -29,7 +29,6 @@ import { InputTextBehavior } from '@ng-modular-forms/behavior';
           [placeholder]="placeholder"
           (input)="onInput($event)"
           (blur)="onTouched()"
-          [formControlName]="controlName()"
           [required]="isRequired()"
         />
 
@@ -46,7 +45,7 @@ import { InputTextBehavior } from '@ng-modular-forms/behavior';
 
       <ng-content></ng-content>
 
-      @if (control().invalid && control().touched) {
+      @if (control()?.invalid && control()?.touched) {
         <p class="nmf-error text-sm text-red-600 mt-1">
           {{ getErrorMessage() }}
         </p>

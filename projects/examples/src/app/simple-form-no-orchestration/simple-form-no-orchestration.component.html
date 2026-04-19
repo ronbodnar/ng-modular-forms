@@ -1,0 +1,6 @@
+<form [formGroup]="form" (ngSubmit)="submit()">
+  <nmf-mat-input-text formControlName="username" label="Username" />
+
+  <button type="submit">Submit</button>
+  <button type="button" (click)="update()">Update</button>
+</form>

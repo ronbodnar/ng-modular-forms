@@ -1,83 +1,100 @@
-import {
-  FormControl,
-  FormGroup,
-  FormGroupDirective,
-  Validators,
-} from '@angular/forms';
+import { ControlValueAccessor, NgControl, Validators } from '@angular/forms';
 import {
   computed,
+  DestroyRef,
   Directive,
   inject,
   input,
   OnInit,
-  signal,
+  Optional,
+  Self,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControlValueAccessor } from './form-control-value-assessor';
+import { tap } from 'rxjs';
 
 @Directive()
 export abstract class FormControlBase<T>
   extends FormControlValueAccessor<T>
   implements OnInit
 {
+  protected readonly destroyRef = inject(DestroyRef);
+
   readonly label = input<string>('');
   readonly classList = input<string[]>([]);
   readonly loading = input<boolean>(false);
 
-  protected _form = signal<FormGroup>(new FormGroup({}));
-  protected _controlName = signal<string>('');
+  readonly _name = input<string>('', { alias: 'name' });
+  readonly _placeholder = input<string>('', { alias: 'placeholder' });
+  readonly _required = input<boolean>(false, { alias: 'required' });
+  readonly _disabled = input<boolean>(false, { alias: 'disabled' });
+  readonly _readonly = input<boolean>(false, { alias: 'readonly' });
 
-  readonly form = this._form.asReadonly();
-  readonly controlName = this._controlName.asReadonly();
+  get name(): string {
+    return this._name();
+  }
 
-  readonly control = computed(
-    () => this._form().get(this._controlName()) as FormControl,
-  );
+  get placeholder(): string {
+    return this._placeholder();
+  }
 
-  private parentFormGroup = inject(FormGroupDirective, {
-    optional: true,
-    host: true,
-  });
+  get required(): boolean {
+    return this._required();
+  }
+
+  get disabled(): boolean {
+    return this._disabled();
+  }
+
+  get readonly(): boolean {
+    return this._readonly();
+  }
+
+  constructor(@Optional() @Self() ngControl: NgControl) {
+    super(ngControl);
+  }
+
+  readonly control = computed(() => this.ngControl?.control);
 
   ngOnInit() {
-    const controlName = this.formControlName() ?? 'default';
-    const form = this.parentFormGroup?.form;
-
-    if (!form) {
-      throw new Error(
-        `FormGroupDirective not found. Ensure component is used inside a form group`,
-      );
-    }
-
-    this._form.set(form);
-    this._controlName.set(controlName);
-
-    const control = form.get(controlName);
-
+    const control = this.ngControl?.control;
     if (!control) {
-      throw new Error(
-        `FormControl '${controlName}' not found in parent FormGroup`,
-      );
+      throw new Error(`FormControl not found in parent FormGroup`);
     }
+
+    control.valueChanges
+      .pipe(
+        tap((v) => {
+          console.log('Value change: ', v);
+        }),
+      )
+      .subscribe((s) => {
+        console.log('Subbed response:', s);
+      });
 
     control.statusChanges
-      .pipe(takeUntilDestroyed())
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        tap((change) => {
+          console.log('Status change:', change);
+        }),
+      )
       .subscribe(() => this.cdr.markForCheck());
   }
 
   protected isRequired(): boolean {
-    const control = this._form()?.get(this._controlName());
+    const control = this.control();
     return !!control && control.hasValidator(Validators.required);
   }
 
   protected serverError = computed(
-    () => this.form()?.errors?.['server'] as string | undefined,
+    () => this.control()?.errors?.['server'] as string | undefined,
   );
 
   protected getErrorMessage(): string {
-    const control = this._form()?.get(this._controlName());
+    const control = this.control();
 
-    if (!control || !control.errors || !control.touched) return '';
+    if (control == null || !control.errors || !control.touched) return '';
 
     const firstKey = Object.keys(control.errors)[0];
     const error = control.errors[firstKey];

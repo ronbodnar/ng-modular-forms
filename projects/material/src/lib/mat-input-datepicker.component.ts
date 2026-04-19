@@ -81,7 +81,7 @@ import { CommonModule } from '@angular/common';
         <mat-hint [ngClass]="hintClassList()">{{ hint() }}</mat-hint>
       }
 
-      @if (control().invalid && control().touched) {
+      @if (control()?.invalid && control()?.touched) {
         <mat-error>
           {{ getErrorMessage() }}
         </mat-error>
@@ -112,13 +112,11 @@ export class MatInputDatepickerComponent extends MatFormControlBase<Date | null>
     const value = event.value;
 
     if (!value) {
-      this.value = null;
       this.onChange(this.value);
       this.stateChanges.next();
       return;
     }
 
-    this.value = value;
     this.onChange(this.value);
     this.stateChanges.next();
   }
