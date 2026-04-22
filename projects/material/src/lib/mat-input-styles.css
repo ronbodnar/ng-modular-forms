@@ -1,0 +1,11 @@
+.hide-select-arrow .mat-mdc-select-arrow-wrapper {
+  display: none !important;
+}
+
+.nmf-mat-suffix {
+  margin-right: 0.7rem !important;
+}
+
+.nmf-disabled {
+  color: color-mix(in srgb, var(--mat-sys-on-surface) 38%, transparent);
+}

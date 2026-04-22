@@ -1,0 +1,21 @@
+<app-form-section title="Form Output">
+  @if (status()) {
+    <p class="my-0 text-sm text-neutral-800">
+      Status: <span class="font-medium">{{ status() }}</span>
+    </p>
+  }
+
+  @if (errorMessage()) {
+    <p class="text-sm text-red-600">Error: {{ errorMessage() }}</p>
+  }
+
+  @if (output()) {
+    <div class="text-sm text-neutral-800">
+      <span>Value:</span>
+      <pre
+        class="whitespace-pre-wrap font-mono text-sm bg-mist-300 rounded p-2.5 shadow-sm mt-1"
+        >{{ output() | json }}</pre
+      >
+    </div>
+  }
+</app-form-section>

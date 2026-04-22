@@ -1,16 +1,18 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatFormControlBase } from './mat-form-control-base';
-import { parseCurrency } from '@ng-modular-forms/core';
-import { InputCurrencyBehavior } from '@ng-modular-forms/behavior';
+import { formatNumber, parseNumber } from '@ng-modular-forms/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatInputModule } from '@angular/material/input';
+import { InputCurrencyBehavior } from '@ng-modular-forms/behavior';
 
 @Component({
-  selector: 'nmf-mat-input-currency',
+  selector: 'nmf-mat-currency',
   imports: [
     CommonModule,
+    MatInputModule,
     MatFormFieldModule,
     ReactiveFormsModule,
     MatProgressSpinnerModule,
@@ -20,24 +22,19 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     @if (label() && detachLabel()) {
       <label class="font-medium text-base">{{ label() }}</label>
     }
+
     <mat-form-field
-      appearance="outline"
-      [floatLabel]="shouldLabelFloat ? 'always' : 'auto'"
+      class="w-full"
+      [appearance]="appearance()"
+      [floatLabel]="shouldLabelFloat()"
     >
       @if (label() && !detachLabel()) {
         <mat-label>{{ label() }}</mat-label>
       }
 
-      <span
-        [style.color]="
-          control().disabled || readonly
-            ? 'var(--mat-form-field-outlined-disabled-input-text-text)'
-            : 'inherit'
-        "
-        matTextPrefix
-      >
-        $
-      </span>
+      @if (value != null) {
+        <span [class.nmf-disabled]="_disabled()" matTextPrefix>$</span>
+      }
 
       <input
         matInput
@@ -45,63 +42,68 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
         autocomplete="off"
         [id]="id"
         [name]="name"
-        [value]="value"
-        [disabled]="disabled"
+        [value]="displayValue()"
+        [ngClass]="classList()"
         [readonly]="readonly"
-        [ngClass]="classList().concat(readonly ? ['opacity-60'] : [])"
-        [placeholder]="placeholder || '0.00'"
+        [disabled]="_disabled()"
+        [placeholder]="placeholder"
         (keydown)="handleKeyDown($event)"
         (input)="onInput($event)"
         (blur)="onTouched()"
-        style="padding-top: 5px; color: {{ textColor(value) }} !important"
       />
 
-      <span matTextSuffix><ng-content></ng-content></span>
+      <span matTextSuffix>
+        <ng-content></ng-content>
+      </span>
 
       @if (loading()) {
-        <div class="absolute top-5 right-5 z-10">
-          <mat-spinner diameter="20" strokeWidth="3"></mat-spinner>
-        </div>
+        <mat-spinner
+          matSuffix
+          class="nmf-mat-suffix"
+          diameter="22"
+          strokeWidth="3"
+        ></mat-spinner>
       }
 
-      @if (hint()) {
-        <mat-hint [ngClass]="hintClassList()">{{ hint() }}</mat-hint>
-      }
+        @if (loading()) {
+          <div class="absolute top-5 right-5 z-10">
+            <mat-spinner diameter="20" strokeWidth="3"></mat-spinner>
+          </div>
+        }
 
-      @if (control().invalid && control().touched) {
-        <mat-error>
-          {{ getErrorMessage() }}
-        </mat-error>
-      }
+        @if (hint()) {
+          <mat-hint [ngClass]="hintClassList()">{{ hint() }}</mat-hint>
+        }
+
+      <mat-error>
+        {{ getErrorMessage() }}
+      </mat-error>
     </mat-form-field>
   `,
 })
 export class MatInputCurrencyComponent extends MatFormControlBase<
-  string | null
+  number | null
 > {
   behavior = new InputCurrencyBehavior();
 
-  override writeValue(value: string | null): void {
-    super.writeValue(this.behavior.formatCurrency(value ?? ''));
+  displayValue = signal<string | null>(null);
+
+  override writeValue(value: number | null): void {
+    super.writeValue(value);
+    this.displayValue.set(value != null ? formatNumber(value) : null);
   }
 
-  handleKeyDown(event: KeyboardEvent) {
+  handleKeyDown(event: KeyboardEvent): void {
     this.behavior.handleKeyDown(event);
   }
 
   onInput(event: Event) {
-    this.behavior.onInput(this, event);
-  }
+    const rawValue = (event.target as HTMLInputElement).value;
+    const value = parseNumber(rawValue);
 
-  textColor(value: string | number | null): string {
-    if (this.disabled) {
-      return 'default';
-    }
-    if (!value) {
-      return '--mat-form-field-outlined-input-text-text';
-    }
-    return parseCurrency(value) >= 0
-      ? '--mat-form-field-outlined-input-text-text'
-      : 'red';
+    this.displayValue.set(value != null ? formatNumber(value) : null);
+
+    this.value = value;
+    this.onChange(value);
   }
 }

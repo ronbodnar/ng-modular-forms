@@ -1,0 +1,88 @@
+<h1 [style.font-size.px]="24">Multi-Section Orchestrated Form</h1>
+<p class="description">
+  This form demonstrates the full power of orchestration with multiple
+  sub-components. Each section is a separate, reusable component that
+  communicates with the main orchestrator.
+</p>
+
+<form [formGroup]="form()" (ngSubmit)="submit()" class="multi-section-form">
+  <div class="form-sections">
+    <div class="section-wrapper">
+      <app-personal-info-section
+        (formReady)="onSubformReady($event, 'personalInfo')"
+      />
+    </div>
+
+    <div class="section-wrapper">
+      <app-address-section (formReady)="onSubformReady($event, 'address')" />
+    </div>
+
+    <div class="section-wrapper">
+      <app-payment-section (formReady)="onSubformReady($event, 'payment')" />
+    </div>
+  </div>
+
+  <div class="form-actions">
+    <button type="submit" class="submit-btn">Complete Registration</button>
+  </div>
+</form>
+
+<div class="form-status" *ngIf="status() !== 'idle'">
+  <p>Status: {{ status() }}</p>
+  <p *ngIf="errorMessage()">Error: {{ errorMessage() }}</p>
+</div>
+
+<div class="form-summary" *ngIf="form().valid && form().touched">
+  <h3>Form Summary</h3>
+  <div class="summary-grid">
+    <div class="summary-section">
+      <h4>Personal Info</h4>
+      <ul>
+        <li>
+          <strong>Name:</strong> {{ form().value.personalInfo?.firstName }}
+          {{ form().value.personalInfo?.lastName }}
+        </li>
+        <li><strong>Email:</strong> {{ form().value.personalInfo?.email }}</li>
+        <li>
+          <strong>Phone:</strong>
+          {{ form().value.personalInfo?.phone || "Not provided" }}
+        </li>
+        <li>
+          <strong>Gender:</strong> {{ form().value.personalInfo?.gender }}
+        </li>
+      </ul>
+    </div>
+
+    <div class="summary-section">
+      <h4>Address</h4>
+      <ul>
+        <li>
+          <strong>Address:</strong> {{ form().value.address?.streetAddress }}
+        </li>
+        <li><strong>City:</strong> {{ form().value.address?.city }}</li>
+        <li><strong>State:</strong> {{ form().value.address?.state }}</li>
+        <li><strong>ZIP:</strong> {{ form().value.address?.zipCode }}</li>
+        <li>
+          <strong>Country:</strong>
+          {{ form().value.address?.country?.toUpperCase() }}
+        </li>
+      </ul>
+    </div>
+
+    <div class="summary-section">
+      <h4>Payment</h4>
+      <ul>
+        <li>
+          <strong>Method:</strong> {{ form().value.payment?.paymentMethod }}
+        </li>
+        <li>
+          <strong>Card:</strong> **** **** ****
+          {{ form().value.payment?.cardNumber?.slice(-4) }}
+        </li>
+        <li>
+          <strong>Amount:</strong> ${{ form().value.payment?.billingAmount }}
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>

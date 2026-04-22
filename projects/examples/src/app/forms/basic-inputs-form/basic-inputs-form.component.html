@@ -1,0 +1,82 @@
+<h1 [style.font-size.px]="24">Basic Input Components Form</h1>
+<p class="description">
+  This form uses the basic input components without Material Design styling,
+  demonstrating the core functionality.
+</p>
+
+<form [formGroup]="form" (ngSubmit)="submit()" class="basic-form">
+  <div class="form-section">
+    <h2>Account Information</h2>
+
+    <nmf-text
+      formControlName="username"
+      label="Username"
+      placeholder="Choose a username"
+    />
+
+    <nmf-text
+      formControlName="email"
+      label="Email Address"
+      type="email"
+      placeholder="your.email@example.com"
+    />
+
+    <nmf-text
+      formControlName="password"
+      label="Password"
+      type="password"
+      placeholder="Enter a strong password"
+    />
+
+    <nmf-text
+      formControlName="confirmPassword"
+      label="Confirm Password"
+      type="password"
+      placeholder="Confirm your password"
+    />
+  </div>
+
+  <div class="form-section">
+    <h2>Profile Information</h2>
+
+    <nmf-select
+      formControlName="country"
+      label="Country"
+      [options]="countries"
+      placeholder="Select your country"
+    />
+
+    <nmf-textarea
+      formControlName="bio"
+      label="Bio (optional)"
+      placeholder="Tell us about yourself..."
+      [rows]="4"
+    />
+
+    <nmf-currency
+      formControlName="budget"
+      label="Monthly Budget (optional)"
+      placeholder="Enter your budget"
+    />
+  </div>
+
+  <div class="form-actions">
+    <button type="submit" class="submit-btn">Create Account</button>
+  </div>
+</form>
+
+<div class="form-summary" *ngIf="form.valid && form.touched">
+  <h3>Form Summary</h3>
+  <ul>
+    <li><strong>Username:</strong> {{ form.value.username }}</li>
+    <li><strong>Email:</strong> {{ form.value.email }}</li>
+    <li>
+      <strong>Country:</strong>
+      {{ getCountryLabel(form.value.country) }}
+    </li>
+    <li>
+      <strong>Bio Length:</strong> {{ form.value.bio?.length || 0 }} characters
+    </li>
+    <li><strong>Budget:</strong> ${{ form.value.budget || 0 }}</li>
+  </ul>
+</div>

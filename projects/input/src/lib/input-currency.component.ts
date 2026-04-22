@@ -1,72 +1,117 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Optional,
+  Self,
+  signal,
+} from '@angular/core';
+import { NgControl, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { FormControlBase, parseCurrency } from '@ng-modular-forms/core';
 import { InputCurrencyBehavior } from '@ng-modular-forms/behavior';
+import { InputFormControlBase } from './input-form-control-base';
+import { formatNumber, parseNumber } from '@ng-modular-forms/core';
 
 @Component({
-  selector: 'nmf-input-currency',
+  selector: 'nmf-currency',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
+  styleUrls: ['./input-styles.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="nmf-input-wrapper relative">
+    <div class="nmf-field">
       @if (label()) {
-        <label class="block font-medium mb-1">{{ label() }}</label>
+        <label class="nmf-label">
+          {{ label() }}
+          @if (required) {
+            <span class="nmf-required">*</span>
+          }
+        </label>
       }
 
-      <div class="flex items-center gap-1">
-        <span [class.opacity-50]="disabled || readonly"> $ </span>
+      <div class="nmf-input-wrapper nmf-input-prefix">
+        @if (value != null) {
+          <span
+            class="nmf-prefix"
+            [class.error]="errorState"
+            [class.nmf-prefix-disabled]="disabled || readonly"
+          >
+            $
+          </span>
+        }
 
         <input
           type="text"
           autocomplete="off"
+          class="nmf-input"
+          [class.error]="errorState"
+          [class.readonly]="readonly"
+          [class.nmf-input-with-prefix]="value != null"
           [id]="id"
           [name]="name"
-          [value]="value"
+          [value]="displayValue()"
           [disabled]="disabled"
           [readonly]="readonly"
-          [ngClass]="classList().concat(readonly ? ['opacity-60'] : [])"
+          [ngClass]="classList()"
           [placeholder]="placeholder || '0.00'"
           (keydown)="handleKeyDown($event)"
           (input)="onInput($event)"
           (blur)="onTouched()"
-          class="flex-1 border rounded px-2 py-1"
           [style.color]="textColor(value)"
         />
       </div>
 
       <ng-content></ng-content>
 
-      @if (control().invalid && control().touched) {
-        <p class="text-red-500 text-sm mt-1">
-          {{ getErrorMessage() }}
-        </p>
-      }
+      <p class="nmf-error">
+        {{ getErrorMessage() }}
+      </p>
     </div>
   `,
 })
-export class InputCurrencyComponent extends FormControlBase<string | null> {
-  behavior = new InputCurrencyBehavior();
-
-  override writeValue(value: string | null): void {
-    super.writeValue(this.behavior.formatCurrency(value ?? ''));
+export class InputCurrencyComponent extends InputFormControlBase<
+  number | null
+> {
+  constructor(@Optional() @Self() ngControl: NgControl) {
+    super();
+    if (ngControl) {
+      ngControl.valueAccessor = this;
+    }
   }
 
-  handleKeyDown(event: KeyboardEvent) {
+  displayValue = signal<string | null>(null);
+
+  behavior = new InputCurrencyBehavior();
+
+  override writeValue(value: number | null): void {
+    super.writeValue(value);
+    this.displayValue.set(value != null ? formatNumber(value) : null);
+  }
+
+  handleKeyDown(event: KeyboardEvent): void {
     this.behavior.handleKeyDown(event);
   }
 
   onInput(event: Event) {
-    this.behavior.onInput(this, event);
+    const rawValue = (event.target as HTMLInputElement).value ?? null;
+    const value = parseNumber(rawValue);
+
+    this.displayValue.set(value != null ? formatNumber(value) : null);
+
+    this.value = value;
+    this.onChange(value);
   }
 
   textColor(value: string | number | null): string {
-    if (this.disabled) {
-      return 'default';
+    if (this.disabled || this.readonly) {
+      return 'inherit';
     }
-    const defaultColor = '--mat-form-field-outlined-input-text-text';
+    if (!value) {
+      return 'inherit';
+    }
 
-    return parseCurrency(value) >= 0 ? defaultColor : 'red';
+    const parsedValue = parseNumber(value);
+    const valid = parsedValue != null && parsedValue >= 0;
+
+    return valid ? 'inherit' : 'red';
   }
 }

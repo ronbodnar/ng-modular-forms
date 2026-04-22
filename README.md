@@ -5,6 +5,9 @@
 `ng-modular-forms` provides separation of UI, orchestration, reactive logic, and data mapping into clearly
 defined, reusable primitives.
 
+[![npm version](https://badge.fury.io/js/%40ng-modular-forms%2Fcore.svg)](https://badge.fury.io/js/%40ng-modular-forms%2Fcore)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 ## Packages
 
 | Package                        | Description                         |
@@ -29,6 +32,44 @@ npm install @ng-modular-forms/behavior
 npm install @ng-modular-forms/input
 npm install @ng-modular-forms/material
 ```
+
+### Peer Dependencies
+
+For the Material package, you'll also need:
+
+```bash
+npm install @angular/material @angular/cdk
+```
+
+## Quick Start
+
+1. **Install the packages** you need
+2. **Check out the examples** in the `/projects/examples` directory
+3. **Run the demo app**:
+
+```bash
+git clone https://github.com/your-repo/ng-modular-forms.git
+cd ng-modular-forms
+npm install
+npm run start:examples
+```
+
+Navigate to `http://localhost:4200` to see the interactive examples.
+
+## Examples
+
+The library includes several example forms demonstrating different use cases:
+
+- **Basic Input Components** - Framework-agnostic input components without Material Design
+- **Material Input Components** - Material-based form fields using Angular Material components
+- **Registration Form** - Comprehensive form with validation and multiple input types
+
+Each example includes:
+
+- Complete component implementation
+- Template with form structure
+- Styling examples
+- Unit tests
 
 ## The Problem
 
@@ -278,6 +319,56 @@ export class ExampleMapper extends FormMapperBase<ApiModel, RequestModel> {
 - Logic is centralized and testable
 - Complex dependencies are predictable and maintainable
 - Easily scales to large, multi-section forms
+
+## Available Components
+
+### Input Components
+
+| Component   | Basic Selector   | Material Selector    | Description                            |
+| :---------- | :--------------- | :------------------- | :------------------------------------- |
+| Text Input  | `nmf-text`       | `nmf-mat-text`       | Single-line text input with validation |
+| Textarea    | `nmf-textarea`   | `nmf-mat-textarea`   | Multi-line text input                  |
+| Select      | `nmf-select`     | `nmf-mat-select`     | Dropdown selection from options        |
+| Currency    | `nmf-currency`   | `nmf-mat-currency`   | Currency input with formatting         |
+| Date Picker | `nmf-datepicker` | `nmf-mat-datepicker` | Date selection input                   |
+
+### Core Classes
+
+- **FormOrchestratorBase** - Base class for form orchestration
+- **FormHandlerBase** - Base class for reactive form logic
+- **FormMapperBase** - Base class for data transformation
+- **FormControlBase** - Base class for custom form controls
+
+## API Documentation
+
+### FormOrchestratorBase
+
+```typescript
+class FormOrchestratorBase {
+  // Properties
+  readonly form: Signal<FormGroup>;
+  readonly mainHandler: Signal<FormHandlerBase | null>;
+  readonly status: Signal<FormStatus>;
+  readonly errorMessage: Signal<string | null>;
+
+  // Methods
+  initialize(form: FormGroup, options?: FormOrchestratorOptions): void;
+  onSubformReady(subform: FormGroup, groupName: string, nestGroups?: boolean): void;
+  setStatus(status: FormStatus): void;
+  setErrorMessage(message: string | null): void;
+}
+```
+
+### FormHandlerBase
+
+```typescript
+abstract class FormHandlerBase<ControlNames extends string = string> {
+  abstract getReactiveLogic(form?: FormGroup): Subscription;
+
+  registerControls(form: FormGroup, controlNames: ControlNames[]): void;
+  valueChangesOf<T>(key: ControlNames): Observable<T>;
+}
+```
 
 ## When to Use
 

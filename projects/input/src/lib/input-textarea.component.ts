@@ -1,53 +1,76 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  input,
+  Optional,
+  Self,
+} from '@angular/core';
+import { NgControl, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { FormControlBase } from '@ng-modular-forms/core';
-import { InputTextareaBehavior } from '@ng-modular-forms/behavior';
+import { InputFormControlBase } from './input-form-control-base';
 
 @Component({
-  selector: 'nmf-input-textarea',
+  selector: 'nmf-textarea',
   standalone: true,
+  styleUrls: ['./input-styles.css'],
   imports: [CommonModule, ReactiveFormsModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="nmf-input-wrapper relative">
+    <div class="nmf-field">
       @if (label()) {
-        <label class="block font-medium mb-1">{{ label() }}</label>
+        <label class="nmf-label">
+          {{ label() }}
+          @if (required) {
+            <span class="nmf-required">*</span>
+          }
+        </label>
       }
 
       <textarea
-        class="w-full border rounded px-2 py-1"
+        class="nmf-input"
         [id]="id"
         [rows]="rows()"
         [cols]="cols()"
-        [value]="value ?? ''"
+        [ngClass]="classList()"
+        [value]="value"
+        [class.error]="errorState"
+        [class.readonly]="readonly"
         [readonly]="readonly"
+        [required]="required"
         [disabled]="disabled"
         [placeholder]="placeholder"
         (blur)="onTouched()"
         (input)="onInput($event)"
-        (keydown.enter)="onEnter()"
       ></textarea>
 
-      @if (control().invalid && control().touched) {
-        <p class="text-red-500 text-sm mt-1">
-          {{ getErrorMessage() }}
-        </p>
+      <p class="nmf-error">
+        {{ getErrorMessage() }}
+      </p>
+
+      @if (loading()) {
+        <div class="nmf-loading">
+          <span class="nmf-spinner"></span>
+        </div>
       }
     </div>
   `,
 })
-export class InputTextareaComponent extends FormControlBase<string | null> {
+export class InputTextareaComponent extends InputFormControlBase<
+  string | null
+> {
   rows = input<number>(5);
   cols = input<number>(5);
 
-  behavior = new InputTextareaBehavior();
-
-  onEnter() {
-    this.behavior.onEnter(this);
+  constructor(@Optional() @Self() ngControl: NgControl) {
+    super();
+    if (ngControl) {
+      ngControl.valueAccessor = this;
+    }
   }
 
   onInput(event: Event) {
-    this.behavior.onInput(this, event);
+    const value = (event.target as HTMLInputElement).value;
+    this.value = value;
+    this.onChange(value);
   }
 }

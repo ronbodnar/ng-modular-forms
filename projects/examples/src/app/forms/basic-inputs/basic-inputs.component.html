@@ -1,0 +1,53 @@
+<app-form-example
+  title="Basic Input Components Form"
+  sourceUrl="https://github.com/ronbodnar/ng-modular-forms/tree/main/projects/examples/src/app/forms/basic-inputs"
+>
+  <form [formGroup]="form">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <app-form-section title="Input Types">
+        <div class="flex flex-col gap-2">
+          <nmf-text
+            formControlName="text"
+            label="Text Input"
+            placeholder="Input some text..."
+          />
+
+          <nmf-text
+            formControlName="number"
+            label="Number Input"
+            type="number"
+            placeholder="Enter a number"
+            [formatNumberValue]="true"
+          />
+
+          <nmf-select
+            formControlName="select"
+            label="Select/Dropdown Input"
+            [options]="countries"
+            placeholder="Select an option"
+          />
+
+          <nmf-text
+            formControlName="password"
+            label="Password Input"
+            type="password"
+            placeholder="Enter a strong password"
+          />
+          <nmf-currency
+            formControlName="currency"
+            label="Currency Input"
+            placeholder="Enter your budget"
+          />
+          <nmf-textarea
+            formControlName="textarea"
+            label="Textarea Input"
+            placeholder="Tell us about yourself..."
+            [rows]="4"
+          />
+        </div>
+      </app-form-section>
+
+      <app-form-status-output [output]="form.value" />
+    </div>
+  </form>
+</app-form-example>

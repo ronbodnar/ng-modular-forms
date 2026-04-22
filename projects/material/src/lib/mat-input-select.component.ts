@@ -1,11 +1,19 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  input,
+  signal,
+} from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatSelectChange, MatSelectModule } from '@angular/material/select';
+import {
+  MatSelect,
+  MatSelectChange,
+  MatSelectModule,
+} from '@angular/material/select';
 import { CommonModule } from '@angular/common';
 import { MatFormControlBase } from './mat-form-control-base';
-import { InputSelectBehavior } from '@ng-modular-forms/behavior';
 
 export interface SelectOption {
   key: string | number;
@@ -14,7 +22,7 @@ export interface SelectOption {
 }
 
 @Component({
-  selector: 'nmf-mat-input-select',
+  selector: 'nmf-mat-select',
   imports: [
     CommonModule,
     MatFormFieldModule,
@@ -22,14 +30,17 @@ export interface SelectOption {
     ReactiveFormsModule,
     MatSelectModule,
   ],
+  styleUrls: ['./mat-input-styles.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @if (label() && detachLabel()) {
       <label class="font-medium text-base">{{ label() }}</label>
     }
+
     <mat-form-field
-      appearance="outline"
-      [floatLabel]="shouldLabelFloat ? 'always' : 'auto'"
+      class="w-full"
+      [appearance]="appearance()"
+      [floatLabel]="shouldLabelFloat()"
     >
       @if (label() && !detachLabel()) {
         <mat-label>{{ label() }}</mat-label>
@@ -37,9 +48,9 @@ export interface SelectOption {
 
       <mat-select
         [value]="value"
-        [disabled]="disabled"
         [panelWidth]="panelWidth()"
-        [ngClass]="disabled ? 'hide-arrow' : ''"
+        [class.hide-select-arrow]="loading()"
+        [disabled]="_disabled()"
         (blur)="onTouched()"
         (selectionChange)="onSelectionChange($event)"
         (closed)="onSelectionClosed()"
@@ -56,24 +67,25 @@ export interface SelectOption {
         }
 
         <!-- Clear Selection Option -->
-        @if (showClearOption()) {
-          <mat-option value="NONE">{{ 'forms.clearSelection' }}</mat-option>
+        @if (clearOptionLabel()) {
+          <mat-option value="NONE">{{ clearOptionLabel() }}</mat-option>
         }
       </mat-select>
 
       @if (loading()) {
-        <div class="absolute top-2 right-2">
-          <mat-spinner diameter="24" strokeWidth="3"></mat-spinner>
-        </div>
+        <mat-spinner
+          matSuffix
+          class="nmf-mat-suffix"
+          diameter="22"
+          strokeWidth="3"
+        ></mat-spinner>
       }
 
       @if (hint()) {
         <mat-hint [ngClass]="hintClassList()">{{ hint() }}</mat-hint>
       }
 
-      @if (control().invalid && control().touched) {
-        <mat-error>{{ getErrorMessage() }}</mat-error>
-      }
+      <mat-error>{{ getErrorMessage() }}</mat-error>
     </mat-form-field>
   `,
 })
@@ -81,22 +93,32 @@ export class MatInputSelectComponent extends MatFormControlBase<
   string | number | null
 > {
   options = input<SelectOption[]>([]);
-  emptyOptionLabel = input<string>('forms.emptyOption');
-  showClearOption = input<boolean>(false);
+  emptyOptionLabel = input<string>('Select an option');
+  clearOptionLabel = input<string | null>('Clear selection');
   panelWidth = input<string | number | null>('auto');
 
-  behavior = new InputSelectBehavior();
-
-  onSelectionClosed(): void {
-    this.behavior.onSelectionClosed(this);
-  }
+  private _initialValue = signal<any>(null);
 
   override ngOnInit() {
     super.ngOnInit();
-    this.behavior.setInitialValue(this.value);
+    this._initialValue.set(this.value);
   }
 
   onSelectionChange(event: MatSelectChange): void {
-    this.behavior.onSelectionChange(this, event);
+    let value = event.value;
+    if (value === 'NONE') {
+      value = typeof this._initialValue() === 'number' ? -1 : '';
+    } else {
+      value = event.value;
+    }
+
+    this.value = value;
+    this.onChange(value);
+  }
+
+  onSelectionClosed(): void {
+    if (this.value === '') {
+      this.ngControl.control?.markAsDirty();
+    }
   }
 }

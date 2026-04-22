@@ -118,6 +118,94 @@
           }
         }
       }
+    },
+    "examples": {
+      "projectType": "application",
+      "schematics": {},
+      "root": "projects/examples",
+      "sourceRoot": "projects/examples/src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:application",
+          "options": {
+            "outputPath": "dist/examples",
+            "index": "projects/examples/src/index.html",
+            "browser": "projects/examples/src/main.ts",
+            "polyfills": ["zone.js"],
+            "tsConfig": "projects/examples/tsconfig.app.json",
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "projects/examples/public"
+              }
+            ],
+            "styles": [
+              "projects/examples/src/material-theme.scss",
+              "projects/examples/src/styles.css",
+              "projects/material/src/lib/mat-input-styles.css"
+            ],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kB",
+                  "maximumError": "1MB"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "4kB",
+                  "maximumError": "8kB"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "configurations": {
+            "production": {
+              "buildTarget": "examples:build:production"
+            },
+            "development": {
+              "buildTarget": "examples:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n"
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "polyfills": ["zone.js", "zone.js/testing"],
+            "tsConfig": "projects/examples/tsconfig.spec.json",
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "projects/examples/public"
+              }
+            ],
+            "styles": [
+              "projects/examples/src/material-theme.scss",
+              "projects/examples/src/styles.css",
+              "projects/material/src/lib/mat-input-styles.css"
+            ],
+            "scripts": []
+          }
+        }
+      }
     }
   },
   "cli": {

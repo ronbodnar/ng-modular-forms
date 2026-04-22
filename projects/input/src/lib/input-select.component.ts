@@ -1,8 +1,14 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  input,
+  Optional,
+  Self,
+  signal,
+} from '@angular/core';
+import { NgControl, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { InputSelectBehavior } from '@ng-modular-forms/behavior';
-import { FormControlBase } from '@ng-modular-forms/core';
+import { InputFormControlBase } from './input-form-control-base';
 
 export interface SelectOption {
   key: string | number;
@@ -11,19 +17,29 @@ export interface SelectOption {
 }
 
 @Component({
-  selector: 'nmf-input-select',
+  selector: 'nmf-select',
   imports: [CommonModule, ReactiveFormsModule],
+  styleUrls: ['./input-styles.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="nmf-input-wrapper relative">
+    <div class="nmf-field">
       @if (label()) {
-        <label class="block font-medium mb-1">{{ label() }}</label>
+        <label class="nmf-label">
+          {{ label() }}
+          @if (required) {
+            <span class="nmf-required">*</span>
+          }
+        </label>
       }
 
       <select
-        class="w-full border rounded px-2 py-1"
+        class="nmf-input"
+        [class.error]="errorState"
+        [class.readonly]="readonly"
+        [ngClass]="classList()"
+        [value]="value"
         [disabled]="disabled"
-        [value]="value ?? ''"
+        [required]="required"
         (blur)="onTouched()"
         (change)="onSelectionChange(eventValue($event))"
       >
@@ -47,32 +63,48 @@ export interface SelectOption {
         }
       </select>
 
-      @if (control().invalid && control().touched) {
-        <p class="text-red-500 text-sm mt-1">
-          {{ getErrorMessage() }}
-        </p>
-      }
+      <p class="nmf-error">
+        {{ getErrorMessage() }}
+      </p>
     </div>
   `,
 })
-export class InputSelectComponent extends FormControlBase<any> {
+export class InputSelectComponent extends InputFormControlBase<any> {
   options = input<SelectOption[]>([]);
-  emptyOptionLabel = input<string>('forms.emptyOption');
+  emptyOptionLabel = input<string>('Select an option');
   showClearOption = input<boolean>(false);
 
-  behavior = new InputSelectBehavior();
+  private _initialValue = signal<any>(null);
+
+  constructor(@Optional() @Self() ngControl: NgControl) {
+    super();
+    if (ngControl) {
+      ngControl.valueAccessor = this;
+    }
+  }
 
   override ngOnInit() {
     super.ngOnInit();
-    this.behavior.setInitialValue(this.value);
+    this._initialValue.set(this.value);
   }
 
   onSelectionChange(event: { value: string | number | null }) {
-    this.behavior.onSelectionChange(this, event);
+    let value = event.value;
+    if (value === 'NONE') {
+      value = typeof this._initialValue() === 'number' ? -1 : '';
+    } else {
+      value = event.value;
+    }
+
+    if (value != null) {
+      this.onChange(value);
+    }
   }
 
-  onSelectionClosed() {
-    this.behavior.onSelectionClosed(this);
+  onSelectionClosed(): void {
+    if (this.value === '' || this.value === -1) {
+      this.ngControl?.control?.markAsDirty();
+    }
   }
 
   eventValue(event: Event) {

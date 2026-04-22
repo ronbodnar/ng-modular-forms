@@ -1,0 +1,17 @@
+<button
+  type="submit"
+  [disabled]="loading()"
+  class="relative flex items-center justify-center px-6 py-2 rounded border bg-emerald-700 text-neutral-200 font-medium shadow-sm cursor-pointer hover:bg-emerald-800 hover:shadow-md transition disabled:opacity-70 disabled:cursor-not-allowed"
+>
+  <span class="transition-opacity duration-150" [class.opacity-0]="loading()">
+    {{ label() }}
+  </span>
+
+  @if (loading()) {
+    <div
+      class="absolute top-0 left-0 w-full h-full flex items-center justify-center"
+    >
+      <mat-spinner class="m-auto" diameter="16" strokeWidth="2"></mat-spinner>
+    </div>
+  }
+</button>

@@ -1,0 +1,119 @@
+<app-form-example
+  title="Material Input Components Form"
+  sourceUrl="https://github.com/ronbodnar/ng-modular-forms/tree/main/projects/examples/src/app/forms/material-inputs"
+>
+  <form [formGroup]="options" class="flex gap-4">
+    <nmf-mat-select
+      formControlName="appearance"
+      [options]="[
+        { key: 'outline', label: 'Outline' },
+        { key: 'fill', label: 'Fill' },
+      ]"
+      [appearance]="appearance()"
+      [shouldLabelFloat]="'always'"
+      [label]="'Appearance'"
+    />
+
+    <nmf-mat-select
+      formControlName="floatLabel"
+      [options]="[
+        { key: 'auto', label: 'Auto' },
+        { key: 'always', label: 'Always' },
+      ]"
+      [appearance]="appearance()"
+      [shouldLabelFloat]="'always'"
+      [label]="'Float Label'"
+    />
+
+    <mat-checkbox formControlName="loading">Show Loading</mat-checkbox>
+
+    <button mat-stroked-button (click)="populateForm()">Populate Form</button>
+  </form>
+
+  <form [formGroup]="form">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <app-form-section title="Input Types">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-2">
+          <nmf-mat-text
+            formControlName="text"
+            label="Text Input"
+            placeholder="Input some text..."
+            [loading]="loading()"
+            [appearance]="appearance()"
+            [shouldLabelFloat]="floatLabel()"
+          />
+
+          <nmf-mat-text
+            formControlName="number"
+            label="Number Input"
+            type="number"
+            placeholder="Enter a number"
+            [formatNumberValue]="true"
+            [loading]="loading()"
+            [appearance]="appearance()"
+            [shouldLabelFloat]="floatLabel()"
+          />
+
+          <nmf-mat-text
+            formControlName="password"
+            label="Password Input"
+            type="password"
+            placeholder="Enter a strong password"
+            [loading]="loading()"
+            [appearance]="appearance()"
+            [shouldLabelFloat]="floatLabel()"
+          />
+
+          <nmf-mat-currency
+            formControlName="currency"
+            label="Currency Input"
+            placeholder="Enter your budget"
+            [loading]="loading()"
+            [appearance]="appearance()"
+            [shouldLabelFloat]="floatLabel()"
+          />
+
+          <nmf-mat-datepicker
+            formControlName="date"
+            label="Date Input"
+            placeholder="Select a date"
+            [loading]="loading()"
+            [appearance]="appearance()"
+            [shouldLabelFloat]="floatLabel()"
+          />
+
+          <nmf-mat-timepicker
+            formControlName="time"
+            label="Time Input"
+            placeholder="Select a time"
+            [loading]="loading()"
+            [appearance]="appearance()"
+            [shouldLabelFloat]="floatLabel()"
+          />
+
+          <nmf-mat-select
+            formControlName="select"
+            label="Select/Dropdown Input"
+            [options]="countries"
+            placeholder="Select an option"
+            [loading]="loading()"
+            [appearance]="appearance()"
+            [shouldLabelFloat]="floatLabel()"
+          />
+
+          <nmf-mat-textarea
+            formControlName="textarea"
+            label="Textarea Input"
+            placeholder="Tell us about yourself..."
+            [rows]="4"
+            [loading]="loading()"
+            [appearance]="appearance()"
+            [shouldLabelFloat]="floatLabel()"
+          />
+        </div>
+      </app-form-section>
+
+      <app-form-status-output [output]="form.value" />
+    </div>
+  </form>
+</app-form-example>

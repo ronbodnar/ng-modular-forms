@@ -1,57 +1,72 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  input,
+  Optional,
+  Self,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule } from '@angular/forms';
-import { FormControlBase } from '@ng-modular-forms/core';
+import { NgControl, ReactiveFormsModule } from '@angular/forms';
+import { InputFormControlBase } from './input-form-control-base';
 
 @Component({
-  selector: 'nmf-input-datepicker',
+  selector: 'nmf-datepicker',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
+  styleUrls: ['./input-styles.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="nmf-input-wrapper relative">
+    <div class="nmf-field">
       @if (label()) {
-        <label class="block font-medium mb-1">{{ label() }}</label>
+        <label class="nmf-label">
+          {{ label() }}
+          @if (required) {
+            <span class="nmf-required">*</span>
+          }
+        </label>
       }
 
-      <div class="relative">
-        @if (loading()) {
-          <div class="absolute right-2 top-2 text-sm opacity-60">
-            Loading...
-          </div>
-        }
+      @if (loading()) {
+        <div class="absolute right-2 top-2 text-sm opacity-60">Loading...</div>
+      }
 
-        <input
-          type="date"
-          autocomplete="off"
-          [id]="id"
-          [name]="name"
-          [value]="formatDate(value)"
-          [min]="formatDate(minDate())"
-          [max]="formatDate(maxDate())"
-          [disabled]="disabled"
-          [readonly]="readonly"
-          [ngClass]="classList().concat(readonly ? ['opacity-60'] : [])"
-          [placeholder]="placeholder || ''"
-          (input)="onInput($event)"
-          (blur)="onTouched()"
-          class="w-full border rounded px-2 py-1"
-        />
-      </div>
+      <input
+        type="date"
+        autocomplete="off"
+        class="nmf-input"
+        [class.error]="errorState"
+        [class.readonly]="readonly"
+        [id]="id"
+        [name]="name"
+        [value]="value"
+        [ngClass]="classList()"
+        [min]="formatDate(minDate())"
+        [max]="formatDate(maxDate())"
+        [disabled]="disabled"
+        [readonly]="readonly"
+        [placeholder]="placeholder || ''"
+        (input)="onInput($event)"
+        (blur)="onTouched()"
+      />
 
       <ng-content></ng-content>
 
-      @if (control().invalid && control().touched) {
-        <p class="text-red-500 text-sm mt-1">
-          {{ getErrorMessage() }}
-        </p>
-      }
+      <p class="nmf-error">
+        {{ getErrorMessage() }}
+      </p>
     </div>
   `,
 })
-export class InputDatepickerComponent extends FormControlBase<Date | null> {
+export class InputDatepickerComponent extends InputFormControlBase<Date | null> {
   minDate = input<Date | null>(null);
   maxDate = input<Date | null>(null);
+
+  constructor(@Optional() @Self() ngControl: NgControl) {
+    super();
+    if (ngControl) {
+      ngControl.valueAccessor = this;
+    }
+  }
 
   formatDate(date: Date | null | undefined): string | null {
     if (!date) return null;
@@ -74,7 +89,6 @@ export class InputDatepickerComponent extends FormControlBase<Date | null> {
     const input = event.target as HTMLInputElement;
     const parsed = this.parseDate(input.value);
 
-    this.value = parsed;
-    this.onChange(this.value);
+    this.onChange(parsed); //this.value
   }
 }

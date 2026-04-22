@@ -8,3 +8,4 @@ export * from './lib/mat-input-datepicker.component';
 export * from './lib/mat-input-select.component';
 export * from './lib/mat-input-text.component';
 export * from './lib/mat-input-textarea.component';
+export * from './lib/mat-input-timepicker.component';

@@ -1,103 +1,83 @@
-import { Directive, ElementRef, input, signal, ViewChild } from '@angular/core';
-import { MatFormFieldControl } from '@angular/material/form-field';
+import {
+  Directive,
+  effect,
+  input,
+  Optional,
+  Self,
+  ViewChild,
+} from '@angular/core';
+import { ControlValueAccessor, NgControl } from '@angular/forms';
+import { MatInput } from '@angular/material/input';
+import { MatSelect } from '@angular/material/select';
 import { FormControlBase } from '@ng-modular-forms/core';
-import { Subject } from 'rxjs';
-
-/**
- * Base implementation for custom form controls that integrate with:
- * - Angular Reactive Forms (ControlValueAccessor)
- * - Angular Material form-field (MatFormFieldControl)
- */
 
 @Directive()
 export abstract class MatFormControlBase<T>
   extends FormControlBase<T>
-  implements MatFormFieldControl<T>
+  implements ControlValueAccessor
 {
   detachLabel = input<boolean>(false);
   hint = input<string>();
   hintClassList = input<string>('');
-  appearance = input<'outline' | 'fill'>();
+  appearance = input<'outline' | 'fill'>('outline');
+  shouldLabelFloat = input<'always' | 'auto'>('auto');
 
-  protected readonly _formDisabled = signal(false);
+  constructor(@Optional() @Self() public override ngControl: NgControl) {
+    super();
 
-  /**
-   * Notifies Angular Material form-field of state changes
-   * (label float, error state, UI refresh)
-   */
-  stateChanges = new Subject<void>();
-
-  override set value(val: T | null) {
-    super.value = val;
-    this.stateChanges.next();
-  }
-
-  focused = false;
-
-  /**
-   * Assumes derived component exposes an element with #input reference.
-   */
-  @ViewChild('nmf-input') input!: ElementRef<HTMLInputElement>;
-
-  focus(): void {
-    const nativeElement = this.input?.nativeElement;
-
-    if (!nativeElement) {
-      console.warn(
-        'Tried to focus an input from FormControlBase that does not exist',
-      );
-      return;
+    if (this.ngControl) {
+      this.ngControl.valueAccessor = this;
     }
 
-    this.focused = true;
-    nativeElement.focus();
+    effect(() => {
+      const control = this.ngControl?.control;
+      if (!control) return;
+
+      const shouldDisable = this.loading() || this._disabledByInput();
+
+      const isCurrentlyDisabled = control.disabled;
+
+      if (shouldDisable && !isCurrentlyDisabled) {
+        control.disable({ emitEvent: false });
+      }
+
+      if (!shouldDisable && isCurrentlyDisabled) {
+        control.enable({ emitEvent: false });
+      }
+    });
   }
 
-  override get disabled(): boolean {
-    return this._disabled() || this._formDisabled();
+  onChange = (_value: T) => {};
+  onTouched = () => {};
+
+  writeValue(value: T): void {
+    this.value = value;
   }
 
-  get errorState(): boolean {
-    const control = this.ngControl?.control;
-    return !!control && control.invalid && control.touched;
+  registerOnChange(fn: (value: T) => void): void {
+    this.onChange = fn;
   }
 
-  get empty(): boolean {
-    return this.value === null || this.value === '' || this.value === undefined;
-  }
-
-  get shouldLabelFloat(): boolean {
-    return this.focused || !this.empty;
-  }
-
-  controlType: string | undefined = 'custom-form-control';
-  autofilled: boolean | undefined = false;
-
-  userAriaDescribedBy?: string | undefined;
-  disableAutomaticLabeling?: boolean | undefined;
-
-  override writeValue(value: T): void {
-    super.writeValue(value);
-    this.stateChanges.next();
+  registerOnTouched(fn: () => void): void {
+    this.onTouched = fn;
   }
 
   setDisabledState(isDisabled: boolean): void {
-    this._formDisabled.set(isDisabled);
-    this.stateChanges.next();
+    this._disabledByCva.set(isDisabled);
     this.cdr.markForCheck();
   }
 
-  setDescribedByIds(ids: string[]): void {
-    this.userAriaDescribedBy = ids.join(' ');
-  }
+  @ViewChild(MatInput) protected matInput?: MatInput;
+  @ViewChild(MatSelect) protected matSelect?: MatSelect;
 
-  onContainerClick(event: MouseEvent): void {
-    const target = event.target as HTMLElement;
-    target?.focus();
-    this.stateChanges.next();
-  }
-
-  ngOnDestroy(): void {
-    this.stateChanges.complete();
+  ngAfterViewInit() {
+    const matControl = this.matInput ?? this.matSelect;
+    if (matControl && this.ngControl) {
+      matControl.ngControl = this.ngControl;
+      Object.defineProperty(matControl, 'errorState', {
+        get: () => this.errorState,
+      });
+    }
+    this.cdr.markForCheck();
   }
 }

@@ -1,50 +1,55 @@
-import { FormControlBase } from '@ng-modular-forms/core';
-
 export class InputCurrencyBehavior {
-  onInput(ctx: FormControlBase<string | null>, event: Event) {
-    const rawValue = (event.target as HTMLInputElement).value ?? '';
-    const value = this.formatCurrency(rawValue);
-    ctx.value = value;
-    ctx.onChange(value);
-  }
-
   handleKeyDown(event: KeyboardEvent) {
+    const input = event.target as HTMLInputElement;
+    const value = input.value;
+
+    if (event.ctrlKey || event.metaKey) {
+      return;
+    }
+
     const allowedKeys = [
-      'Tab',
       'Backspace',
       'Delete',
+      'Tab',
       'Enter',
+      'Escape',
       'ArrowLeft',
       'ArrowRight',
-      ',',
-      '.',
+      'Home',
+      'End',
     ];
-    if (
-      !allowedKeys.includes(event.key) &&
-      !(Number(event.key) >= 0 && Number(event.key) <= 9) &&
-      !(
-        event.key === '-' &&
-        (event.target as HTMLInputElement).selectionStart === 0
-      )
-    ) {
+
+    if (allowedKeys.includes(event.key)) {
+      return;
+    }
+
+    const isDigit = /^[0-9]$/.test(event.key);
+    if (isDigit) {
+      return;
+    }
+
+    if (event.key === '.') {
+      if (value.includes('.')) {
+        event.preventDefault();
+      }
+      return;
+    }
+
+    if (event.key === ',') {
       event.preventDefault();
-    }
-  }
-
-  formatCurrency(value: string): string {
-    if (typeof value !== 'string') {
-      value = String(value);
+      return;
     }
 
-    value = value.replace(/[^\d\-,.]/g, '');
+    if (event.key === '-') {
+      const hasMinus = value.includes('-');
+      const isAtStart = input.selectionStart === 0;
 
-    const isNegative = value.startsWith('-');
-    const numericValue = Number(value.replace(/[,$-]/g, ''));
+      if (hasMinus || !isAtStart) {
+        event.preventDefault();
+      }
+      return;
+    }
 
-    const formatted = numericValue.toLocaleString('es-MX', {
-      maximumFractionDigits: 2,
-    });
-
-    return isNegative ? `-${formatted}` : formatted;
+    event.preventDefault();
   }
 }

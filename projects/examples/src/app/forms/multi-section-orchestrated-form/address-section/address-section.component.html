@@ -1,0 +1,36 @@
+<div class="section-header">
+  <h3>Address Information</h3>
+  <p>Your residential address details</p>
+</div>
+
+<div class="section-content">
+  <nmf-mat-text
+    formControlName="streetAddress"
+    label="Street Address"
+    placeholder="123 Main Street"
+  />
+
+  <div class="form-row">
+    <nmf-mat-text formControlName="city" label="City" placeholder="City name" />
+    <nmf-mat-text
+      formControlName="zipCode"
+      label="ZIP Code"
+      placeholder="12345"
+    />
+  </div>
+
+  <div class="form-row">
+    <nmf-mat-select
+      formControlName="state"
+      label="State"
+      [options]="usStates"
+      placeholder="Select state"
+    />
+    <nmf-mat-select
+      formControlName="country"
+      label="Country"
+      [options]="countries"
+      placeholder="Select country"
+    />
+  </div>
+</div>

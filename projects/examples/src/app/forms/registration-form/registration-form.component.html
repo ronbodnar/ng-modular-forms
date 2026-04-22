@@ -1,0 +1,85 @@
+<app-form-example
+  title="Registration Form"
+  sourceUrl="https://github.com/ronbodnar/ng-modular-forms/tree/main/projects/examples/src/app/forms/registration-form"
+>
+  <form
+    [formGroup]="form()"
+    (ngSubmit)="submit()"
+    class="grid grid-cols-1 lg:grid-cols-2 gap-4"
+  >
+    <div class="flex flex-col gap-4">
+      <!-- Personal Info -->
+      <app-form-section title="Personal Information">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <nmf-mat-text
+            formControlName="firstName"
+            label="First Name"
+            placeholder="Enter your first name"
+          />
+
+          <nmf-mat-text
+            formControlName="lastName"
+            label="Last Name"
+            placeholder="Enter your last name"
+          />
+
+          <nmf-mat-text
+            formControlName="email"
+            label="Email Address (optional)"
+            type="email"
+            placeholder="your.email@example.com"
+          />
+
+          <nmf-mat-select
+            formControlName="country"
+            label="Country (optional)"
+            [options]="countries"
+            placeholder="Select your country"
+          />
+
+          <nmf-mat-datepicker
+            formControlName="dateOfBirth"
+            label="Date of Birth (optional)"
+            placeholder="Select your birth date"
+          />
+
+          <nmf-mat-timepicker
+            formControlName="timeOfBirth"
+            label="Time of Birth (optional)"
+            placeholder="Select your birth time"
+          ></nmf-mat-timepicker>
+        </div>
+      </app-form-section>
+
+      <!-- Other Details -->
+      <app-form-section title="Other Details">
+        <div class="flex flex-col gap-4">
+          <nmf-mat-currency
+            formControlName="monthlyBudget"
+            label="Monthly Budget (optional)"
+            placeholder="Enter your budget"
+          />
+
+          <nmf-mat-textarea
+            formControlName="comments"
+            label="Comments (optional)"
+            placeholder="Enter your comments"
+            [rows]="3"
+          ></nmf-mat-textarea>
+        </div>
+      </app-form-section>
+
+      <app-form-submit-button
+        label="Register Account"
+        [loading]="status() === 'submitting'"
+      ></app-form-submit-button>
+    </div>
+
+    <!-- STATUS -->
+    <app-form-status-output
+      [status]="status()"
+      [errorMessage]="errorMessage()"
+      [output]="output()"
+    ></app-form-status-output>
+  </form>
+</app-form-example>

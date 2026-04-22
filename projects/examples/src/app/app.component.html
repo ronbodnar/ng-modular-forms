@@ -1,0 +1,23 @@
+<div
+  class="flex flex-col bg-emerald-700 text-neutral-800 h-screen overflow-hidden"
+>
+  <h3 class="pl-4 text-neutral-300">ng-modular-forms &mdash; Form Examples</h3>
+
+  <div class="flex gap-4 px-4 min-h-0">
+    <div class="flex flex-col gap-4">
+      @for (navLink of navigationLinks; track navLink.path) {
+        <a
+          class="p-2 bg-mist-300 text-neutral-800 rounded no-underline shadow-sm hover:bg-mist-200 hover:shadow-lg"
+          [routerLink]="navLink.path"
+          >{{ navLink.label }}</a
+        >
+      }
+    </div>
+
+    <div class="flex flex-1 bg-mist-300 rounded w-full min-h-0 mb-4 shadow-sm">
+      <div class="w-full overflow-hidden p-4 min-h-0">
+        <router-outlet></router-outlet>
+      </div>
+    </div>
+  </div>
+</div>

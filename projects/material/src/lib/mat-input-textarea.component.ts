@@ -3,13 +3,14 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatFormControlBase } from './mat-form-control-base';
-import { InputTextareaBehavior } from '@ng-modular-forms/behavior';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatInputModule } from '@angular/material/input';
 
 @Component({
-  selector: 'nmf-mat-input-textarea',
+  selector: 'nmf-mat-textarea',
   imports: [
     CommonModule,
+    MatInputModule,
     MatFormFieldModule,
     ReactiveFormsModule,
     MatProgressSpinnerModule,
@@ -19,9 +20,11 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     @if (label() && detachLabel()) {
       <label class="font-medium text-base">{{ label() }}</label>
     }
+
     <mat-form-field
-      appearance="outline"
-      [floatLabel]="shouldLabelFloat ? 'always' : 'auto'"
+      class="w-full"
+      [appearance]="appearance()"
+      [floatLabel]="shouldLabelFloat()"
     >
       @if (label() && !detachLabel()) {
         <mat-label>{{ label() }}</mat-label>
@@ -33,30 +36,29 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
         [rows]="rows()"
         [cols]="cols()"
         [value]="value"
+        [disabled]="_disabled()"
         [readonly]="readonly"
-        [disabled]="disabled"
         [placeholder]="placeholder"
-        style="padding-top: 5px"
         (blur)="onTouched()"
         (input)="onInput($event)"
-        (keydown.enter)="onEnter()"
       ></textarea>
 
       @if (loading()) {
-        <div class="absolute top-5 right-5 z-10">
-          <mat-spinner diameter="20" strokeWidth="3"></mat-spinner>
-        </div>
+        <mat-spinner
+          class="nmf-mat-suffix"
+          matSuffix
+          diameter="22"
+          strokeWidth="3"
+        ></mat-spinner>
       }
 
       @if (hint()) {
         <mat-hint [ngClass]="hintClassList()">{{ hint() }}</mat-hint>
       }
 
-      @if (control().invalid && control().touched) {
-        <mat-error>
-          {{ getErrorMessage() }}
-        </mat-error>
-      }
+      <mat-error>
+        {{ getErrorMessage() }}
+      </mat-error>
     </mat-form-field>
   `,
 })
@@ -66,13 +68,9 @@ export class MatInputTextareaComponent extends MatFormControlBase<
   rows = input<number>(5);
   cols = input<number>(5);
 
-  behavior = new InputTextareaBehavior();
-
-  onEnter() {
-    this.behavior.onEnter(this);
-  }
-
   onInput(event: Event): void {
-    this.behavior.onInput(this, event);
+    const value = (event.target as HTMLInputElement).value;
+    this.value = value;
+    this.onChange(value);
   }
 }

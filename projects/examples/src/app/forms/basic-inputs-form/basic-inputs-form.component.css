@@ -1,0 +1,83 @@
+.basic-form {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.description {
+  color: #666;
+  margin-bottom: 2rem;
+  font-size: 1.1rem;
+}
+
+.form-section {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+}
+
+.form-section h2 {
+  margin: 0 0 1rem 0;
+  color: #333;
+  font-size: 1.25rem;
+  border-bottom: 2px solid #5c8b6e;
+  padding-bottom: 0.5rem;
+}
+
+.form-actions {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.submit-btn {
+  background: #5c8b6e;
+  color: white;
+  border: none;
+  padding: 0.75rem 2rem;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.submit-btn:hover {
+  background: #4a6b58;
+}
+
+.submit-btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.form-summary {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background: #f0f8f0;
+  border-radius: 8px;
+  border: 1px solid #5c8b6e;
+}
+
+.form-summary h3 {
+  margin: 0 0 1rem 0;
+  color: #333;
+  font-size: 1.1rem;
+}
+
+.form-summary ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.form-summary li {
+  margin-bottom: 0.5rem;
+  padding: 0.25rem 0;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.form-summary li:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
