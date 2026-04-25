@@ -56,7 +56,7 @@ import { formatNumber, parseNumber } from '@ng-modular-forms/core';
         @if (type() === 'password') {
           <button
             type="button"
-            (click)="behavior.toggleShowPassword()"
+            (click)="behavior.toggleShowPassword($event)"
             class="nmf-password-toggle"
             aria-label="Toggle password visibility"
           >

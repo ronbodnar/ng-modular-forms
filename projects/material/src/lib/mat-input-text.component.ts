@@ -14,6 +14,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { InputTextBehavior } from '@ng-modular-forms/behavior';
 import { MatFormControlBase } from './mat-form-control-base';
 import { formatNumber, parseNumber } from '@ng-modular-forms/core';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'nmf-mat-text',
@@ -24,6 +25,7 @@ import { formatNumber, parseNumber } from '@ng-modular-forms/core';
     ReactiveFormsModule,
     MatIconModule,
     MatProgressSpinnerModule,
+    MatButtonModule,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
@@ -58,7 +60,7 @@ import { formatNumber, parseNumber } from '@ng-modular-forms/core';
       @if (loading()) {
         <mat-spinner
           matSuffix
-          class="nmf-mat-suffix"
+          class="nmf-mat-loader"
           diameter="22"
           strokeWidth="3"
         ></mat-spinner>
@@ -71,12 +73,11 @@ import { formatNumber, parseNumber } from '@ng-modular-forms/core';
       @if (type() === 'password' && !loading()) {
         <button
           matIconSuffix
-          [class.nmf-disabled]="_disabled()"
-          [style.background-color]="'transparent'"
-          [style.border]="'none'"
-          [style.cursor]="_disabled() ? 'cursor' : 'pointer'"
+          mat-icon-button
+          color="transparent"
+          class="nmf-password-toggle"
           [disabled]="_disabled()"
-          (click)="behavior.toggleShowPassword()"
+          (click)="behavior.toggleShowPassword($event)"
         >
           <mat-icon>{{
             behavior.showPassword() ? 'visibility_off' : 'visibility'

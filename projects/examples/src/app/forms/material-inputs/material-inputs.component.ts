@@ -46,6 +46,7 @@ export class MaterialInputsFormComponent implements OnInit {
     appearance: new FormControl<'outline' | 'fill'>('outline'),
     loading: new FormControl(false),
     floatLabel: new FormControl<'auto' | 'always'>('auto'),
+    disabled: new FormControl(false),
   });
 
   appearance = signal<'outline' | 'fill'>('outline');
@@ -69,7 +70,7 @@ export class MaterialInputsFormComponent implements OnInit {
       Validators.required,
     ]),
     date: new FormControl<Date | null>(null),
-    time: new FormControl<Date | null>(null),
+    time: new FormControl<Date | null>(null, Validators.required),
   });
 
   countries: SelectOption[] = [
@@ -86,6 +87,14 @@ export class MaterialInputsFormComponent implements OnInit {
       this.appearance.set(v.appearance ?? 'outline');
       this.loading.set(v.loading ?? false);
       this.floatLabel.set(v.floatLabel ?? 'auto');
+    });
+
+    this.options.get('disabled')?.valueChanges.subscribe((disabled) => {
+      if (disabled) {
+        this.form.disable();
+      } else {
+        this.form.enable();
+      }
     });
   }
 

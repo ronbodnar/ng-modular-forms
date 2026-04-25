@@ -2,10 +2,23 @@
   display: none !important;
 }
 
-.nmf-mat-suffix {
+.nmf-mat-loader {
   margin-right: 0.7rem !important;
 }
 
 .nmf-disabled {
   color: color-mix(in srgb, var(--mat-sys-on-surface) 38%, transparent);
+}
+
+.nmf-password-toggle {
+  color: var(--mat-sys-on-surface-variant);
+  padding-right: 0.5rem;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+
+  &:disabled {
+    color: color-mix(in srgb, var(--mat-sys-on-surface) 38%, transparent);
+    cursor: default;
+  }
 }

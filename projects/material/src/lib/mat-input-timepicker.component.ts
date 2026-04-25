@@ -68,8 +68,8 @@ import {
 
       @if (loading()) {
         <mat-spinner
-          class="nmf-mat-suffix"
           matSuffix
+          class="nmf-mat-loader"
           diameter="22"
           strokeWidth="3"
         ></mat-spinner>

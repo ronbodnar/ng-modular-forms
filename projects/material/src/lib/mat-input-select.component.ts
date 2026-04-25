@@ -71,7 +71,7 @@ export interface SelectOption {
       @if (loading()) {
         <mat-spinner
           matSuffix
-          class="nmf-mat-suffix"
+          class="nmf-mat-loader"
           diameter="22"
           strokeWidth="3"
         ></mat-spinner>
