@@ -7,11 +7,7 @@ import {
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import {
-  MatSelect,
-  MatSelectChange,
-  MatSelectModule,
-} from '@angular/material/select';
+import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { CommonModule } from '@angular/common';
 import { MatFormControlBase } from './mat-form-control-base';
 

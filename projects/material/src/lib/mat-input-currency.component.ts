@@ -65,15 +65,9 @@ import { InputCurrencyBehavior } from '@ng-modular-forms/behavior';
         ></mat-spinner>
       }
 
-        @if (loading()) {
-          <div class="absolute top-5 right-5 z-10">
-            <mat-spinner diameter="20" strokeWidth="3"></mat-spinner>
-          </div>
-        }
-
-        @if (hint()) {
-          <mat-hint [ngClass]="hintClassList()">{{ hint() }}</mat-hint>
-        }
+      @if (hint()) {
+        <mat-hint [ngClass]="hintClassList()">{{ hint() }}</mat-hint>
+      }
 
       <mat-error>
         {{ getErrorMessage() }}
