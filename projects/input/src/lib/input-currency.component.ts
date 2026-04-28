@@ -1,11 +1,5 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Optional,
-  Self,
-  signal,
-} from '@angular/core';
-import { NgControl, ReactiveFormsModule } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { InputCurrencyBehavior } from '@ng-modular-forms/behavior';
 import { InputFormControlBase } from './input-form-control-base';
@@ -49,7 +43,8 @@ import { formatNumber, parseNumber } from '@ng-modular-forms/core';
           [id]="id"
           [name]="name"
           [value]="displayValue()"
-          [disabled]="disabled"
+          [disabled]="disabled || loading()"
+          [required]="required"
           [readonly]="readonly"
           [ngClass]="classList()"
           [placeholder]="placeholder || '0.00'"
@@ -62,8 +57,14 @@ import { formatNumber, parseNumber } from '@ng-modular-forms/core';
 
       <ng-content></ng-content>
 
+      @if (loading()) {
+        <div class="nmf-loading">
+          <span class="nmf-spinner"></span>
+        </div>
+      }
+
       <p class="nmf-error">
-        {{ getErrorMessage() }}
+        {{ errorMessage() }}
       </p>
     </div>
   `,
@@ -71,13 +72,6 @@ import { formatNumber, parseNumber } from '@ng-modular-forms/core';
 export class InputCurrencyComponent extends InputFormControlBase<
   number | null
 > {
-  constructor(@Optional() @Self() ngControl: NgControl) {
-    super();
-    if (ngControl) {
-      ngControl.valueAccessor = this;
-    }
-  }
-
   displayValue = signal<string | null>(null);
 
   behavior = new InputCurrencyBehavior();
@@ -92,6 +86,8 @@ export class InputCurrencyComponent extends InputFormControlBase<
   }
 
   onInput(event: Event) {
+    if (this.disabled) return;
+
     const rawValue = (event.target as HTMLInputElement).value ?? null;
     const value = parseNumber(rawValue);
 

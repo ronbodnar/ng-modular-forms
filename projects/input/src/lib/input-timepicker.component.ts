@@ -4,7 +4,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { InputFormControlBase } from './input-form-control-base';
 
 @Component({
-  selector: 'nmf-datepicker',
+  selector: 'nmf-timepicker',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   styleUrls: ['./input-styles.css'],
@@ -21,17 +21,16 @@ import { InputFormControlBase } from './input-form-control-base';
       }
 
       <input
-        type="date"
+        type="time"
         autocomplete="off"
         class="nmf-input"
         [class.error]="errorState"
         [class.readonly]="readonly"
         [id]="id"
         [name]="name"
-        [value]="formatDate(value)"
+        [value]="formatTime(value)"
         [ngClass]="classList()"
-        [min]="formatDate(minDate())"
-        [max]="formatDate(maxDate())"
+        [step]="step()"
         [disabled]="disabled || loading()"
         [required]="required"
         [readonly]="readonly"
@@ -54,32 +53,34 @@ import { InputFormControlBase } from './input-form-control-base';
     </div>
   `,
 })
-export class InputDatepickerComponent extends InputFormControlBase<Date | null> {
-  minDate = input<Date | null>(null);
-  maxDate = input<Date | null>(null);
+export class InputTimepickerComponent extends InputFormControlBase<Date | null> {
+  // step in seconds: 60 = minutes only, 1 = show seconds
+  step = input<number>(60);
 
-  formatDate(date: Date | null | undefined): string | null {
+  formatTime(date: Date | null | undefined): string | null {
     if (!date) return null;
 
-    // yyyy-MM-dd (required by input[type="date"])
-    const yyyy = date.getFullYear();
-    const mm = String(date.getMonth() + 1).padStart(2, '0');
-    const dd = String(date.getDate()).padStart(2, '0');
+    const hh = String(date.getHours()).padStart(2, '0');
+    const mm = String(date.getMinutes()).padStart(2, '0');
+    const ss = String(date.getSeconds()).padStart(2, '0');
 
-    return `${yyyy}-${mm}-${dd}`;
+    return this.step() < 60 ? `${hh}:${mm}:${ss}` : `${hh}:${mm}`;
   }
 
-  parseDate(value: string): Date | null {
+  parseTime(value: string): Date | null {
     if (!value) return null;
-    const [y, m, d] = value.split('-').map(Number);
-    return new Date(y, m - 1, d);
+
+    const [h, m, s = 0] = value.split(':').map(Number);
+    const date = new Date();
+    date.setHours(h, m, s, 0);
+    return date;
   }
 
   onInput(event: Event): void {
     if (this.disabled) return;
 
     const input = event.target as HTMLInputElement;
-    const parsed = this.parseDate(input.value);
+    const parsed = this.parseTime(input.value);
 
     this.value = parsed;
     this.onChange(parsed);

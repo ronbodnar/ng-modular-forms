@@ -2,29 +2,39 @@
   title="Basic Input Components Form"
   sourceUrl="https://github.com/ronbodnar/ng-modular-forms/tree/main/projects/examples/src/app/forms/basic-inputs"
 >
+  <form [formGroup]="options" class="flex gap-4">
+    <input type="checkbox" formControlName="loading" />Show Loading
+    <input type="checkbox" formControlName="disabled" />Disable Inputs
+
+    <button (click)="populateForm()">Populate Form</button>
+  </form>
+
   <form [formGroup]="form">
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
       <app-form-section title="Input Types">
-        <div class="flex flex-col gap-2">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-2">
           <nmf-text
             formControlName="text"
             label="Text Input"
             placeholder="Input some text..."
+            [loading]="loading()"
+          />
+
+          <nmf-text
+            formControlName="numberFormatted"
+            label="Number Input"
+            type="number"
+            placeholder="Enter a number"
+            [loading]="loading()"
           />
 
           <nmf-text
             formControlName="number"
-            label="Number Input"
+            label="Number Input (formatted)"
             type="number"
             placeholder="Enter a number"
+            [loading]="loading()"
             [formatNumberValue]="true"
-          />
-
-          <nmf-select
-            formControlName="select"
-            label="Select/Dropdown Input"
-            [options]="countries"
-            placeholder="Select an option"
           />
 
           <nmf-text
@@ -32,16 +42,41 @@
             label="Password Input"
             type="password"
             placeholder="Enter a strong password"
+            [loading]="loading()"
           />
           <nmf-currency
             formControlName="currency"
             label="Currency Input"
             placeholder="Enter your budget"
+            [loading]="loading()"
+          />
+
+          <nmf-datepicker
+            formControlName="date"
+            label="Date Input"
+            placeholder="Select a date"
+            [loading]="loading()"
+          />
+
+          <nmf-timepicker
+            formControlName="time"
+            label="Time Input"
+            placeholder="Select a time"
+            [loading]="loading()"
+          />
+
+          <nmf-select
+            formControlName="select"
+            label="Select/Dropdown Input"
+            placeholder="Select an option"
+            [loading]="loading()"
+            [options]="countries"
           />
           <nmf-textarea
             formControlName="textarea"
             label="Textarea Input"
             placeholder="Tell us about yourself..."
+            [loading]="loading()"
             [rows]="4"
           />
         </div>

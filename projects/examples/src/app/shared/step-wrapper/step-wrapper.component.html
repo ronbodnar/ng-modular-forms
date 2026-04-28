@@ -1,0 +1,48 @@
+<div class="flex flex-col gap-6">
+  <div class="grid gap-2 lg:grid-cols-3">
+    @for (step of steps(); track step.label; let index = $index) {
+      <button
+        type="button"
+        class="rounded-2xl border px-4 py-3 text-left transition"
+        (click)="goToStep(index + 1)"
+        [class.bg-neutral-300]="currentStep() === index + 1"
+        [class.border-2]="currentStep() === index + 1"
+        [class.border-emerald-700]="currentStep() === index + 1"
+        [class.border-slate-200]="currentStep() !== index + 1"
+      >
+        <div class="text-xs uppercase tracking-[0.18em] text-slate-500">
+          Step {{ index + 1 }}
+        </div>
+        <div class="mt-1 font-semibold">{{ step.label }}</div>
+      </button>
+    }
+  </div>
+
+  <ng-content></ng-content>
+
+  <div
+    class="flex flex-col lg:flex-1 lg:flex-row lg:justify-between lg:items-end"
+  >
+    <button
+      mat-raised-button
+      class="bg-neutral-800! text-mist-200!"
+      type="button"
+      [disabled]="currentStep() === 1"
+      (click)="prevStep()"
+    >
+      Back
+    </button>
+
+    <div class="flex flex-wrap gap-3">
+      @if (currentStep() < steps().length) {
+        <button type="button" mat-raised-button (click)="nextStep()">
+          Continue
+        </button>
+      } @else {
+        <app-form-submit-button [loading]="submitting()"
+          >Submit Form</app-form-submit-button
+        >
+      }
+    </div>
+  </div>
+</div>

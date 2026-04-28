@@ -36,7 +36,8 @@ import { MatInputModule } from '@angular/material/input';
         [rows]="rows()"
         [cols]="cols()"
         [value]="value"
-        [disabled]="_disabled()"
+        [disabled]="disabled"
+        [required]="required"
         [readonly]="readonly"
         [placeholder]="placeholder"
         (blur)="onTouched()"
@@ -57,7 +58,7 @@ import { MatInputModule } from '@angular/material/input';
       }
 
       <mat-error>
-        {{ getErrorMessage() }}
+        {{ errorMessage() }}
       </mat-error>
     </mat-form-field>
   `,

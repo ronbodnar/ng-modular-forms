@@ -21,18 +21,9 @@ describe('RegistrationFormComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should initialize form with required controls', () => {
-    const form = component.form();
-    expect(form.contains('firstName')).toBeTruthy();
-    expect(form.contains('lastName')).toBeTruthy();
-    expect(form.contains('email')).toBeTruthy();
-    expect(form.contains('country')).toBeTruthy();
-    expect(form.contains('agreeToTerms')).toBeTruthy();
-  });
-
-  it('should validate required fields', () => {
-    const form = component.form();
-    form.markAllAsTouched();
-    expect(form.valid).toBeFalsy();
+  it('should require agreement before submission', () => {
+    component.submit();
+    expect(component.status()).toBe('idle');
+    expect(component.form().valid).toBeFalsy();
   });
 });

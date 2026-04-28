@@ -19,6 +19,6 @@ export class AppComponent {
   navigationLinks: NavigationLink[] = [
     { label: 'Basic input components', path: '/forms/basic-inputs' },
     { label: 'Material input components', path: '/forms/material-inputs' },
-    { label: 'Registration', path: '/forms/registration' },
+    { label: 'Multi-step registration form', path: '/forms/registration' },
   ];
 }

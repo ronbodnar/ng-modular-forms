@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { FormOutputComponent } from './form-output.component';
+import { StepWrapperComponent } from './step-wrapper.component';
 
-describe('FormOutputComponent', () => {
-  let component: FormOutputComponent;
-  let fixture: ComponentFixture<FormOutputComponent>;
+describe('StepWrapperComponent', () => {
+  let component: StepWrapperComponent;
+  let fixture: ComponentFixture<StepWrapperComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FormOutputComponent]
+      imports: [StepWrapperComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(FormOutputComponent);
+    fixture = TestBed.createComponent(StepWrapperComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

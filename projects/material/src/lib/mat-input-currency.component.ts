@@ -33,7 +33,7 @@ import { InputCurrencyBehavior } from '@ng-modular-forms/behavior';
       }
 
       @if (value != null) {
-        <span [class.nmf-disabled]="_disabled()" matTextPrefix>$</span>
+        <span [class.nmf-disabled]="disabled" matTextPrefix>$</span>
       }
 
       <input
@@ -45,7 +45,8 @@ import { InputCurrencyBehavior } from '@ng-modular-forms/behavior';
         [value]="displayValue()"
         [ngClass]="classList()"
         [readonly]="readonly"
-        [disabled]="_disabled()"
+        [required]="required"
+        [disabled]="disabled"
         [placeholder]="placeholder"
         (keydown)="handleKeyDown($event)"
         (input)="onInput($event)"
@@ -70,7 +71,7 @@ import { InputCurrencyBehavior } from '@ng-modular-forms/behavior';
       }
 
       <mat-error>
-        {{ getErrorMessage() }}
+        {{ errorMessage() }}
       </mat-error>
     </mat-form-field>
   `,
@@ -95,6 +96,7 @@ export class MatInputCurrencyComponent extends MatFormControlBase<
     const rawValue = (event.target as HTMLInputElement).value;
     const value = parseNumber(rawValue);
 
+    console.log('onInput', rawValue, value);
     this.displayValue.set(value != null ? formatNumber(value) : null);
 
     this.value = value;

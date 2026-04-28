@@ -55,7 +55,8 @@ import { MatInputModule } from '@angular/material/input';
         [min]="minDate()"
         [max]="maxDate()"
         [readonly]="readonly"
-        [disabled]="_disabled()"
+        [required]="required"
+        [disabled]="disabled"
         [placeholder]="placeholder || 'Select a date'"
         [matDatepicker]="picker"
         [matDatepickerFilter]="dateFilter()"
@@ -68,7 +69,7 @@ import { MatInputModule } from '@angular/material/input';
         matSuffix
         [for]="picker"
         [hidden]="loading()"
-        [disabled]="_disabled()"
+        [disabled]="disabled"
       ></mat-datepicker-toggle>
 
       <mat-datepicker
@@ -100,7 +101,7 @@ import { MatInputModule } from '@angular/material/input';
         <mat-hint [ngClass]="hintClassList()">{{ hint() }}</mat-hint>
       }
 
-      <mat-error>{{ getErrorMessage() }}</mat-error>
+      <mat-error>{{ errorMessage() }}</mat-error>
     </mat-form-field>
   `,
 })

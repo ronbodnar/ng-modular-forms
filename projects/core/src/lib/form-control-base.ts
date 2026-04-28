@@ -1,21 +1,20 @@
-import { NgControl, Validators } from '@angular/forms';
+import { ControlValueAccessor, NgControl, Validators } from '@angular/forms';
 import {
   booleanAttribute,
   ChangeDetectorRef,
   computed,
   DestroyRef,
   Directive,
-  DoCheck,
   HostBinding,
   inject,
   input,
-  OnInit,
   signal,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { merge } from 'rxjs';
 
 @Directive()
-export abstract class FormControlBase<T> implements OnInit, DoCheck {
+export abstract class FormControlBase<T> implements ControlValueAccessor {
   static nextId = 0;
 
   @HostBinding()
@@ -25,8 +24,8 @@ export abstract class FormControlBase<T> implements OnInit, DoCheck {
   protected readonly destroyRef = inject(DestroyRef);
 
   readonly ngControl = inject(NgControl, {
-    optional: true,
     self: true,
+    optional: true,
   });
 
   readonly label = input<string>('');
@@ -35,6 +34,7 @@ export abstract class FormControlBase<T> implements OnInit, DoCheck {
 
   readonly _name = input<string>('', { alias: 'name' });
   readonly _placeholder = input<string>('', { alias: 'placeholder' });
+  readonly _readonly = input<boolean>(false, { alias: 'readonly' });
   readonly _required = input<boolean, unknown>(false, {
     alias: 'required',
     transform: booleanAttribute,
@@ -43,18 +43,21 @@ export abstract class FormControlBase<T> implements OnInit, DoCheck {
     alias: 'disabled',
     transform: booleanAttribute,
   });
-  readonly _readonly = input<boolean>(false, { alias: 'readonly' });
 
+  private readonly _focused = signal(false);
   protected readonly _disabledByCva = signal(false);
-  readonly _disabled = computed(
-    () => this._disabledByInput() || this._disabledByCva() || this.loading(),
+  protected readonly _disabled = computed(
+    () => this._disabledByInput() || this._disabledByCva(),
   );
 
-  focused = false;
-
   private lastErrorState = false;
-
   private _value: T | null = null;
+
+  constructor() {
+    if (this.ngControl) {
+      this.ngControl.valueAccessor = this;
+    }
+  }
 
   get value(): T | null {
     return this._value;
@@ -62,7 +65,6 @@ export abstract class FormControlBase<T> implements OnInit, DoCheck {
 
   set value(value: T | null) {
     this._value = value;
-    this.cdr.markForCheck();
   }
 
   get name(): string {
@@ -73,13 +75,6 @@ export abstract class FormControlBase<T> implements OnInit, DoCheck {
     return this._placeholder();
   }
 
-  get required(): boolean {
-    const formControl = this.ngControl?.control;
-    const required =
-      !!formControl && formControl.hasValidator(Validators.required);
-    return this._required() || required;
-  }
-
   get disabled(): boolean {
     return this._disabled();
   }
@@ -88,9 +83,8 @@ export abstract class FormControlBase<T> implements OnInit, DoCheck {
     return this._readonly();
   }
 
-  get errorState(): boolean {
-    const control = this.ngControl?.control;
-    return !!control && control.invalid && control.touched;
+  get focused(): boolean {
+    return this._focused();
   }
 
   get empty(): boolean {
@@ -99,29 +93,43 @@ export abstract class FormControlBase<T> implements OnInit, DoCheck {
     );
   }
 
-  ngOnInit() {
-    const control = this.ngControl?.control;
-    if (!control) {
-      throw new Error(`FormControl ${this.id} not found`);
-    }
-
-    control.statusChanges
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((val) => this.cdr.markForCheck());
+  get required(): boolean {
+    const formControl = this.ngControl?.control;
+    const required =
+      !!formControl && formControl.hasValidator(Validators.required);
+    return this._required() || required;
   }
 
-  ngDoCheck() {
-    const newState = this.errorState;
-
-    if (newState !== this.lastErrorState) {
-      this.lastErrorState = newState;
-      this.cdr.markForCheck();
-    }
+  get errorState(): boolean {
+    const control = this.ngControl?.control;
+    return !!control && control.invalid && control.touched;
   }
 
-  protected getErrorMessage(): string | null {
-    const control = this.ngControl?.control;
+  /** Implemented as part of ControlValueAccessor */
+  protected onChange: (value: T) => void = () => {};
+  protected onTouched: () => void = () => {};
 
+  writeValue(value: T): void {
+    this.value = value;
+    this.cdr.markForCheck();
+  }
+
+  registerOnChange(fn: (value: T) => void): void {
+    this.onChange = fn;
+  }
+
+  registerOnTouched(fn: () => void): void {
+    this.onTouched = fn;
+  }
+
+  setDisabledState(isDisabled: boolean): void {
+    console.log('setDisabledState', isDisabled);
+    this._disabledByCva.set(isDisabled);
+    this.cdr.markForCheck();
+  }
+
+  protected errorMessage(): string | null {
+    const control = this.ngControl?.control;
     if (control == null || !control.errors || !control.touched) return null;
 
     const firstKey = Object.keys(control.errors)[0];
@@ -150,5 +158,18 @@ export abstract class FormControlBase<T> implements OnInit, DoCheck {
       default:
         return 'Invalid value';
     }
+  }
+
+  ngOnInit() {
+    const control = this.ngControl?.control;
+    if (!control) {
+      throw new Error(`FormControl ${this.id} not found`);
+    }
+
+    merge(control.statusChanges, control.valueChanges, control.events)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.cdr.markForCheck());
+
+    this.cdr.markForCheck();
   }
 }

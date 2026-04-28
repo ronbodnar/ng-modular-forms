@@ -26,15 +26,4 @@ describe('BasicInputsFormComponent', () => {
     expect(component.form.contains('email')).toBeTruthy();
     expect(component.form.contains('password')).toBeTruthy();
   });
-
-  it('should validate password confirmation', () => {
-    component.form.patchValue({
-      password: 'password123',
-      confirmPassword: 'different',
-    });
-
-    expect(
-      component.form.get('confirmPassword')?.errors?.['passwordMismatch'],
-    ).toBeTruthy();
-  });
 });

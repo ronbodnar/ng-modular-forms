@@ -3,11 +3,9 @@ import {
   Component,
   computed,
   input,
-  Optional,
-  Self,
   signal,
 } from '@angular/core';
-import { NgControl, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import {
   InputCurrencyBehavior,
@@ -43,21 +41,22 @@ import { formatNumber, parseNumber } from '@ng-modular-forms/core';
           [id]="id"
           [name]="name"
           [value]="displayValue()"
-          [type]="type()"
+          [type]="computedType()"
           [readonly]="readonly"
           [required]="required"
-          [disabled]="disabled"
+          [disabled]="disabled || loading()"
           [placeholder]="placeholder"
           (input)="onInput($event)"
           (keydown)="handleKeyDown($event)"
           (blur)="onTouched()"
         />
 
-        @if (type() === 'password') {
+        @if (type() === 'password' && !loading() && !disabled) {
           <button
             type="button"
-            (click)="behavior.toggleShowPassword($event)"
             class="nmf-password-toggle"
+            (click)="behavior.toggleShowPassword($event)"
+            [disabled]="disabled"
             aria-label="Toggle password visibility"
           >
             @if (behavior.showPassword()) {
@@ -72,7 +71,7 @@ import { formatNumber, parseNumber } from '@ng-modular-forms/core';
       <ng-content></ng-content>
 
       <p class="nmf-error">
-        {{ getErrorMessage() }}
+        {{ errorMessage() }}
       </p>
 
       @if (loading()) {
@@ -137,13 +136,6 @@ export class InputTextComponent extends InputFormControlBase<
   behavior = new InputTextBehavior();
   currencyBehavior = new InputCurrencyBehavior();
 
-  constructor(@Optional() @Self() ngControl: NgControl) {
-    super();
-    if (ngControl) {
-      ngControl.valueAccessor = this;
-    }
-  }
-
   override writeValue(value: string | number | null): void {
     super.writeValue(value);
     this.updateDisplayValue(value);
@@ -157,6 +149,8 @@ export class InputTextComponent extends InputFormControlBase<
   }
 
   onInput(event: Event): void {
+    if (this.disabled) return;
+
     const raw = (event.target as HTMLInputElement).value;
 
     const parsed = this.type() === 'number' ? parseNumber(raw) : raw;

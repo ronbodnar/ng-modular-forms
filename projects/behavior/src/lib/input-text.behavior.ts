@@ -5,8 +5,8 @@ export class InputTextBehavior {
 
   showPassword = this._showPassword.asReadonly();
 
-  toggleShowPassword(event: MouseEvent): void {
-    event.stopPropagation();
+  toggleShowPassword(event?: MouseEvent): void {
+    event?.stopPropagation();
     this._showPassword.set(!this.showPassword());
   }
 }

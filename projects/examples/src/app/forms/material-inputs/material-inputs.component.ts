@@ -59,6 +59,10 @@ export class MaterialInputsFormComponent implements OnInit {
       Validators.min(0),
       Validators.max(100),
     ]),
+    numberFormatted: new FormControl<number | null>(null, [
+      Validators.min(0),
+      Validators.max(100),
+    ]),
     password: new FormControl('', [
       Validators.required,
       Validators.minLength(8),
@@ -87,13 +91,11 @@ export class MaterialInputsFormComponent implements OnInit {
       this.appearance.set(v.appearance ?? 'outline');
       this.loading.set(v.loading ?? false);
       this.floatLabel.set(v.floatLabel ?? 'auto');
-    });
 
-    this.options.get('disabled')?.valueChanges.subscribe((disabled) => {
-      if (disabled) {
-        this.form.disable();
+      if (v.disabled) {
+        this.form.disable({ emitEvent: false });
       } else {
-        this.form.enable();
+        this.form.enable({ emitEvent: false });
       }
     });
   }
@@ -101,10 +103,11 @@ export class MaterialInputsFormComponent implements OnInit {
   populateForm(): void {
     this.form.patchValue({
       text: 'Hello World',
-      number: 123,
+      number: 1230,
+      numberFormatted: 1230,
       password: '12345678',
       select: 'us',
-      currency: 123,
+      currency: 1230,
       textarea: 'Hello\n\nWorld',
       date: new Date(),
       time: new Date(),

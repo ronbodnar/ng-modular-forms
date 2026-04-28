@@ -44,7 +44,8 @@ import {
         [value]="value"
         [matTimepickerMin]="minDate()"
         [matTimepickerMax]="maxDate()"
-        [disabled]="_disabled()"
+        [disabled]="disabled"
+        [required]="required"
         [readonly]="readonly"
         [placeholder]="placeholder || 'Select a date'"
         [matTimepicker]="picker"
@@ -55,7 +56,7 @@ import {
         matSuffix
         [for]="picker"
         [hidden]="loading()"
-        [disabled]="_disabled()"
+        [disabled]="disabled"
       />
 
       <mat-timepicker
@@ -79,7 +80,7 @@ import {
         <mat-hint [ngClass]="hintClassList()">{{ hint() }}</mat-hint>
       }
 
-      <mat-error>{{ getErrorMessage() }}</mat-error>
+      <mat-error>{{ errorMessage() }}</mat-error>
     </mat-form-field>
   `,
 })

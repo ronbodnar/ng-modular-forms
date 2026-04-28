@@ -5,68 +5,45 @@ import { FormHandlerBase } from './form-handler-base';
 
 export type FormStatus = 'idle' | 'submitting' | 'error' | 'success';
 
-type FormHandlerRegistry = Record<string, FormHandlerBase<string>>;
-
-interface FormOrchestratorOptions {
-  mainHandler?: FormHandlerBase<string> | null;
-  subHandlers?: FormHandlerRegistry;
-}
+type FormHandlerRegistry = FormHandlerBase[];
 
 @Directive()
 export abstract class FormOrchestratorBase implements OnDestroy {
-  private _form = signal<FormGroup>(new FormGroup({}));
-
-  private _mainHandler = signal<FormHandlerBase<string> | null>(null);
-  private _subHandlers = signal<FormHandlerRegistry>({});
-
-  private _status = signal<FormStatus>('idle');
-  private _errorMessage = signal<string | null>(null);
-
-  private _loadedHandlers = signal<number>(0);
-  private _allHandlersLoaded = signal<boolean>(false);
-
-  private _logicSubscription = new Subscription();
+  private readonly _form = signal<FormGroup>(new FormGroup({}));
+  private readonly _handlers = signal<FormHandlerRegistry>([]);
+  private readonly _status = signal<FormStatus>('idle');
+  private readonly _errorMessage = signal<string | null>(null);
 
   public readonly form = this._form.asReadonly();
-  public readonly mainHandler = this._mainHandler.asReadonly();
-  public readonly subHandlers = this._subHandlers.asReadonly();
+  public readonly handlers = this._handlers.asReadonly();
   public readonly status = this._status.asReadonly();
   public readonly errorMessage = this._errorMessage.asReadonly();
+
+  private _logicSubscription = new Subscription();
 
   /**
    * Initializes orchestration state.
    * Must be called before any subform registration or handler execution.
    */
-  public initialize(
-    form: FormGroup,
-    formOrchestratorOptions?: FormOrchestratorOptions,
-  ) {
-    const { mainHandler, subHandlers = {} } = formOrchestratorOptions ?? {};
-
+  public initialize(form: FormGroup, handlers: FormHandlerRegistry = []) {
     this._form.set(form);
-    this._mainHandler.set(mainHandler ?? null);
-    this._subHandlers.set(subHandlers);
-    this._loadedHandlers.set(0);
+    this._handlers.set(handlers);
 
-    const subHandlerCount = Object.keys(this.subHandlers());
-    if (subHandlerCount.length === 0) {
-      this.loadMainHandler();
-    }
+    Object.values(this.handlers()).forEach((handler) => {
+      this.addReactiveLogic(handler.getReactiveLogic(form));
+    });
   }
 
   public setForm(form: FormGroup) {
     this._form.set(form);
   }
 
-  public getHandler(key: string): FormHandlerBase<string> | undefined {
-    return this.subHandlers()[key];
+  public getSubForm(key: string): FormGroup {
+    return this.form().get(key) as FormGroup;
   }
 
-  public setHandler(key: string, handler: FormHandlerBase<string>) {
-    this._subHandlers.set({
-      ...this._subHandlers(),
-      [key]: handler,
-    });
+  public addHandler(handler: FormHandlerBase) {
+    this._handlers.set([...this._handlers(), handler]);
   }
 
   public addReactiveLogic(subscription: Subscription) {
@@ -83,53 +60,5 @@ export abstract class FormOrchestratorBase implements OnDestroy {
 
   ngOnDestroy(): void {
     this._logicSubscription.unsubscribe();
-  }
-
-  /**
-   * Registers a subform into the main form tree and coordinates handler execution.
-   *
-   * IMPORTANT:
-   * - Handler execution is gated until all registered subhandlers are ready.
-   * - Calling order matters; this is lifecycle-sensitive orchestration logic.
-   */
-  onSubformReady(
-    subform: FormGroup,
-    groupName: string,
-    nestGroups: boolean = false,
-  ): void {
-    if (nestGroups) {
-      this.form().setControl(groupName, subform);
-    } else {
-      const keys = Object.keys(subform.controls);
-      keys.forEach((key) => {
-        this.form().setControl(key, subform.get(key));
-      });
-    }
-
-    // Prevent duplicate main handler execution when all subhandlers already resolved
-    if (this._allHandlersLoaded()) {
-      return;
-    }
-
-    const subformHandler = this.subHandlers()[groupName];
-
-    if (subformHandler) {
-      this._loadedHandlers.set(this._loadedHandlers() + 1);
-      this.addReactiveLogic(subformHandler.getReactiveLogic());
-    }
-
-    const totalSubHandlers = Object.keys(this.subHandlers()).length;
-    const allSubHandlersLoaded = this._loadedHandlers() === totalSubHandlers;
-
-    if (allSubHandlersLoaded && this.mainHandler()) {
-      this.loadMainHandler();
-    }
-  }
-
-  private loadMainHandler() {
-    if (!this.mainHandler()) return;
-
-    this.addReactiveLogic(this.mainHandler()!.getReactiveLogic(this.form()));
-    this._allHandlersLoaded.set(true);
   }
 }

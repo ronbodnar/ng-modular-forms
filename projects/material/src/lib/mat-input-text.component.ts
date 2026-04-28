@@ -49,7 +49,8 @@ import { MatButtonModule } from '@angular/material/button';
         [name]="name"
         [type]="computedType()"
         [value]="displayValue()"
-        [disabled]="_disabled()"
+        [disabled]="disabled"
+        [required]="required"
         [readonly]="readonly"
         [placeholder]="placeholder"
         [ngClass]="classList"
@@ -76,7 +77,7 @@ import { MatButtonModule } from '@angular/material/button';
           mat-icon-button
           color="transparent"
           class="nmf-password-toggle"
-          [disabled]="_disabled()"
+          [disabled]="disabled"
           (click)="behavior.toggleShowPassword($event)"
         >
           <mat-icon>{{
@@ -87,7 +88,7 @@ import { MatButtonModule } from '@angular/material/button';
 
       <ng-content></ng-content>
 
-      <mat-error>{{ getErrorMessage() }}</mat-error>
+      <mat-error>{{ errorMessage() }}</mat-error>
     </mat-form-field>
   `,
 })

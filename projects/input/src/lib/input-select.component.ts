@@ -2,11 +2,10 @@ import {
   ChangeDetectionStrategy,
   Component,
   input,
-  Optional,
-  Self,
+  OnInit,
   signal,
 } from '@angular/core';
-import { NgControl, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { InputFormControlBase } from './input-form-control-base';
 
@@ -38,7 +37,7 @@ export interface SelectOption {
         [class.readonly]="readonly"
         [ngClass]="classList()"
         [value]="value"
-        [disabled]="disabled"
+        [disabled]="disabled || loading()"
         [required]="required"
         (blur)="onTouched()"
         (change)="onSelectionChange(eventValue($event))"
@@ -56,32 +55,34 @@ export interface SelectOption {
         }
 
         <!-- Clear option -->
-        @if (showClearOption()) {
+        @if (clearOptionLabel()) {
           <option value="NONE">
-            {{ 'Clear selection' }}
+            {{ clearOptionLabel() }}
           </option>
         }
       </select>
 
+      @if (loading()) {
+        <div class="nmf-loading">
+          <span class="nmf-spinner"></span>
+        </div>
+      }
+
       <p class="nmf-error">
-        {{ getErrorMessage() }}
+        {{ errorMessage() }}
       </p>
     </div>
   `,
 })
-export class InputSelectComponent extends InputFormControlBase<any> {
+export class InputSelectComponent
+  extends InputFormControlBase<any>
+  implements OnInit
+{
   options = input<SelectOption[]>([]);
   emptyOptionLabel = input<string>('Select an option');
-  showClearOption = input<boolean>(false);
+  clearOptionLabel = input<string | null>('Clear selection');
 
   private _initialValue = signal<any>(null);
-
-  constructor(@Optional() @Self() ngControl: NgControl) {
-    super();
-    if (ngControl) {
-      ngControl.valueAccessor = this;
-    }
-  }
 
   override ngOnInit() {
     super.ngOnInit();
@@ -89,6 +90,8 @@ export class InputSelectComponent extends InputFormControlBase<any> {
   }
 
   onSelectionChange(event: { value: string | number | null }) {
+    if (this.disabled) return;
+
     let value = event.value;
     if (value === 'NONE') {
       value = typeof this._initialValue() === 'number' ? -1 : '';

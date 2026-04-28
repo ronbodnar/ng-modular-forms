@@ -49,6 +49,16 @@
             label="Number Input"
             type="number"
             placeholder="Enter a number"
+            [loading]="loading()"
+            [appearance]="appearance()"
+            [shouldLabelFloat]="floatLabel()"
+          />
+
+          <nmf-mat-text
+            formControlName="numberFormatted"
+            label="Number Input (formatted)"
+            type="number"
+            placeholder="Enter a number"
             [formatNumberValue]="true"
             [loading]="loading()"
             [appearance]="appearance()"

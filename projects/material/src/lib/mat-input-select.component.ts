@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   input,
+  OnInit,
   signal,
 } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -46,7 +47,8 @@ export interface SelectOption {
         [value]="value"
         [panelWidth]="panelWidth()"
         [class.hide-select-arrow]="loading()"
-        [disabled]="_disabled()"
+        [disabled]="disabled"
+        [required]="required"
         (blur)="onTouched()"
         (selectionChange)="onSelectionChange($event)"
         (closed)="onSelectionClosed()"
@@ -81,13 +83,14 @@ export interface SelectOption {
         <mat-hint [ngClass]="hintClassList()">{{ hint() }}</mat-hint>
       }
 
-      <mat-error>{{ getErrorMessage() }}</mat-error>
+      <mat-error>{{ errorMessage() }}</mat-error>
     </mat-form-field>
   `,
 })
-export class MatInputSelectComponent extends MatFormControlBase<
-  string | number | null
-> {
+export class MatInputSelectComponent
+  extends MatFormControlBase<string | number | null>
+  implements OnInit
+{
   options = input<SelectOption[]>([]);
   emptyOptionLabel = input<string>('Select an option');
   clearOptionLabel = input<string | null>('Clear selection');
@@ -114,7 +117,7 @@ export class MatInputSelectComponent extends MatFormControlBase<
 
   onSelectionClosed(): void {
     if (this.value === '') {
-      this.ngControl.control?.markAsDirty();
+      this.ngControl?.control?.markAsDirty();
     }
   }
 }

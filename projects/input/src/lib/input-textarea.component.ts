@@ -1,11 +1,5 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  input,
-  Optional,
-  Self,
-} from '@angular/core';
-import { NgControl, ReactiveFormsModule } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { InputFormControlBase } from './input-form-control-base';
 
@@ -37,14 +31,14 @@ import { InputFormControlBase } from './input-form-control-base';
         [class.readonly]="readonly"
         [readonly]="readonly"
         [required]="required"
-        [disabled]="disabled"
+        [disabled]="disabled || loading()"
         [placeholder]="placeholder"
         (blur)="onTouched()"
         (input)="onInput($event)"
       ></textarea>
 
       <p class="nmf-error">
-        {{ getErrorMessage() }}
+        {{ errorMessage() }}
       </p>
 
       @if (loading()) {
@@ -61,14 +55,9 @@ export class InputTextareaComponent extends InputFormControlBase<
   rows = input<number>(5);
   cols = input<number>(5);
 
-  constructor(@Optional() @Self() ngControl: NgControl) {
-    super();
-    if (ngControl) {
-      ngControl.valueAccessor = this;
-    }
-  }
-
   onInput(event: Event) {
+    if (this.disabled) return;
+
     const value = (event.target as HTMLInputElement).value;
     this.value = value;
     this.onChange(value);

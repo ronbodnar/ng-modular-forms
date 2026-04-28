@@ -5,7 +5,7 @@ import { getControl } from './form.util';
 export abstract class FormHandlerBase<ControlNames extends string = string> {
   abstract getReactiveLogic(form?: FormGroup): Subscription;
 
-  protected registeredControls: Record<string, FormControl> = {};
+  private registeredControls: Record<string, FormControl> = {};
 
   /**
    * Registers form controls for later reactive access.
