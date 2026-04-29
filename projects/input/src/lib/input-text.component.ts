@@ -44,7 +44,7 @@ import { formatNumber, parseNumber } from '@ng-modular-forms/core';
           [type]="computedType()"
           [readonly]="readonly"
           [required]="required"
-          [disabled]="disabled || loading()"
+          [disabled]="disabled"
           [placeholder]="placeholder"
           (input)="onInput($event)"
           (keydown)="handleKeyDown($event)"

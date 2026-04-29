@@ -1,10 +1,4 @@
-import {
-  AfterViewInit,
-  Directive,
-  effect,
-  input,
-  ViewChild,
-} from '@angular/core';
+import { AfterViewInit, Directive, input, ViewChild } from '@angular/core';
 import { MatInput } from '@angular/material/input';
 import { MatSelect } from '@angular/material/select';
 import { FormControlBase } from '@ng-modular-forms/core';
@@ -30,28 +24,6 @@ export abstract class MatFormControlBase<T>
   @ViewChild(MatInput) protected matInput?: MatInput;
   @ViewChild(MatSelect) protected matSelect?: MatSelect;
 
-  constructor() {
-    super();
-
-    /*
-     * Synchronizes the loading state with the MatFormControlBase's disabled state.
-     */
-    effect(() => {
-      const control = this.ngControl?.control;
-      if (!control) return;
-
-      const shouldDisable = this.loading() || this._disabledByInput();
-      const isCurrentlyDisabled = control.disabled;
-
-      if (shouldDisable && !isCurrentlyDisabled) {
-        control.disable({ emitEvent: false });
-      }
-      if (!shouldDisable && isCurrentlyDisabled) {
-        control.enable({ emitEvent: false });
-      }
-    });
-  }
-
   ngAfterViewInit(): void {
     const matControl = this.matInput ?? this.matSelect;
     if (matControl && this.ngControl) {
@@ -61,5 +33,7 @@ export abstract class MatFormControlBase<T>
         get: () => this.errorState,
       });
     }
+
+    this.cdr.markForCheck();
   }
 }

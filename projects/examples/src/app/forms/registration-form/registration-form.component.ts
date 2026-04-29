@@ -12,7 +12,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { FormOrchestratorBase } from '@ng-modular-forms/core';
+import { FormOrchestrator } from '@ng-modular-forms/core';
 import { FormExampleComponent } from '../../shared/form-example/form-example.component';
 import { FormStatusOutputComponent } from '../../shared/form-status-output/form-status-output.component';
 import { RegistrationPersonalInfoComponent } from './personal-info/personal-info.component';
@@ -24,6 +24,7 @@ import { PreferencesFormHandler } from './preferences/preferences.handler';
 import { MatButtonModule } from '@angular/material/button';
 import { PersonalInfoFormHandler } from './personal-info/personal-info.handler';
 import { StepWrapperComponent } from '../../shared/step-wrapper/step-wrapper.component';
+import { PreferencesMapper } from './preferences/preferences.mapper';
 
 @Component({
   selector: 'app-registration-form',
@@ -47,96 +48,98 @@ import { StepWrapperComponent } from '../../shared/step-wrapper/step-wrapper.com
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './registration-form.component.html',
 })
-export class RegistrationFormComponent extends FormOrchestratorBase {
-  readonly steps = computed(() => [
-    {
-      label: 'Personal Information',
-      form: this.form().get('personalInfo') as FormGroup,
-    },
-    {
-      label: 'Account Details',
-      form: this.form().get('accountDetails') as FormGroup,
-    },
-    {
-      label: 'Preferences & Consent',
-      form: this.form().get('preferences') as FormGroup,
-    },
-  ]);
+export class RegistrationFormComponent extends FormOrchestrator {
+  private readonly mainHandler = inject(RegistrationFormHandler);
+  private readonly personalInfoHandler = inject(PersonalInfoFormHandler);
+  private readonly accountHandler = inject(AccountDetailsFormHandler);
+  private readonly preferencesHandler = inject(PreferencesFormHandler);
 
   currentStep = signal(1);
 
+  readonly steps = computed(() => {
+    return [
+      {
+        label: 'Personal Information',
+        form: this.getSubForm('personalInfo'),
+      },
+      {
+        label: 'Account Details',
+        form: this.getSubForm('accountDetails'),
+      },
+      {
+        label: 'Preferences & Consent',
+        form: this.getSubForm('preferences'),
+      },
+    ];
+  });
+
   constructor() {
     super();
+    this.initialize();
+  }
 
-    const form = new FormGroup({
-      accountDetails: new FormGroup({
-        username: new FormControl('', [
-          Validators.required,
-          Validators.minLength(4),
-        ]),
-        password: new FormControl('', [
-          Validators.required,
-          Validators.minLength(8),
-        ]),
-        confirmPassword: new FormControl('', [Validators.required]),
-        phone: new FormControl('', [
-          Validators.pattern(
-            /^(\+1\s?)?(\(?\d{3}\)?[\s.-]?)?\d{3}[\s.-]?\d{4}$/,
-          ),
-        ]),
+  initialize() {
+    const options = {
+      form: new FormGroup({
+        dummy: new FormControl(null),
+        accountDetails: new FormGroup({
+          username: new FormControl({ value: null, disabled: true }, [
+            Validators.minLength(4),
+          ]),
+          password: new FormControl(null, [Validators.minLength(8)]),
+          confirmPassword: new FormControl(null, []),
+          phone: new FormControl(null, [
+            Validators.pattern(
+              /^(\+1\s?)?(\(?\d{3}\)?[\s.-]?)?\d{3}[\s.-]?\d{4}$/,
+            ),
+          ]),
+        }),
+
+        personalInfo: new FormGroup({
+          firstName: new FormControl(null, [Validators.minLength(2)]),
+          lastName: new FormControl(null, [Validators.minLength(2)]),
+          email: new FormControl(null, Validators.email),
+          phone: new FormControl(null, [
+            Validators.pattern(
+              /^(\+1\s?)?(\(?\d{3}\)?[\s.-]?)?\d{3}[\s.-]?\d{4}$/,
+            ),
+          ]),
+          country: new FormControl(null),
+          dateOfBirth: new FormControl(null),
+          newsletter: new FormControl(false),
+        }),
+
+        preferences: new FormGroup({
+          monthlyBudget: new FormControl<number | null>(null, [
+            Validators.min(0),
+            Validators.max(10000),
+          ]),
+          referralSource: new FormControl(null),
+          comments: new FormControl(null),
+          agreeToTerms: new FormControl(false, [Validators.requiredTrue]),
+        }),
       }),
 
-      personalInfo: new FormGroup({
-        firstName: new FormControl('', [
-          Validators.required,
-          Validators.minLength(2),
-        ]),
-        lastName: new FormControl('', [
-          Validators.required,
-          Validators.minLength(2),
-        ]),
-        email: new FormControl('', Validators.email),
-        phone: new FormControl('', [
-          Validators.pattern(
-            /^(\+1\s?)?(\(?\d{3}\)?[\s.-]?)?\d{3}[\s.-]?\d{4}$/,
-          ),
-        ]),
-        country: new FormControl(''),
-        dateOfBirth: new FormControl(''),
-        newsletter: new FormControl(false),
-      }),
+      handlers: [
+        this.mainHandler,
+        this.personalInfoHandler,
+        this.accountHandler,
+        this.preferencesHandler,
+      ],
 
-      preferences: new FormGroup({
-        monthlyBudget: new FormControl<number | null>(null, [
-          Validators.min(0),
-          Validators.max(10000),
-        ]),
-        referralSource: new FormControl(''),
-        comments: new FormControl(''),
-        agreeToTerms: new FormControl(false, [Validators.requiredTrue]),
-      }),
-    });
+      mapperRegistry: {
+        preferences: new PreferencesMapper(),
+      },
+    };
 
-    const mainHandler = inject(RegistrationFormHandler);
-    const personalInfoHandler = inject(PersonalInfoFormHandler);
-    const accountHandler = inject(AccountDetailsFormHandler);
-    const preferencesHandler = inject(PreferencesFormHandler);
-
-    const handlers = [
-      mainHandler,
-      personalInfoHandler,
-      accountHandler,
-      preferencesHandler,
-    ];
-
-    this.initialize(form, handlers);
+    this.orchestrate(options);
   }
 
   setCurrentStep(step: number) {
     this.currentStep.set(step);
   }
 
-  getForm(step: number) {
+  getFormForStep(step: number) {
     return this.steps()[step].form;
   }
 
@@ -146,10 +149,9 @@ export class RegistrationFormComponent extends FormOrchestratorBase {
       return;
     }
 
-    this.setStatus('submitting');
+    console.log('Request body: ', this.buildRequest());
 
-    setTimeout(() => {
-      this.setStatus('success');
-    }, 1000);
+    this.setStatus('submitting');
+    setTimeout(() => this.setStatus('success'), 1000);
   }
 }

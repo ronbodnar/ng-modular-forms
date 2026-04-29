@@ -11,7 +11,7 @@ import {
   signal,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { merge } from 'rxjs';
+import { merge, startWith } from 'rxjs';
 
 @Directive()
 export abstract class FormControlBase<T> implements ControlValueAccessor {
@@ -50,7 +50,6 @@ export abstract class FormControlBase<T> implements ControlValueAccessor {
     () => this._disabledByInput() || this._disabledByCva(),
   );
 
-  private lastErrorState = false;
   private _value: T | null = null;
 
   constructor() {
@@ -167,9 +166,7 @@ export abstract class FormControlBase<T> implements ControlValueAccessor {
     }
 
     merge(control.statusChanges, control.valueChanges, control.events)
-      .pipe(takeUntilDestroyed(this.destroyRef))
+      .pipe(startWith(null), takeUntilDestroyed(this.destroyRef))
       .subscribe(() => this.cdr.markForCheck());
-
-    this.cdr.markForCheck();
   }
 }

@@ -1,9 +1,9 @@
-import { FormGroup, FormControl } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { FormOrchestratorBase } from './form-orchestrator-base';
-import { FormHandlerBase } from './form-handler-base';
+import { FormOrchestrator } from './form-orchestrator';
+import { FormHandlerBase } from './base/form-handler-base';
 
-class TestOrchestrator extends FormOrchestratorBase {}
+class TestOrchestrator extends FormOrchestrator {}
 
 class MockHandler extends FormHandlerBase<string> {
   calls = 0;
@@ -14,13 +14,16 @@ class MockHandler extends FormHandlerBase<string> {
   }
 }
 
-describe('FormOrchestratorBase', () => {
+describe('FormOrchestrator', () => {
   it('should load main handler immediately when no subhandlers are provided', () => {
     const orchestrator = new TestOrchestrator();
-    const form = new FormGroup({});
     const mainHandler = new MockHandler();
 
-    orchestrator.initialize(form, [mainHandler]);
+    orchestrator.orchestrate({
+      form: new FormGroup({}),
+      handlers: [mainHandler],
+      mapperRegistry: {},
+    });
 
     expect(mainHandler.calls).toBe(1);
   });

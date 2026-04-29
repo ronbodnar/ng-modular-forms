@@ -48,28 +48,13 @@ npm install @angular/material @angular/cdk
 3. **Run the demo app**:
 
 ```bash
-git clone https://github.com/your-repo/ng-modular-forms.git
+git clone https://github.com/ronbodnar/ng-modular-forms.git
 cd ng-modular-forms
 npm install
 npm run start:examples
 ```
 
 Navigate to `http://localhost:4200` to see the interactive examples.
-
-## Examples
-
-The library includes several example forms demonstrating different use cases:
-
-- **Basic Input Components** - Framework-agnostic input components without Material Design
-- **Material Input Components** - Material-based form fields using Angular Material components
-- **Registration Form** - Comprehensive form with validation and multiple input types
-
-Each example includes:
-
-- Complete component implementation
-- Template with form structure
-- Styling examples
-- Unit tests
 
 ## The Problem
 
@@ -102,20 +87,27 @@ Separate responsibilities:
         <input formControlName="fieldA" />
       </div>
 
-      ...
-
-      <div *ngIf="form.errors?.server" class="error">
-        {{ form.errors.server }}
+      <div>
+        <label>Field B</label>
+        <input formControlName="fieldB" />
       </div>
 
-      <button type="submit">Submit</button>
+      ...
+
+      <div *ngIf="form.errors?.custom" class="error">
+        {{ form.errors.custom }}
+      </div>
+
+      <button type="submit" [disabled]="status() === 'submitting'">Submit</button>
     </form>
   `,
   ...
 })
 export class ExampleComponent {
+  status = signal<'idle' | 'submitting' | 'error' | 'success'>('idle')
+
   form = new FormGroup({
-    fieldA: new FormControl(null),
+    fieldA: new FormControl(null, Validators.required),
     fieldB: new FormControl({ value: null, disabled: true }),
   });
 
@@ -124,12 +116,9 @@ export class ExampleComponent {
       if (value) {
         this.form.get("fieldB")?.enable();
       } else {
+        this.form.get("fieldB")?.reset();
         this.form.get("fieldB")?.disable();
       }
-    });
-
-    this.form.valueChanges.subscribe((value) => {
-      console.log("Form changed:", value);
     });
   }
 
@@ -147,12 +136,18 @@ export class ExampleComponent {
       submittedAt: new Date(),
     };
 
+    this.status.set('submitting')
+
     apiCall(payload).subscribe({
-      next: () => console.log("Success"),
+      next: () => {
+        console.log("Success");
+        this.status.set('success');
+      },
       error: () => {
         this.form.setErrors({
-          server: "Something went wrong",
+          custom: "Something went wrong",
         });
+        this.status.set('error');
       },
     });
   }
@@ -171,56 +166,60 @@ Issues:
 
 ```ts
 @Component({
-   providers: [ExampleFormHandler, ExampleFormMapper, SectionAHandler, SectionBHandler],
-   template: `
-      <form [formGroup]="form" (ngSubmit)="submit()">
-         <app-section-a (formReady)="onSubformReady($event, 'sectionA')" />
-         <app-section-b (formReady)="onSubformReady($event, 'sectionB')" />
+  selector: "app-example",
+  imports: [ReactiveFormsModule, SectionAComponent],
+  providers: [SectionAHandler],
+  template: `
+    <form [formGroup]="form()" (ngSubmit)="submit()">
+      <app-section-a [form]="getSubForm('sectionA')" />
 
-         <button type="submit">Submit</button>
-      </form>
-   `,
-   ...
+      <button type="submit">Submit</button>
+    </form>
+  `,
 })
 export class ExampleComponent extends FormOrchestratorBase {
-
-  mapper = inject(ExampleFormMapper);
+  sectionAHandler = inject(SectionAHandler);
 
   ngOnInit() {
-    // Handlers are not required if there is no reactive logic or value change subscriptions.
-    const mainHandler = inject(ExampleFormHandler);
-    const sectionAHandler = inject(SectionAHandler);
-    const sectionBHandler = inject(SectionBHandler);
+    const options = {
+      form: new FormGroup({
+        sectionA: new FormGroup({
+          fieldA: new FormControl("", Validators.required),
+          fieldB: new FormControl({ value: "", disabled: true }),
+        }),
+      }),
 
-    const form = new FormGroup({});
+      handlers: [this.sectionAHandler],
 
-    const formOptions = {
-      mainHandler: mainHandler,
-      subHandlers: {
-         sectionA: sectionAHandler,
-         sectionB: sectionBHandler
-      }
+      mapperRegistry: {
+        sectionA: new SectionAMapper(),
+      },
     };
 
-    this.initialize(form, formOptions);
+    this.initialize(options);
   }
 
   submit() {
-    // Delegate to a service or handle here, depending on your use case
     const form = this.form();
     if (form.invalid) {
       form.markAllAsTouched();
       return;
     }
 
-    const body = this.mapper.buildRequest(form, this.store);
+    this.setStatus("submitting");
+
+    const body = this.buildRequest(this.form());
 
     apiCall(body).subscribe({
-      next: () => console.log("Success"),
+      next: () => {
+        console.log("Success");
+        this.setStatus("success");
+      },
       error: () => {
-        this.form.setErrors({
-          server: "Something went wrong",
+        this.form().setErrors({
+          custom: "Something went wrong",
         });
+        this.setStatus("error");
       },
     });
   }
@@ -231,50 +230,40 @@ export class ExampleComponent extends FormOrchestratorBase {
 
 ```ts
 @Component({
-    selector: 'app-section-a',
-    providers: [SectionAMapper], // Handler is already provided from the orchestrator component
-    template: `
-      <div [formGroup]="form">
-        <nmf-input formControlName="fieldA" label="Field A" />
-        <nmf-input formControlName="fieldB" label="Field B (depends on field A)" />
-      </div>
-    `,
-    ...
+  selector: "app-section-a",
+  imports: [ReactiveFormsModule, InputTextComponent],
+  template: `
+    <div [formGroup]="form">
+      <nmf-text formControlName="fieldA" label="Field A" />
+      <nmf-text formControlName="fieldB" label="Field B (depends on field A)" />
+    </div>
+  `,
 })
 export class SectionAComponent {
-    @Output() formReady = new EventEmitter<FormGroup>();
-
-    form = new FormGroup({
-      fieldA: new FormControl(null),
-      fieldB: new FormControl({ value: null, disabled: true }),
-    });
-
-    ngOnInit() {
-      this.formReady.emit(this.form);
-    }
+  @Input({ required: true }) form!: FormGroup;
 }
 ```
 
 #### Handler (Reactive Logic Layer)
 
 ```ts
-const CONTROL_NAMES = ["fieldA", "fieldB"] as const;
+const CONTROL_NAMES = ["sectionA.fieldA", "sectionA.fieldB"] as const;
 
 type ControlNames = (typeof CONTROL_NAMES)[number];
 
 @Injectable()
 export class SectionAHandler extends FormHandlerBase<ControlNames> {
-  override getReactiveLogic(): Subscription {
-    this.registerControls(this.form, [...CONTROL_NAMES]);
+  override getReactiveLogic(form: FormGroup): Subscription {
+    this.registerControls(form, [...CONTROL_NAMES]);
 
-    return this.valueChangesOf("fieldA").subscribe((value) => {
+    return this.valueChangesOf("sectionA.fieldA").subscribe((value) => {
+      const fieldBControl = getControl("sectionA.fieldB", form);
       if (!value) {
-        this.controls.fieldB.reset();
-        this.controls.fieldB.disable();
+        fieldBControl.reset();
+        fieldBControl.disable();
         return;
       }
-
-      this.controls.fieldB.enable();
+      fieldBControl.enable();
     });
   }
 }
@@ -283,31 +272,33 @@ export class SectionAHandler extends FormHandlerBase<ControlNames> {
 #### Mapper (Data Transformation Layer)
 
 ```ts
-interface ApiModel {
+interface ApiResponseModel {
   fieldA: unknown;
   fieldB: unknown;
 }
 
-interface RequestModel {
+interface ApiRequestModel {
   fieldA: unknown;
   fieldB: unknown;
   requestedAt: Date;
 }
 
-export class ExampleMapper extends FormMapperBase<ApiModel, RequestModel> {
-  buildRequest(form: FormGroup) {
+type FormModel = ApiResponseModel;
+
+export class SectionAMapper extends FormMapperBase<ApiResponseModel, ApiRequestModel, FormModel> {
+  buildRequest(form: FormGroup): ApiRequestModel {
     const fieldAValue = form.value.fieldA ?? "";
     return {
       fieldA: fieldAValue.trim().replace(/\s+/g, "-").toLowerCase(),
       fieldB: form.value.fieldB,
+      requestedAt: new Date(),
     };
   }
 
-  transformFromModel(model: ApiModel) {
+  transformModelToForm(model: ApiResponseModel): FormModel {
     return {
       fieldA: model.fieldA,
       fieldB: model.fieldB,
-      requestedAt: new Date(),
     };
   }
 }
@@ -318,57 +309,20 @@ export class ExampleMapper extends FormMapperBase<ApiModel, RequestModel> {
 - Subforms are fully isolated and reusable
 - Logic is centralized and testable
 - Complex dependencies are predictable and maintainable
-- Easily scales to large, multi-section forms
+- Easily scales to large, multi-section or multi-step forms
 
 ## Available Components
 
 ### Input Components
 
-| Component   | Basic Selector   | Material Selector    | Description                            |
-| :---------- | :--------------- | :------------------- | :------------------------------------- |
-| Text Input  | `nmf-text`       | `nmf-mat-text`       | Single-line text input with validation |
-| Textarea    | `nmf-textarea`   | `nmf-mat-textarea`   | Multi-line text input                  |
-| Select      | `nmf-select`     | `nmf-mat-select`     | Dropdown selection from options        |
-| Currency    | `nmf-currency`   | `nmf-mat-currency`   | Currency input with formatting         |
-| Date Picker | `nmf-datepicker` | `nmf-mat-datepicker` | Date selection input                   |
-
-### Core Classes
-
-- **FormOrchestratorBase** - Base class for form orchestration
-- **FormHandlerBase** - Base class for reactive form logic
-- **FormMapperBase** - Base class for data transformation
-- **FormControlBase** - Base class for custom form controls
-
-## API Documentation
-
-### FormOrchestratorBase
-
-```typescript
-class FormOrchestratorBase {
-  // Properties
-  readonly form: Signal<FormGroup>;
-  readonly mainHandler: Signal<FormHandlerBase | null>;
-  readonly status: Signal<FormStatus>;
-  readonly errorMessage: Signal<string | null>;
-
-  // Methods
-  initialize(form: FormGroup, options?: FormOrchestratorOptions): void;
-  onSubformReady(subform: FormGroup, groupName: string, nestGroups?: boolean): void;
-  setStatus(status: FormStatus): void;
-  setErrorMessage(message: string | null): void;
-}
-```
-
-### FormHandlerBase
-
-```typescript
-abstract class FormHandlerBase<ControlNames extends string = string> {
-  abstract getReactiveLogic(form?: FormGroup): Subscription;
-
-  registerControls(form: FormGroup, controlNames: ControlNames[]): void;
-  valueChangesOf<T>(key: ControlNames): Observable<T>;
-}
-```
+| Component  | Basic Selector   | Material Selector    | Description                     |
+| :--------- | :--------------- | :------------------- | :------------------------------ |
+| Currency   | `nmf-currency`   | `nmf-mat-currency`   | Currency input with formatting  |
+| Datepicker | `nmf-datepicker` | `nmf-mat-datepicker` | Date selection input            |
+| Select     | `nmf-select`     | `nmf-mat-select`     | Dropdown selection from options |
+| Text       | `nmf-text`       | `nmf-mat-text`       | Single-line text input          |
+| Textarea   | `nmf-textarea`   | `nmf-mat-textarea`   | Multi-line text input           |
+| Timepicker | `nmf-timepicker` | `nmf-mat-timepicker` | Time selection input            |
 
 ## When to Use
 

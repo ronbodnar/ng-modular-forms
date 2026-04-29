@@ -34,7 +34,6 @@ export class ExampleComponent {
 ## Built On
 
 - Angular Material
-- MatFormFieldControl
 - ControlValueAccessor
 
 ## Features

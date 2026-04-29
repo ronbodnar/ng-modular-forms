@@ -48,6 +48,16 @@
     box-shadow 0.15s ease;
 }
 
+.nmf-field.loading select {
+  background-image: none !important;
+}
+
+.nmf-field.loading input[type="date"]::-webkit-calendar-picker-indicator,
+.nmf-field.loading input[type="time"]::-webkit-calendar-picker-indicator {
+  opacity: 0;
+  pointer-events: none;
+}
+
 select.nmf-input {
   appearance: none !important;
   -webkit-appearance: none !important;
@@ -71,10 +81,6 @@ select.nmf-input:disabled {
   opacity: 0.6;
   background-color: #f3f4f6;
   cursor: not-allowed;
-}
-
-.nmf-input[select] {
-  border-right: 16px solid transparent;
 }
 
 .nmf-input.error {

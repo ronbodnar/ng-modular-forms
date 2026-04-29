@@ -21,7 +21,7 @@ export interface SelectOption {
   styleUrls: ['./input-styles.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="nmf-field">
+    <div class="nmf-field" [class.loading]="loading()">
       @if (label()) {
         <label class="nmf-label">
           {{ label() }}
@@ -37,7 +37,7 @@ export interface SelectOption {
         [class.readonly]="readonly"
         [ngClass]="classList()"
         [value]="value"
-        [disabled]="disabled || loading()"
+        [disabled]="disabled"
         [required]="required"
         (blur)="onTouched()"
         (change)="onSelectionChange(eventValue($event))"

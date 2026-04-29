@@ -23,26 +23,16 @@ Coordinates form structure and lifecycle.
 ```ts
 @Component({...})
 export class ExampleComponent extends FormOrchestratorBase {
-  form = new FormGroup({});
 
   ngOnInit() {
    // Handlers are not required if there is no reactive logic or value change subscriptions.
    const mainHandler = inject(ExampleFormHandler);
    const sectionAHandler = inject(SectionAHandler);
 
-   const formOptions = {
-      mainHandler: mainHandler,
-      subHandlers: {
-         sectionA: sectionAHandler
-      }
-    };
+   form = new FormGroup({});
+   handlers = [mainHandler, sectionAHandler]
 
-   this.initialize(this.form, formOptions);
-  }
-
-  // Only required if forms are split across multiple components
-  onSubformReady(form: FormGroup, key: string) {
-    super.onSubformReady(form, key);
+   this.initialize(form, handlers);
   }
 }
 ```
@@ -60,8 +50,8 @@ type ControlNames = (typeof CONTROL_NAMES)[number];
 
 @Injectable()
 export class SectionAHandler extends FormHandlerBase<ControlNames> {
-  override getReactiveLogic(): Subscription {
-    this.registerControls(this.form, [...CONTROL_NAMES]);
+  override getReactiveLogic(form?: FormGroup): Subscription {
+    this.registerControls(form, [...CONTROL_NAMES]);
 
     return this.valueChangesOf("fieldA").subscribe((value) => {
       if (value) {

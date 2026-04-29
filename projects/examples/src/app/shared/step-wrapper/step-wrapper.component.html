@@ -6,9 +6,20 @@
         class="rounded-2xl border px-4 py-3 text-left transition"
         (click)="goToStep(index + 1)"
         [class.bg-neutral-300]="currentStep() === index + 1"
-        [class.border-2]="currentStep() === index + 1"
+        [class.border-2]="
+          currentStep() === index + 1 ||
+          (getStep(index + 1).form.invalid && getStep(index + 1).form.touched)
+        "
+        [class.border-slate-200]="
+          currentStep() !== index + 1 &&
+          !(getStep(index + 1).form.invalid && getStep(index + 1).form.touched)
+        "
+        [class.border-red-600]="
+          currentStep() !== index + 1 &&
+          getStep(index + 1).form.invalid &&
+          getStep(index + 1).form.touched
+        "
         [class.border-emerald-700]="currentStep() === index + 1"
-        [class.border-slate-200]="currentStep() !== index + 1"
       >
         <div class="text-xs uppercase tracking-[0.18em] text-slate-500">
           Step {{ index + 1 }}

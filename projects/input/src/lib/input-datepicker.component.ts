@@ -10,7 +10,7 @@ import { InputFormControlBase } from './input-form-control-base';
   styleUrls: ['./input-styles.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="nmf-field">
+    <div class="nmf-field" [class.loading]="loading()">
       @if (label()) {
         <label class="nmf-label">
           {{ label() }}
@@ -32,7 +32,7 @@ import { InputFormControlBase } from './input-form-control-base';
         [ngClass]="classList()"
         [min]="formatDate(minDate())"
         [max]="formatDate(maxDate())"
-        [disabled]="disabled || loading()"
+        [disabled]="disabled"
         [required]="required"
         [readonly]="readonly"
         [placeholder]="placeholder"

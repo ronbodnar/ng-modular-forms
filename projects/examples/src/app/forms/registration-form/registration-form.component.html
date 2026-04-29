@@ -14,14 +14,20 @@
       (stepChange)="setCurrentStep($event)"
     >
       <ng-container [ngSwitch]="currentStep()">
-        <app-registration-personal-info *ngSwitchCase="1" [form]="getForm(0)" />
+        <app-registration-personal-info
+          *ngSwitchCase="1"
+          [form]="getFormForStep(0)"
+        />
 
         <app-registration-account-details
           *ngSwitchCase="2"
-          [form]="getForm(1)"
+          [form]="getFormForStep(1)"
         />
 
-        <app-registration-preferences *ngSwitchCase="3" [form]="getForm(2)" />
+        <app-registration-preferences
+          *ngSwitchCase="3"
+          [form]="getFormForStep(2)"
+        />
       </ng-container>
     </app-step-wrapper>
 

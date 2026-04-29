@@ -31,7 +31,7 @@ import { InputFormControlBase } from './input-form-control-base';
         [class.readonly]="readonly"
         [readonly]="readonly"
         [required]="required"
-        [disabled]="disabled || loading()"
+        [disabled]="disabled"
         [placeholder]="placeholder"
         (blur)="onTouched()"
         (input)="onInput($event)"

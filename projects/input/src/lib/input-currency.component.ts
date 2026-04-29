@@ -43,7 +43,7 @@ import { formatNumber, parseNumber } from '@ng-modular-forms/core';
           [id]="id"
           [name]="name"
           [value]="displayValue()"
-          [disabled]="disabled || loading()"
+          [disabled]="disabled"
           [required]="required"
           [readonly]="readonly"
           [ngClass]="classList()"
