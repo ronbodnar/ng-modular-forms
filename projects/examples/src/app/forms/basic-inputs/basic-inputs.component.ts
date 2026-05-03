@@ -9,6 +9,7 @@ import { CommonModule } from '@angular/common';
 import {
   InputCurrencyComponent,
   InputDatepickerComponent,
+  InputNumberComponent,
   InputSelectComponent,
   InputTextareaComponent,
   InputTextComponent,
@@ -27,6 +28,7 @@ import { FormStatusOutputComponent } from '../../shared/form-status-output/form-
     InputTextComponent,
     InputSelectComponent,
     InputTextareaComponent,
+    InputNumberComponent,
     InputCurrencyComponent,
     InputDatepickerComponent,
     InputTimepickerComponent,
@@ -48,6 +50,7 @@ export class BasicInputsFormComponent {
   form = new FormGroup({
     text: new FormControl('', [Validators.required, Validators.minLength(3)]),
     number: new FormControl<number | null>(null, [
+      Validators.required,
       Validators.min(0),
       Validators.max(100),
     ]),
@@ -59,9 +62,9 @@ export class BasicInputsFormComponent {
       Validators.required,
       Validators.minLength(8),
     ]),
-    date: new FormControl<Date | null>(null),
+    date: new FormControl<Date | null>(null, Validators.required),
     time: new FormControl<Date | null>(null, Validators.required),
-    select: new FormControl('', Validators.required),
+    select: new FormControl<string | null>(null, Validators.required),
     currency: new FormControl<number | null>(null, [Validators.min(0)]),
     textarea: new FormControl('', [Validators.maxLength(500)]),
   });
@@ -98,5 +101,11 @@ export class BasicInputsFormComponent {
       date: new Date(),
       time: new Date(),
     });
+  }
+
+  validateForm(): void {
+    this.form.get('text')?.markAsTouched();
+    this.form.markAllAsTouched();
+    console.log('Validated form');
   }
 }

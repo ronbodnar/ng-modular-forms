@@ -7,6 +7,7 @@
     <input type="checkbox" formControlName="disabled" />Disable Inputs
 
     <button (click)="populateForm()">Populate Form</button>
+    <button (click)="validateForm()">Validate Form</button>
   </form>
 
   <form [formGroup]="form">
@@ -20,16 +21,16 @@
             [loading]="loading()"
           />
 
-          <nmf-text
-            formControlName="numberFormatted"
+          <nmf-number
+            formControlName="number"
             label="Number Input"
             type="number"
             placeholder="Enter a number"
             [loading]="loading()"
           />
 
-          <nmf-text
-            formControlName="number"
+          <nmf-number
+            formControlName="numberFormatted"
             label="Number Input (formatted)"
             type="number"
             placeholder="Enter a number"

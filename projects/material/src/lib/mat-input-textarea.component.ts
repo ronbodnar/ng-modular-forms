@@ -32,16 +32,12 @@ import { MatInputModule } from '@angular/material/input';
 
       <textarea
         matInput
-        [id]="id"
         [rows]="rows()"
         [cols]="cols()"
-        [value]="value"
-        [disabled]="disabled"
-        [required]="required"
-        [readonly]="readonly"
-        [placeholder]="placeholder"
+        [required]="isRequired()"
+        [placeholder]="placeholder()"
+        [formControl]="control"
         (blur)="onTouched()"
-        (input)="onInput($event)"
       ></textarea>
 
       @if (loading()) {
@@ -68,10 +64,4 @@ export class MatInputTextareaComponent extends MatFormControlBase<
 > {
   rows = input<number>(5);
   cols = input<number>(5);
-
-  onInput(event: Event): void {
-    const value = (event.target as HTMLInputElement).value;
-    this.value = value;
-    this.onChange(value);
-  }
 }

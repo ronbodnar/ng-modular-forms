@@ -29,6 +29,7 @@
     <mat-checkbox formControlName="disabled">Disable Inputs</mat-checkbox>
 
     <button mat-stroked-button (click)="populateForm()">Populate Form</button>
+    <button mat-stroked-button (click)="validateForm()">Validate Form</button>
   </form>
 
   <form [formGroup]="form">
@@ -44,7 +45,7 @@
             [shouldLabelFloat]="floatLabel()"
           />
 
-          <nmf-mat-text
+          <nmf-mat-number
             formControlName="number"
             label="Number Input"
             type="number"
@@ -54,7 +55,7 @@
             [shouldLabelFloat]="floatLabel()"
           />
 
-          <nmf-mat-text
+          <nmf-mat-number
             formControlName="numberFormatted"
             label="Number Input (formatted)"
             type="number"
@@ -87,7 +88,6 @@
           <nmf-mat-datepicker
             formControlName="date"
             label="Date Input"
-            placeholder="Select a date"
             [loading]="loading()"
             [appearance]="appearance()"
             [shouldLabelFloat]="floatLabel()"
@@ -96,7 +96,6 @@
           <nmf-mat-timepicker
             formControlName="time"
             label="Time Input"
-            placeholder="Select a time"
             [loading]="loading()"
             [appearance]="appearance()"
             [shouldLabelFloat]="floatLabel()"

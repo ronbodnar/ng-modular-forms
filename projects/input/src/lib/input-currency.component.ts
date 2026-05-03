@@ -1,9 +1,17 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  signal,
+} from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { InputCurrencyBehavior } from '@ng-modular-forms/behavior';
-import { InputFormControlBase } from './input-form-control-base';
-import { formatNumber, parseNumber } from '@ng-modular-forms/core';
+import { CurrencyBehavior } from '@ng-modular-forms/behavior';
+import {
+  formatNumber,
+  FormControlBase,
+  parseNumber,
+} from '@ng-modular-forms/core';
 
 @Component({
   selector: 'nmf-currency',
@@ -16,18 +24,19 @@ import { formatNumber, parseNumber } from '@ng-modular-forms/core';
       @if (label()) {
         <label class="nmf-label">
           {{ label() }}
-          @if (required) {
+          @if (isRequired()) {
             <span class="nmf-required">*</span>
           }
         </label>
       }
 
       <div class="nmf-input-wrapper nmf-input-prefix">
-        @if (value != null) {
+        @if (displayValue() != null) {
           <span
             class="nmf-prefix"
-            [class.error]="errorState"
-            [class.nmf-prefix-disabled]="disabled || readonly"
+            [class.error]="hasErrors()"
+            [class.nmf-prefix-disabled]="disabled()"
+            [style.color]="textColor()"
           >
             $
           </span>
@@ -37,21 +46,20 @@ import { formatNumber, parseNumber } from '@ng-modular-forms/core';
           type="text"
           autocomplete="off"
           class="nmf-input"
-          [class.error]="errorState"
-          [class.readonly]="readonly"
-          [class.nmf-input-with-prefix]="value != null"
-          [id]="id"
-          [name]="name"
-          [value]="displayValue()"
-          [disabled]="disabled"
-          [required]="required"
-          [readonly]="readonly"
           [ngClass]="classList()"
-          [placeholder]="placeholder || '0.00'"
-          (keydown)="handleKeyDown($event)"
-          (input)="onInput($event)"
+          [class.error]="hasErrors()"
+          [class.disabled]="disabled()"
+          [class.nmf-input-with-prefix]="displayValue() != null"
+          [style.color]="textColor()"
+          [id]="id()"
+          [name]="name()"
+          [value]="displayValue()"
+          [disabled]="disabled()"
+          [required]="isRequired()"
+          [placeholder]="placeholder()"
           (blur)="onTouched()"
-          [style.color]="textColor(value)"
+          (input)="onInput($event)"
+          (keydown)="handleKeyDown($event)"
         />
       </div>
 
@@ -69,12 +77,10 @@ import { formatNumber, parseNumber } from '@ng-modular-forms/core';
     </div>
   `,
 })
-export class InputCurrencyComponent extends InputFormControlBase<
-  number | null
-> {
+export class InputCurrencyComponent extends FormControlBase<number | null> {
   displayValue = signal<string | null>(null);
 
-  behavior = new InputCurrencyBehavior();
+  behavior = new CurrencyBehavior();
 
   override writeValue(value: number | null): void {
     super.writeValue(value);
@@ -86,28 +92,25 @@ export class InputCurrencyComponent extends InputFormControlBase<
   }
 
   onInput(event: Event) {
-    if (this.disabled) return;
+    if (this._disabledByInput()) return;
 
     const rawValue = (event.target as HTMLInputElement).value ?? null;
     const value = parseNumber(rawValue);
 
     this.displayValue.set(value != null ? formatNumber(value) : null);
 
-    this.value = value;
     this.onChange(value);
   }
 
-  textColor(value: string | number | null): string {
-    if (this.disabled || this.readonly) {
-      return 'inherit';
-    }
-    if (!value) {
+  textColor = computed(() => {
+    const value = this.displayValue();
+    if (this._disabledByInput() || !value) {
       return 'inherit';
     }
 
     const parsedValue = parseNumber(value);
     const valid = parsedValue != null && parsedValue >= 0;
 
-    return valid ? 'inherit' : 'red';
-  }
+    return valid ? 'inherit' : '#dc6262';
+  });
 }

@@ -17,6 +17,7 @@ import {
   MatInputCurrencyComponent,
   MatInputTimepickerComponent,
   MatInputDatepickerComponent,
+  MatInputNumberComponent,
 } from '@ng-modular-forms/material';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatButtonModule } from '@angular/material/button';
@@ -37,6 +38,7 @@ import { MatButtonModule } from '@angular/material/button';
     FormStatusOutputComponent,
     MatInputTimepickerComponent,
     MatInputDatepickerComponent,
+    MatInputNumberComponent,
   ],
   templateUrl: './material-inputs.component.html',
   styleUrl: './material-inputs.component.css',
@@ -56,6 +58,7 @@ export class MaterialInputsFormComponent implements OnInit {
   form = new FormGroup({
     text: new FormControl('', [Validators.required, Validators.minLength(3)]),
     number: new FormControl<number | null>(null, [
+      Validators.required,
       Validators.min(0),
       Validators.max(100),
     ]),
@@ -73,7 +76,7 @@ export class MaterialInputsFormComponent implements OnInit {
       Validators.maxLength(500),
       Validators.required,
     ]),
-    date: new FormControl<Date | null>(null),
+    date: new FormControl<Date | null>(null, Validators.required),
     time: new FormControl<Date | null>(null, Validators.required),
   });
 
@@ -112,5 +115,10 @@ export class MaterialInputsFormComponent implements OnInit {
       date: new Date(),
       time: new Date(),
     });
+  }
+
+  validateForm(): void {
+    this.form.markAllAsTouched();
+    this.form.updateValueAndValidity();
   }
 }

@@ -12,7 +12,11 @@ import {
   Validators,
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { FormOrchestrator } from '@ng-modular-forms/core';
+import {
+  FormHydrator,
+  FormOrchestrator,
+  FormSerializer,
+} from '@ng-modular-forms/core';
 import { FormExampleComponent } from '../../shared/form-example/form-example.component';
 import { FormStatusOutputComponent } from '../../shared/form-status-output/form-status-output.component';
 import { RegistrationPersonalInfoComponent } from './personal-info/personal-info.component';
@@ -73,15 +77,34 @@ export class RegistrationFormComponent extends FormOrchestrator {
     ];
   });
 
-  constructor() {
-    super();
+  constructor(
+    override readonly hydrator: FormHydrator,
+    override readonly serializer: FormSerializer,
+  ) {
+    super(hydrator, serializer);
     this.initialize();
   }
 
   initialize() {
     const options = {
       form: new FormGroup({
-        dummy: new FormControl(null),
+        personalInfo: new FormGroup({
+          firstName: new FormControl(null, [
+            Validators.required,
+            Validators.minLength(2),
+          ]),
+          lastName: new FormControl(null, [Validators.minLength(2)]),
+          email: new FormControl(null, Validators.email),
+          phone: new FormControl(null, [
+            Validators.pattern(
+              /^(\+1\s?)?(\(?\d{3}\)?[\s.-]?)?\d{3}[\s.-]?\d{4}$/,
+            ),
+          ]),
+          country: new FormControl(null),
+          dateOfBirth: new FormControl(null),
+          newsletter: new FormControl(false),
+        }),
+
         accountDetails: new FormGroup({
           username: new FormControl({ value: null, disabled: true }, [
             Validators.minLength(4),
@@ -93,20 +116,6 @@ export class RegistrationFormComponent extends FormOrchestrator {
               /^(\+1\s?)?(\(?\d{3}\)?[\s.-]?)?\d{3}[\s.-]?\d{4}$/,
             ),
           ]),
-        }),
-
-        personalInfo: new FormGroup({
-          firstName: new FormControl(null, [Validators.minLength(2)]),
-          lastName: new FormControl(null, [Validators.minLength(2)]),
-          email: new FormControl(null, Validators.email),
-          phone: new FormControl(null, [
-            Validators.pattern(
-              /^(\+1\s?)?(\(?\d{3}\)?[\s.-]?)?\d{3}[\s.-]?\d{4}$/,
-            ),
-          ]),
-          country: new FormControl(null),
-          dateOfBirth: new FormControl(null),
-          newsletter: new FormControl(false),
         }),
 
         preferences: new FormGroup({

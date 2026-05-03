@@ -1,7 +1,12 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  input,
+  signal,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
-import { InputFormControlBase } from './input-form-control-base';
+import { FormControlBase } from '@ng-modular-forms/core';
 
 @Component({
   selector: 'nmf-timepicker',
@@ -14,7 +19,7 @@ import { InputFormControlBase } from './input-form-control-base';
       @if (label()) {
         <label class="nmf-label">
           {{ label() }}
-          @if (required) {
+          @if (isRequired()) {
             <span class="nmf-required">*</span>
           }
         </label>
@@ -24,19 +29,18 @@ import { InputFormControlBase } from './input-form-control-base';
         type="time"
         autocomplete="off"
         class="nmf-input"
-        [class.error]="errorState"
-        [class.readonly]="readonly"
-        [id]="id"
-        [name]="name"
-        [value]="formatTime(value)"
         [ngClass]="classList()"
+        [class.error]="hasErrors()"
+        [class.disabled]="disabled()"
+        [id]="id()"
+        [name]="name()"
         [step]="step()"
-        [disabled]="disabled"
-        [required]="required"
-        [readonly]="readonly"
-        [placeholder]="placeholder"
-        (input)="onInput($event)"
+        [value]="displayValue()"
+        [disabled]="disabled()"
+        [required]="isRequired()"
+        [placeholder]="placeholder()"
         (blur)="onTouched()"
+        (input)="onInput($event)"
       />
 
       <ng-content></ng-content>
@@ -53,9 +57,10 @@ import { InputFormControlBase } from './input-form-control-base';
     </div>
   `,
 })
-export class InputTimepickerComponent extends InputFormControlBase<Date | null> {
+export class InputTimepickerComponent extends FormControlBase<Date | null> {
   // step in seconds: 60 = minutes only, 1 = show seconds
   step = input<number>(60);
+  displayValue = signal<string>('');
 
   formatTime(date: Date | null | undefined): string | null {
     if (!date) return null;
@@ -76,13 +81,19 @@ export class InputTimepickerComponent extends InputFormControlBase<Date | null> 
     return date;
   }
 
+  override writeValue(value: Date | null): void {
+    super.writeValue(value);
+    this.displayValue.set(this.formatTime(value) ?? '');
+  }
+
   onInput(event: Event): void {
-    if (this.disabled) return;
+    if (this._disabledByInput()) return;
 
     const input = event.target as HTMLInputElement;
     const parsed = this.parseTime(input.value);
 
-    this.value = parsed;
+    this.displayValue.set(this.formatTime(parsed) ?? '');
+
     this.onChange(parsed);
   }
 }

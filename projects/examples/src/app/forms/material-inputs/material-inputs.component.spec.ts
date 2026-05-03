@@ -17,16 +17,19 @@ describe('MaterialInputsFormComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+  it('sets expected values when populateForm is called', () => {
+    const component = fixture.componentInstance;
 
-  it('should initialize form with required controls', () => {
-    expect(component.form.contains('text')).toBeTruthy();
-    expect(component.form.contains('number')).toBeTruthy();
-    expect(component.form.contains('password')).toBeTruthy();
-    expect(component.form.contains('select')).toBeTruthy();
-    expect(component.form.contains('currency')).toBeTruthy();
-    expect(component.form.contains('textarea')).toBeTruthy();
+    component.populateForm();
+
+    const value = component.form.value;
+
+    expect(value.text).toBe('Hello World');
+    expect(value.number).toBe(1230);
+    expect(value.numberFormatted).toBe(1230);
+    expect(value.password).toBe('12345678');
+    expect(value.select).toBe('us');
+    expect(value.currency).toBe(1230);
+    expect(value.textarea).toContain('Hello');
   });
 });

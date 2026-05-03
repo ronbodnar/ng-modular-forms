@@ -97,24 +97,3 @@ export function formatNumber(
 
   return isNegative ? `-${formatted}` : formatted;
 }
-
-export function formatCurrency(
-  value: string | number | null,
-  locale: string = 'en-US',
-  options: Intl.NumberFormatOptions = { maximumFractionDigits: 2 },
-): string | null {
-  if (value == null || value === '') {
-    return null;
-  }
-  if (typeof value !== 'string') {
-    value = String(value);
-  }
-
-  value = value.replace(/[^\d\-,.]/g, '');
-
-  const isNegative = value.startsWith('-');
-  const numericValue = Number(value.replace(/[,$-]/g, ''));
-  const formatted = numericValue.toLocaleString(locale, options);
-
-  return isNegative ? `-${formatted}` : formatted;
-}

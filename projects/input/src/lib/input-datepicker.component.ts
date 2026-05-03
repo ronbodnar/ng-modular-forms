@@ -1,7 +1,12 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  input,
+  signal,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
-import { InputFormControlBase } from './input-form-control-base';
+import { FormControlBase } from '@ng-modular-forms/core';
 
 @Component({
   selector: 'nmf-datepicker',
@@ -14,7 +19,7 @@ import { InputFormControlBase } from './input-form-control-base';
       @if (label()) {
         <label class="nmf-label">
           {{ label() }}
-          @if (required) {
+          @if (isRequired()) {
             <span class="nmf-required">*</span>
           }
         </label>
@@ -22,22 +27,20 @@ import { InputFormControlBase } from './input-form-control-base';
 
       <input
         type="date"
-        autocomplete="off"
         class="nmf-input"
-        [class.error]="errorState"
-        [class.readonly]="readonly"
-        [id]="id"
-        [name]="name"
-        [value]="formatDate(value)"
         [ngClass]="classList()"
+        [class.error]="hasErrors()"
+        [class.disabled]="disabled()"
+        [id]="id()"
         [min]="formatDate(minDate())"
         [max]="formatDate(maxDate())"
-        [disabled]="disabled"
-        [required]="required"
-        [readonly]="readonly"
-        [placeholder]="placeholder"
-        (input)="onInput($event)"
+        [name]="name()"
+        [value]="displayValue()"
+        [disabled]="disabled()"
+        [required]="isRequired()"
+        [placeholder]="placeholder()"
         (blur)="onTouched()"
+        (input)="onInput($event)"
       />
 
       <ng-content></ng-content>
@@ -54,9 +57,11 @@ import { InputFormControlBase } from './input-form-control-base';
     </div>
   `,
 })
-export class InputDatepickerComponent extends InputFormControlBase<Date | null> {
+export class InputDatepickerComponent extends FormControlBase<Date | null> {
   minDate = input<Date | null>(null);
   maxDate = input<Date | null>(null);
+
+  displayValue = signal<string>('');
 
   formatDate(date: Date | null | undefined): string | null {
     if (!date) return null;
@@ -75,13 +80,20 @@ export class InputDatepickerComponent extends InputFormControlBase<Date | null> 
     return new Date(y, m - 1, d);
   }
 
+  override writeValue(value: Date | null): void {
+    super.writeValue(value);
+
+    this.displayValue.set(this.formatDate(value) ?? '');
+  }
+
   onInput(event: Event): void {
-    if (this.disabled) return;
+    if (this._disabledByInput()) return;
 
     const input = event.target as HTMLInputElement;
     const parsed = this.parseDate(input.value);
 
-    this.value = parsed;
+    this.displayValue.set(this.formatDate(parsed) ?? '');
+
     this.onChange(parsed);
   }
 }

@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { InputFormControlBase } from './input-form-control-base';
+import { FormControlBase } from '@ng-modular-forms/core';
 
 @Component({
   selector: 'nmf-textarea',
@@ -14,7 +14,7 @@ import { InputFormControlBase } from './input-form-control-base';
       @if (label()) {
         <label class="nmf-label">
           {{ label() }}
-          @if (required) {
+          @if (isRequired()) {
             <span class="nmf-required">*</span>
           }
         </label>
@@ -22,19 +22,16 @@ import { InputFormControlBase } from './input-form-control-base';
 
       <textarea
         class="nmf-input"
-        [id]="id"
+        [ngClass]="classList()"
+        [class.error]="hasErrors()"
+        [class.disabled]="disabled()"
+        [id]="id()"
         [rows]="rows()"
         [cols]="cols()"
-        [ngClass]="classList()"
-        [value]="value"
-        [class.error]="errorState"
-        [class.readonly]="readonly"
-        [readonly]="readonly"
-        [required]="required"
-        [disabled]="disabled"
-        [placeholder]="placeholder"
+        [required]="isRequired()"
+        [placeholder]="placeholder()"
+        [formControl]="control"
         (blur)="onTouched()"
-        (input)="onInput($event)"
       ></textarea>
 
       <p class="nmf-error">
@@ -49,17 +46,7 @@ import { InputFormControlBase } from './input-form-control-base';
     </div>
   `,
 })
-export class InputTextareaComponent extends InputFormControlBase<
-  string | null
-> {
+export class InputTextareaComponent extends FormControlBase<string | null> {
   rows = input<number>(5);
   cols = input<number>(5);
-
-  onInput(event: Event) {
-    if (this.disabled) return;
-
-    const value = (event.target as HTMLInputElement).value;
-    this.value = value;
-    this.onChange(value);
-  }
 }

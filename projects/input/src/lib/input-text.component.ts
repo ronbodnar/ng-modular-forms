@@ -3,16 +3,11 @@ import {
   Component,
   computed,
   input,
-  signal,
 } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import {
-  InputCurrencyBehavior,
-  InputTextBehavior,
-} from '@ng-modular-forms/behavior';
-import { InputFormControlBase } from './input-form-control-base';
-import { formatNumber, parseNumber } from '@ng-modular-forms/core';
+import { TextBehavior } from '@ng-modular-forms/behavior';
+import { FormControlBase } from '@ng-modular-forms/core';
 
 @Component({
   selector: 'nmf-text',
@@ -25,7 +20,7 @@ import { formatNumber, parseNumber } from '@ng-modular-forms/core';
       @if (label()) {
         <label class="nmf-label">
           {{ label() }}
-          @if (required) {
+          @if (isRequired()) {
             <span class="nmf-required">*</span>
           }
         </label>
@@ -33,31 +28,26 @@ import { formatNumber, parseNumber } from '@ng-modular-forms/core';
 
       <div class="nmf-input-wrapper">
         <input
-          autocomplete="off"
           class="nmf-input"
-          [class.error]="errorState"
-          [class.readonly]="readonly"
           [ngClass]="classList()"
-          [id]="id"
-          [name]="name"
-          [value]="displayValue()"
+          [class.error]="hasErrors()"
+          [class.disabled]="disabled()"
+          [id]="id()"
+          [name]="name()"
           [type]="computedType()"
-          [readonly]="readonly"
-          [required]="required"
-          [disabled]="disabled"
-          [placeholder]="placeholder"
-          (input)="onInput($event)"
-          (keydown)="handleKeyDown($event)"
+          [required]="isRequired()"
+          [placeholder]="placeholder()"
+          [formControl]="control"
           (blur)="onTouched()"
         />
 
-        @if (type() === 'password' && !loading() && !disabled) {
+        @if (type() === 'password' && !loading()) {
           <button
             type="button"
             class="nmf-password-toggle"
-            (click)="behavior.toggleShowPassword($event)"
-            [disabled]="disabled"
             aria-label="Toggle password visibility"
+            [disabled]="disabled()"
+            (click)="behavior.toggleShowPassword($event)"
           >
             @if (behavior.showPassword()) {
               <ng-container [ngTemplateOutlet]="eyeOffIcon"></ng-container>
@@ -117,55 +107,18 @@ import { formatNumber, parseNumber } from '@ng-modular-forms/core';
     </ng-template>
   `,
 })
-export class InputTextComponent extends InputFormControlBase<
+export class InputTextComponent extends FormControlBase<
   string | number | null
 > {
   type = input<
     'text' | 'number' | 'email' | 'tel' | 'url' | 'password' | 'search'
   >('text');
-  formatNumberValue = input<boolean>(false);
-  displayValue = signal<string>('');
+
+  behavior = new TextBehavior();
 
   computedType = computed(() =>
-    (this.behavior.showPassword() && this.type() === 'password') ||
-    (this.type() === 'number' && this.formatNumberValue())
+    this.behavior.showPassword() && this.type() === 'password'
       ? 'text'
       : this.type(),
   );
-
-  behavior = new InputTextBehavior();
-  currencyBehavior = new InputCurrencyBehavior();
-
-  override writeValue(value: string | number | null): void {
-    super.writeValue(value);
-    this.updateDisplayValue(value);
-  }
-
-  handleKeyDown(event: KeyboardEvent) {
-    if (this.type() !== 'number') {
-      return;
-    }
-    this.currencyBehavior.handleKeyDown(event);
-  }
-
-  onInput(event: Event): void {
-    if (this.disabled) return;
-
-    const raw = (event.target as HTMLInputElement).value;
-
-    const parsed = this.type() === 'number' ? parseNumber(raw) : raw;
-
-    this.updateDisplayValue(parsed);
-
-    this.value = parsed;
-    this.onChange(parsed);
-  }
-
-  updateDisplayValue(value: string | number | null) {
-    if (this.formatNumberValue() && value != null) {
-      this.displayValue.set(formatNumber(value) ?? '');
-    } else {
-      this.displayValue.set(value != null ? String(value) : '');
-    }
-  }
 }

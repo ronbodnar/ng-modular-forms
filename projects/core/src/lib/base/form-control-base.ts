@@ -1,120 +1,135 @@
-import { ControlValueAccessor, NgControl, Validators } from '@angular/forms';
+import {
+  ControlValueAccessor,
+  FormControl,
+  NgControl,
+  TouchedChangeEvent,
+  Validators,
+} from '@angular/forms';
 import {
   booleanAttribute,
   ChangeDetectorRef,
   computed,
   DestroyRef,
   Directive,
-  HostBinding,
+  effect,
   inject,
   input,
   signal,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { merge, startWith } from 'rxjs';
+import { startWith, Subscription } from 'rxjs';
 
 @Directive()
 export abstract class FormControlBase<T> implements ControlValueAccessor {
-  static nextId = 0;
-
-  @HostBinding()
-  id = `nmf-form-control-${FormControlBase.nextId++}`;
-
   protected readonly cdr = inject(ChangeDetectorRef);
   protected readonly destroyRef = inject(DestroyRef);
+
+  static nextId = 0;
+
+  readonly id = input<string | null>(
+    `nmf-form-control-${FormControlBase.nextId++}`,
+  );
+
+  readonly _id = input<string | null>(null, { alias: 'id' });
+  readonly label = input<string>('');
+  readonly classList = input<string[]>([]);
+  readonly loading = input<boolean>(false);
+
+  readonly name = input<string>('');
+  readonly placeholder = input<string>('');
+  readonly _disabledByInput = input<boolean, unknown>(false, {
+    transform: booleanAttribute,
+  });
+  readonly _disabledByCva = signal(false);
 
   readonly ngControl = inject(NgControl, {
     self: true,
     optional: true,
   });
 
-  readonly label = input<string>('');
-  readonly classList = input<string[]>([]);
-  readonly loading = input<boolean>(false);
+  protected readonly control = new FormControl<T | null>(null);
 
-  readonly _name = input<string>('', { alias: 'name' });
-  readonly _placeholder = input<string>('', { alias: 'placeholder' });
-  readonly _readonly = input<boolean>(false, { alias: 'readonly' });
-  readonly _required = input<boolean, unknown>(false, {
-    alias: 'required',
-    transform: booleanAttribute,
-  });
-  readonly _disabledByInput = input<boolean, unknown>(false, {
-    alias: 'disabled',
-    transform: booleanAttribute,
-  });
-
-  private readonly _focused = signal(false);
-  protected readonly _disabledByCva = signal(false);
-  protected readonly _disabled = computed(
+  protected readonly disabled = computed(
     () => this._disabledByInput() || this._disabledByCva(),
   );
 
-  private _value: T | null = null;
+  protected readonly isRequired = signal(
+    this.ngControl?.control?.hasValidator(Validators.required) ?? false,
+  );
+
+  protected readonly hasErrors = signal(false);
+
+  private changeSub = new Subscription();
+
+  protected onChange: (value: T | null) => void = () => {};
+  protected onTouched: () => void = () => {};
 
   constructor() {
     if (this.ngControl) {
       this.ngControl.valueAccessor = this;
     }
+
+    effect(() => {
+      const inputDisabled = this._disabledByInput();
+      const cvaDisabled = this._disabledByCva();
+
+      if (inputDisabled || cvaDisabled) {
+        this.control.disable({ emitEvent: false });
+      } else {
+        this.control.enable({ emitEvent: true });
+      }
+    });
   }
 
-  get value(): T | null {
-    return this._value;
-  }
+  ngOnInit() {
+    const parent = this.ngControl?.control;
+    if (!parent) return;
 
-  set value(value: T | null) {
-    this._value = value;
-  }
+    parent.statusChanges
+      .pipe(startWith(null), takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        this.control.setValidators(parent.validator ?? null);
+        this.control.setAsyncValidators(parent.asyncValidator ?? null);
+        this.control.updateValueAndValidity({ emitEvent: false });
 
-  get name(): string {
-    return this._name();
-  }
+        this.hasErrors.set(parent.invalid && parent.touched);
+        this.isRequired.set(parent.hasValidator(Validators.required) ?? false);
 
-  get placeholder(): string {
-    return this._placeholder();
-  }
+        this.cdr.markForCheck();
+      });
 
-  get disabled(): boolean {
-    return this._disabled();
-  }
+    parent.events
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((event) => {
+        if (event instanceof TouchedChangeEvent) {
+          if (parent.touched) {
+            this.control.markAsTouched();
+          } else {
+            this.control.markAsUntouched();
+          }
+          this.hasErrors.set(parent.invalid && parent.touched);
+          this.cdr.markForCheck();
+        }
+      });
 
-  get readonly(): boolean {
-    return this._readonly();
+    parent.valueChanges
+      .pipe(startWith(null), takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.cdr.markForCheck());
   }
-
-  get focused(): boolean {
-    return this._focused();
-  }
-
-  get empty(): boolean {
-    return (
-      this._value === null || this._value === '' || this._value === undefined
-    );
-  }
-
-  get required(): boolean {
-    const formControl = this.ngControl?.control;
-    const required =
-      !!formControl && formControl.hasValidator(Validators.required);
-    return this._required() || required;
-  }
-
-  get errorState(): boolean {
-    const control = this.ngControl?.control;
-    return !!control && control.invalid && control.touched;
-  }
-
-  /** Implemented as part of ControlValueAccessor */
-  protected onChange: (value: T) => void = () => {};
-  protected onTouched: () => void = () => {};
 
   writeValue(value: T): void {
-    this.value = value;
-    this.cdr.markForCheck();
+    this.control.setValue(value, { emitEvent: false });
   }
 
-  registerOnChange(fn: (value: T) => void): void {
+  registerOnChange(fn: (value: T | null) => void): void {
     this.onChange = fn;
+
+    this.changeSub.unsubscribe();
+    this.changeSub = this.control.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((v) => {
+        fn(v);
+      });
   }
 
   registerOnTouched(fn: () => void): void {
@@ -122,9 +137,7 @@ export abstract class FormControlBase<T> implements ControlValueAccessor {
   }
 
   setDisabledState(isDisabled: boolean): void {
-    console.log('setDisabledState', isDisabled);
     this._disabledByCva.set(isDisabled);
-    this.cdr.markForCheck();
   }
 
   protected errorMessage(): string | null {
@@ -157,16 +170,5 @@ export abstract class FormControlBase<T> implements ControlValueAccessor {
       default:
         return 'Invalid value';
     }
-  }
-
-  ngOnInit() {
-    const control = this.ngControl?.control;
-    if (!control) {
-      throw new Error(`FormControl ${this.id} not found`);
-    }
-
-    merge(control.statusChanges, control.valueChanges, control.events)
-      .pipe(startWith(null), takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => this.cdr.markForCheck());
   }
 }

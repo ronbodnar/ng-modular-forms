@@ -1,8 +1,8 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  computed,
   input,
+  signal,
 } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -10,14 +10,13 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { TextBehavior } from '@ng-modular-forms/behavior';
+import { CurrencyBehavior, TextBehavior } from '@ng-modular-forms/behavior';
 import { MatFormControlBase } from './mat-form-control-base';
+import { formatNumber, parseNumber } from '@ng-modular-forms/core';
 import { MatButtonModule } from '@angular/material/button';
 
-type TextInputType = 'text' | 'email' | 'tel' | 'url' | 'password' | 'search';
-
 @Component({
-  selector: 'nmf-mat-text',
+  selector: 'nmf-mat-number',
   imports: [
     CommonModule,
     MatFormFieldModule,
@@ -44,14 +43,16 @@ type TextInputType = 'text' | 'email' | 'tel' | 'url' | 'password' | 'search';
 
       <input
         matInput
-        autocomplete="off"
         [ngClass]="classList"
         [name]="name()"
-        [type]="computedType()"
+        [type]="formatNumberValue() ? 'text' : 'number'"
+        [value]="displayValue()"
         [required]="isRequired()"
         [placeholder]="placeholder()"
         [formControl]="control"
         (blur)="onTouched()"
+        (input)="onInput($event)"
+        (keydown)="handleKeyDown($event)"
       />
 
       @if (loading()) {
@@ -67,35 +68,42 @@ type TextInputType = 'text' | 'email' | 'tel' | 'url' | 'password' | 'search';
         <mat-hint [ngClass]="hintClassList()">{{ hint() }}</mat-hint>
       }
 
-      @if (type() === 'password' && !loading()) {
-        <button
-          matIconSuffix
-          mat-icon-button
-          color="transparent"
-          class="nmf-password-toggle"
-          [disabled]="disabled()"
-          (click)="behavior.toggleShowPassword($event)"
-        >
-          <mat-icon>{{
-            behavior.showPassword() ? 'visibility_off' : 'visibility'
-          }}</mat-icon>
-        </button>
-      }
-
       <ng-content></ng-content>
 
       <mat-error>{{ errorMessage() }}</mat-error>
     </mat-form-field>
   `,
 })
-export class MatInputTextComponent extends MatFormControlBase<string | null> {
-  type = input<TextInputType>('text');
+export class MatInputNumberComponent extends MatFormControlBase<number | null> {
+  formatNumberValue = input<boolean>(false);
+  displayValue = signal<string>('');
 
   behavior = new TextBehavior();
+  currencyBehavior = new CurrencyBehavior();
 
-  computedType = computed(() =>
-    this.behavior.showPassword() && this.type() === 'password'
-      ? 'text'
-      : this.type(),
-  );
+  override writeValue(value: number | null): void {
+    super.writeValue(value);
+    this.updateDisplayValue(value);
+  }
+
+  handleKeyDown(event: KeyboardEvent) {
+    this.currencyBehavior.handleKeyDown(event);
+  }
+
+  onInput(event: Event): void {
+    const raw = (event.target as HTMLInputElement).value;
+    const parsed = parseNumber(raw);
+
+    this.updateDisplayValue(parsed);
+
+    this.onChange(parsed);
+  }
+
+  updateDisplayValue(value: number | null) {
+    if (this.formatNumberValue() && value != null) {
+      this.displayValue.set(formatNumber(value) ?? '');
+    } else {
+      this.displayValue.set(value != null ? String(value) : '');
+    }
+  }
 }

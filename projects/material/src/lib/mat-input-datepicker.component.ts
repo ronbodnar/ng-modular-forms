@@ -1,18 +1,11 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  inject,
-  input,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { DateAdapter, MatNativeDateModule } from '@angular/material/core';
+import { MatNativeDateModule } from '@angular/material/core';
 import {
   DateFilterFn,
   MatCalendarCellClassFunction,
   MatCalendarView,
-  MatDatepicker,
-  MatDatepickerInputEvent,
   MatDatepickerModule,
 } from '@angular/material/datepicker';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -49,19 +42,14 @@ import { MatInputModule } from '@angular/material/input';
       <input
         matInput
         autocomplete="off"
-        [id]="id"
-        [name]="name"
-        [value]="value"
+        [name]="name()"
         [min]="minDate()"
         [max]="maxDate()"
-        [readonly]="readonly"
-        [required]="required"
-        [disabled]="disabled"
-        [placeholder]="placeholder || 'Select a date'"
         [matDatepicker]="picker"
         [matDatepickerFilter]="dateFilter()"
-        (dateInput)="onInput($event)"
-        (dateChange)="onInput($event)"
+        [required]="isRequired()"
+        [placeholder]="placeholder()"
+        [formControl]="control"
         (blur)="onTouched()"
       />
 
@@ -69,24 +57,18 @@ import { MatInputModule } from '@angular/material/input';
         matSuffix
         [for]="picker"
         [hidden]="loading()"
-        [disabled]="disabled"
+        [disabled]="disabled()"
       ></mat-datepicker-toggle>
 
       <mat-datepicker
         [hidden]="loading()"
-        [dateClass]="dateClass()"
-        [panelClass]="panelClass()"
         [startAt]="startAt()"
         [startView]="startView()"
         [touchUi]="touchUi()"
+        [dateClass]="dateClass()"
+        [panelClass]="panelClass()"
         #picker
-      >
-        <!--         <mat-datepicker-actions>
-          <button matButton (click)="setToday(picker)">Today</button>
-          <button matButton matDatepickerCancel>Cancel</button>
-          <button matButton="elevated" matDatepickerApply>Apply</button>
-        </mat-datepicker-actions> -->
-      </mat-datepicker>
+      />
 
       @if (loading()) {
         <mat-spinner
@@ -114,16 +96,5 @@ export class MatInputDatepickerComponent extends MatFormControlBase<Date | null>
   startView = input<MatCalendarView>('month');
   panelClass = input<string>('');
   touchUi = input<boolean>(false);
-
-  private readonly dateAdapter = inject(DateAdapter<Date>);
-
-  setToday(dp: MatDatepicker<Date>) {
-    const today = this.dateAdapter.today();
-    dp.select(today);
-  }
-
-  onInput(event: MatDatepickerInputEvent<Date>): void {
-    this.value = event.value;
-    this.onChange(event.value);
-  }
+  override placeholder = input<string>('Select a date');
 }

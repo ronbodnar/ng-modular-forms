@@ -8,7 +8,6 @@ import { MatInputModule } from '@angular/material/input';
 import {
   MatTimepickerModule,
   MatTimepickerOption,
-  MatTimepickerSelected,
 } from '@angular/material/timepicker';
 
 @Component({
@@ -39,16 +38,13 @@ import {
       <input
         matInput
         autocomplete="off"
-        [id]="id"
-        [name]="name"
-        [value]="value"
+        [name]="name()"
+        [matTimepicker]="picker"
         [matTimepickerMin]="minDate()"
         [matTimepickerMax]="maxDate()"
-        [disabled]="disabled"
-        [required]="required"
-        [readonly]="readonly"
-        [placeholder]="placeholder || 'Select a date'"
-        [matTimepicker]="picker"
+        [required]="isRequired()"
+        [placeholder]="placeholder()"
+        [formControl]="control"
         (blur)="onTouched()"
       />
 
@@ -56,14 +52,13 @@ import {
         matSuffix
         [for]="picker"
         [hidden]="loading()"
-        [disabled]="disabled"
+        [disabled]="disabled()"
       />
 
       <mat-timepicker
         [hidden]="loading()"
         [interval]="interval()"
         [options]="options()"
-        (selected)="onInput($event)"
         #picker
       />
 
@@ -89,10 +84,5 @@ export class MatInputTimepickerComponent extends MatFormControlBase<Date | null>
   maxDate = input<Date | null>(null);
   interval = input<number | string | null>(null);
   options = input<MatTimepickerOption[] | null>(null);
-
-  onInput(event: MatTimepickerSelected<unknown>): void {
-    const value = (event as MatTimepickerSelected<Date>).value;
-    this.value = value;
-    this.onChange(value);
-  }
+  override placeholder = input<string>('Select a time');
 }

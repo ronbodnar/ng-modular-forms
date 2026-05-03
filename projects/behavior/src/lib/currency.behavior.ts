@@ -1,4 +1,4 @@
-export class InputCurrencyBehavior {
+export class CurrencyBehavior {
   handleKeyDown(event: KeyboardEvent) {
     const input = event.target as HTMLInputElement;
     const value = input.value;

@@ -17,9 +17,6 @@ export abstract class FormOrchestrator
   extends FormMapperBase
   implements OnDestroy
 {
-  protected readonly hydrator = inject(FormHydrator);
-  protected readonly serializer = inject(FormSerializer);
-
   private readonly _form = signal<FormGroup>(new FormGroup({}));
   private readonly _handlers = signal<FormHandlerRegistry>([]);
   private readonly _mapperRegistry = signal<MapperRegistry>({});
@@ -33,6 +30,13 @@ export abstract class FormOrchestrator
   public readonly errorMessage = this._errorMessage.asReadonly();
 
   private _logicSubscription = new Subscription();
+
+  constructor(
+    protected readonly hydrator: FormHydrator,
+    protected readonly serializer: FormSerializer,
+  ) {
+    super();
+  }
 
   /**
    * Initializes orchestration state.

@@ -16,7 +16,7 @@ describe('MatInputCurrencyComponent', () => {
     component = fixture.componentInstance;
   });
 
-  it('should prevent default for non-digit keys', () => {
+  it('prevents default for non-digit keys', () => {
     fixture.detectChanges();
 
     const input: HTMLInputElement = fixture.debugElement.query(
@@ -31,7 +31,7 @@ describe('MatInputCurrencyComponent', () => {
     expect(event.preventDefault).toHaveBeenCalled();
   });
 
-  it('should parse and format a valid number on input', () => {
+  it('parses and formats a valid number on input', () => {
     fixture.detectChanges();
 
     const onChangeMock = vi.fn();

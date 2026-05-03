@@ -31,6 +31,11 @@ export class PreferencesFormHandler extends FormHandlerBase<ControlNames> {
           referralControl.clearValidators();
         }
 
+        console.log(
+          'Updatin ctrl',
+          referralControl.hasValidator(Validators.required),
+        );
+
         referralControl.updateValueAndValidity();
       },
     );

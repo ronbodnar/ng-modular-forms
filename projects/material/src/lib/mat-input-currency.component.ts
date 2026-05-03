@@ -1,4 +1,9 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  signal,
+} from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -6,7 +11,7 @@ import { MatFormControlBase } from './mat-form-control-base';
 import { formatNumber, parseNumber } from '@ng-modular-forms/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatInputModule } from '@angular/material/input';
-import { InputCurrencyBehavior } from '@ng-modular-forms/behavior';
+import { CurrencyBehavior } from '@ng-modular-forms/behavior';
 
 @Component({
   selector: 'nmf-mat-currency',
@@ -32,25 +37,30 @@ import { InputCurrencyBehavior } from '@ng-modular-forms/behavior';
         <mat-label>{{ label() }}</mat-label>
       }
 
-      @if (value != null) {
-        <span [class.nmf-disabled]="disabled" matTextPrefix>$</span>
+      @if (displayValue()) {
+        <span
+          matTextPrefix
+          [class.nmf-disabled]="disabled()"
+          [style.color]="textColor()"
+          [style.opacity]="disabled() ? 0.6 : 1"
+          >$</span
+        >
       }
 
       <input
         matInput
         type="text"
-        autocomplete="off"
-        [id]="id"
-        [name]="name"
-        [value]="displayValue()"
         [ngClass]="classList()"
-        [readonly]="readonly"
-        [required]="required"
-        [disabled]="disabled"
-        [placeholder]="placeholder"
-        (keydown)="handleKeyDown($event)"
-        (input)="onInput($event)"
+        [style.color]="textColor()"
+        [style.opacity]="disabled() ? 0.6 : 1"
+        [name]="name()"
+        [value]="displayValue()"
+        [required]="isRequired()"
+        [placeholder]="placeholder()"
+        [formControl]="control"
         (blur)="onTouched()"
+        (input)="onInput($event)"
+        (keydown)="handleKeyDown($event)"
       />
 
       <span matTextSuffix>
@@ -79,7 +89,7 @@ import { InputCurrencyBehavior } from '@ng-modular-forms/behavior';
 export class MatInputCurrencyComponent extends MatFormControlBase<
   number | null
 > {
-  behavior = new InputCurrencyBehavior();
+  behavior = new CurrencyBehavior();
 
   displayValue = signal<string | null>(null);
 
@@ -96,10 +106,20 @@ export class MatInputCurrencyComponent extends MatFormControlBase<
     const rawValue = (event.target as HTMLInputElement).value;
     const value = parseNumber(rawValue);
 
-    console.log('onInput', rawValue, value);
     this.displayValue.set(value != null ? formatNumber(value) : null);
 
-    this.value = value;
     this.onChange(value);
   }
+
+  textColor = computed(() => {
+    const value = this.displayValue();
+    if (this._disabledByInput() || !value) {
+      return '';
+    }
+
+    const parsedValue = parseNumber(value);
+    const valid = parsedValue != null && parsedValue >= 0;
+
+    return valid ? '' : 'red';
+  });
 }

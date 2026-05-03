@@ -1,8 +1,7 @@
 import {
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
   Component,
-  inject,
+  computed,
   input,
   OnInit,
   output,
@@ -32,37 +31,54 @@ export interface Step {
   templateUrl: './step-wrapper.component.html',
 })
 export class StepWrapperComponent implements OnInit {
-  private readonly cdr = inject(ChangeDetectorRef);
-
-  readonly steps = input<Step[]>([], { alias: 'steps' });
-  readonly form = input.required<FormGroup>();
-  readonly submitting = input<boolean>(false);
-
   readonly stepChange = output<number>();
 
+  readonly submitting = input<boolean>(false);
+  readonly _steps = input<Step[]>([], { alias: 'steps' });
+
+  private readonly _stepsTick = signal(0);
   private readonly _currentStep = signal(1);
 
   readonly currentStep = this._currentStep.asReadonly();
 
-  ngOnInit() {
-    const form = this.form();
+  steps = computed(() => {
+    this._stepsTick();
 
-    merge(form.valueChanges, form.statusChanges).subscribe(() => {
-      this.cdr.markForCheck();
-    });
+    console.log('Running steps calc');
+
+    return this._steps().map((step) => ({
+      ...step,
+      invalid: step.form.invalid && step.form.touched,
+    }));
+  });
+
+  ngOnInit() {
+    const forms = this._steps().map((s) => s.form);
+
+    merge(
+      ...forms.map((f) => f.valueChanges),
+      ...forms.map((f) => f.statusChanges),
+    ).subscribe(() => this._stepsTick.update((v) => v + 1));
   }
 
   setCurrentStep(step: number) {
+    const lastStep = this._currentStep();
     this._currentStep.set(step);
     this.stepChange.emit(step);
+    this.getStep(lastStep).form.markAllAsTouched();
   }
 
   getStep(step: number = this.currentStep()): Step {
-    return this.steps()[step - 1];
+    const steps = this._steps();
+    if (step < 0 || step > this._steps().length) {
+      return steps[this.currentStep() - 1];
+    }
+    return steps[step - 1];
   }
 
   goToStep(step: number) {
-    this.setCurrentStep(Math.min(Math.max(step, 1), this.steps().length));
+    if (this._currentStep() === step) return;
+    this.setCurrentStep(Math.min(Math.max(step, 1), this._steps().length));
   }
 
   nextStep() {
@@ -72,7 +88,7 @@ export class StepWrapperComponent implements OnInit {
       return;
     }
 
-    this.setCurrentStep(Math.min(this.currentStep() + 1, this.steps().length));
+    this.setCurrentStep(Math.min(this.currentStep() + 1, this._steps().length));
   }
 
   prevStep() {

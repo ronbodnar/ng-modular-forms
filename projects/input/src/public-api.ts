@@ -4,6 +4,7 @@
 
 export * from './lib/input-currency.component';
 export * from './lib/input-datepicker.component';
+export * from './lib/input-number.component';
 export * from './lib/input-select.component';
 export * from './lib/input-textarea.component';
 export * from './lib/input-text.component';

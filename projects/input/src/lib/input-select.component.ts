@@ -1,13 +1,7 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  input,
-  OnInit,
-  signal,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { InputFormControlBase } from './input-form-control-base';
+import { FormControlBase } from '@ng-modular-forms/core';
 
 export interface SelectOption {
   key: string | number;
@@ -25,7 +19,7 @@ export interface SelectOption {
       @if (label()) {
         <label class="nmf-label">
           {{ label() }}
-          @if (required) {
+          @if (isRequired()) {
             <span class="nmf-required">*</span>
           }
         </label>
@@ -33,30 +27,28 @@ export interface SelectOption {
 
       <select
         class="nmf-input"
-        [class.error]="errorState"
-        [class.readonly]="readonly"
         [ngClass]="classList()"
-        [value]="value"
-        [disabled]="disabled"
-        [required]="required"
+        [class.error]="hasErrors()"
+        [class.disabled]="disabled()"
+        [required]="isRequired()"
+        [formControl]="control"
         (blur)="onTouched()"
-        (change)="onSelectionChange(eventValue($event))"
       >
         <!-- Empty option -->
-        <option [value]="''" disabled>
+        <option [ngValue]="null" disabled>
           {{ emptyOptionLabel() }}
         </option>
 
         <!-- Options -->
         @for (option of options(); track option.key) {
-          <option [value]="option.key" [disabled]="option.disabled">
+          <option [ngValue]="option.key" [disabled]="option.disabled">
             {{ option.label }}
           </option>
         }
 
         <!-- Clear option -->
         @if (clearOptionLabel()) {
-          <option value="NONE">
+          <option [ngValue]="null">
             {{ clearOptionLabel() }}
           </option>
         }
@@ -74,43 +66,8 @@ export interface SelectOption {
     </div>
   `,
 })
-export class InputSelectComponent
-  extends InputFormControlBase<any>
-  implements OnInit
-{
+export class InputSelectComponent extends FormControlBase<any> {
   options = input<SelectOption[]>([]);
   emptyOptionLabel = input<string>('Select an option');
   clearOptionLabel = input<string | null>('Clear selection');
-
-  private _initialValue = signal<any>(null);
-
-  override ngOnInit() {
-    super.ngOnInit();
-    this._initialValue.set(this.value);
-  }
-
-  onSelectionChange(event: { value: string | number | null }) {
-    if (this.disabled) return;
-
-    let value = event.value;
-    if (value === 'NONE') {
-      value = typeof this._initialValue() === 'number' ? -1 : '';
-    } else {
-      value = event.value;
-    }
-
-    if (value != null) {
-      this.onChange(value);
-    }
-  }
-
-  onSelectionClosed(): void {
-    if (this.value === '' || this.value === -1) {
-      this.ngControl?.control?.markAsDirty();
-    }
-  }
-
-  eventValue(event: Event) {
-    return { value: (event.target as HTMLSelectElement).value };
-  }
 }
