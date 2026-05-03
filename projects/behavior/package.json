@@ -1,6 +1,6 @@
 {
   "name": "@ng-modular-forms/behavior",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "peerDependencies": {
     "@angular/core": ">=19.0.0 <22.0.0",
     "@ng-modular-forms/core": "^0.3.0 <1.0.0"
