@@ -1,5 +1,6 @@
 import { FormGroup } from '@angular/forms';
-import { FormHandlerBase, FormMapperBase } from '@ng-modular-forms/core';
+import { FormMapperBase } from './base/form-mapper-base';
+import { FormHandlerBase } from './base/form-handler-base';
 
 export type FormStatus = 'idle' | 'submitting' | 'error' | 'success';
 
