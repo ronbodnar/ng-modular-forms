@@ -1,22 +1,10 @@
 /// <reference types="vitest" />
 import { defineConfig } from 'vite';
-import { resolve } from 'path';
 import angular from '@analogjs/vite-plugin-angular';
+import tsconfigPaths from 'vite-tsconfig-paths';
 
 export default defineConfig(({ mode }) => ({
-  plugins: [angular()],
-  resolve: {
-    alias: {
-      '@ng-modular-forms/core': resolve(
-        __dirname,
-        'projects/core/src/public-api.ts',
-      ),
-      '@ng-modular-forms/material': resolve(
-        __dirname,
-        'projects/material/src/public-api.ts',
-      ),
-    },
-  },
+  plugins: [angular(), tsconfigPaths()],
   test: {
     globals: true,
     environment: 'jsdom',
