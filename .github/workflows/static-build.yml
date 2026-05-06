@@ -32,7 +32,7 @@ jobs:
         run: npm run test -- examples
 
       - name: Build examples
-        run: npm run build -- examples
+        run: npm run build -- examples --base-href=/ng-modular-forms/
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
