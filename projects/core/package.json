@@ -1,6 +1,28 @@
 {
   "name": "@ng-modular-forms/core",
-  "version": "0.5.0",
+  "version": "0.6.0",
+  "description": "Core primitives, behaviors, and input components for orchestrating complex Angular reactive forms.",
+  "keywords": [
+    "angular",
+    "angular-material",
+    "forms",
+    "reactive-forms",
+    "reusable-forms",
+    "controlvalueaccessor",
+    "material-design",
+    "ui-components",
+    "form-controls",
+    "input-components",
+    "ng-modular-forms"
+  ],
+  "homepage": "https://github.com/ronbodnar/ng-modular-forms",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ronbodnar/ng-modular-forms.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ronbodnar/ng-modular-forms/issues"
+  },
   "peerDependencies": {
     "@angular/core": ">=19.0.0 <22.0.0",
     "@angular/common": ">=19.0.0 <22.0.0",

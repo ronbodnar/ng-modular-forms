@@ -10,12 +10,10 @@ defined, reusable primitives.
 
 ## Packages
 
-| Package                        | Description                         |
-| :----------------------------- | :---------------------------------- |
-| **@ng-modular-forms/core**     | Orchestration, handlers, mapping    |
-| **@ng-modular-forms/behavior** | Base input behaviors                |
-| **@ng-modular-forms/input**    | Framework-agnostic input components |
-| **@ng-modular-forms/material** | Angular Material-based inputs       |
+| Package                        | Description                                                                 |
+| :----------------------------- | :-------------------------------------------------------------------------- |
+| **@ng-modular-forms/core**     | Orchestration, handlers, mapping, input components                          |
+| **@ng-modular-forms/material** | Angular Material-based input components                                     |
 
 ## Installation
 
@@ -25,11 +23,9 @@ Start with core:
 npm install @ng-modular-forms/core
 ```
 
-Add UI layers as needed:
+Add Material UI support if needed:
 
 ```bash
-npm install @ng-modular-forms/behavior
-npm install @ng-modular-forms/input
 npm install @ng-modular-forms/material
 ```
 
@@ -62,267 +58,58 @@ Angular reactive forms often become:
 
 - tightly coupled to components
 - overloaded with subscriptions
-- difficult to scale across features
-- inconsistent in transformation logic
+- hard to scale and reuse
 
 ## The Solution
 
-Separate responsibilities:
+ng-modular-forms separates concerns:
 
-- Orchestration → form lifecycle + composition
-- Handlers → reactive logic
-- Mappers → API transformations
-- UI → isolated, reusable controls
+- **Orchestration** → form lifecycle + composition  
+- **Handlers** → reactive logic  
+- **Mappers** → API transformations  
+- **UI** → reusable input components
 
-## Example: Orchestrated Form
-
-### Without ng-modular-forms
+##  Simple Example
 
 ```ts
 @Component({
   template: `
-    <form [formGroup]="form" (ngSubmit)="submit()">
-      <div>
-        <label>Field A</label>
-        <input formControlName="fieldA" />
-      </div>
-
-      <div>
-        <label>Field B</label>
-        <input formControlName="fieldB" />
-      </div>
-
-      ...
-
-      <div *ngIf="form.errors?.custom" class="error">
-        {{ form.errors.custom }}
-      </div>
-
-      <button type="submit" [disabled]="status() === 'submitting'">Submit</button>
+    <form [formGroup]="form">
+      <nmf-text formControlName="name" label="Name" />
+      <nmf-currency formControlName="salary" label="Salary" />
     </form>
   `,
-  ...
 })
 export class ExampleComponent {
-  status = signal<'idle' | 'submitting' | 'error' | 'success'>('idle')
-
   form = new FormGroup({
-    fieldA: new FormControl(null, Validators.required),
-    fieldB: new FormControl({ value: null, disabled: true }),
+    name: new FormControl<string>('', Validators.required),
+    salary: new FormControl<number | null>(null),
   });
-
-  ngOnInit() {
-    this.form.get("fieldA")?.valueChanges.subscribe((value) => {
-      if (value) {
-        this.form.get("fieldB")?.enable();
-      } else {
-        this.form.get("fieldB")?.reset();
-        this.form.get("fieldB")?.disable();
-      }
-    });
-  }
-
-  submit() {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      return;
-    }
-
-    const fieldAValue = this.form.value.fieldA ?? "";
-
-    const payload = {
-      fieldA: fieldAValue.trim().replace(/\s+/g, "-").toLowerCase(),
-      fieldB: this.form.value.fieldB,
-      submittedAt: new Date(),
-    };
-
-    this.status.set('submitting')
-
-    apiCall(payload).subscribe({
-      next: () => {
-        console.log("Success");
-        this.status.set('success');
-      },
-      error: () => {
-        this.form.setErrors({
-          custom: "Something went wrong",
-        });
-        this.status.set('error');
-      },
-    });
-  }
 }
 ```
 
-Issues:
+##  Available Input Components
 
-- logic spread across component
-- hard to scale with bigger or more complex forms
-- difficult to test and reuse
+All inputs share a consistent API and can be swapped between native and Material implementations without changing form logic.
 
-### With ng-modular-forms
+| Input Type      | Native Selector                | Material Selector                  | Description                                                                      |
+|-----------------|--------------------------------|------------------------------------|----------------------------------------------------------------------------------|
+| Text / Password | `nmf-text`                     | `nmf-mat-text`                     | Supports multiple input types including password with visibility toggle          |
+| Number          | `nmf-number`                   | `nmf-mat-number`                   | Numeric input with type-safe value handling                                      |
+| Currency        | `nmf-currency`                 | `nmf-mat-currency`                 | Formatted currency input with parsing and display formatting                     |
+| Date            | `nmf-datepicker`               | `nmf-mat-datepicker`               | Date selection with native or Angular Material datepicker UI                     |
+| Time            | `nmf-timepicker`               | `nmf-mat-timepicker`               | Time input with structured formatting                                            |
+| Select          | `nmf-select`                   | `nmf-mat-select`                   | Dropdown/select with support for disabled options                                |
+| Textarea        | `nmf-textarea`                 | `nmf-mat-textarea`                 | Multi-line text input with configurable rows                                     |
 
-#### Parent Form (Orchestrator)
+###  Shared Features
 
-```ts
-@Component({
-  selector: "app-example",
-  imports: [ReactiveFormsModule, SectionAComponent],
-  providers: [SectionAHandler],
-  template: `
-    <form [formGroup]="form()" (ngSubmit)="submit()">
-      <app-section-a [form]="getSubForm('sectionA')" />
-
-      <button type="submit">Submit</button>
-    </form>
-  `,
-})
-export class ExampleComponent extends FormOrchestratorBase {
-  sectionAHandler = inject(SectionAHandler);
-
-  ngOnInit() {
-    const options = {
-      form: new FormGroup({
-        sectionA: new FormGroup({
-          fieldA: new FormControl("", Validators.required),
-          fieldB: new FormControl({ value: "", disabled: true }),
-        }),
-      }),
-
-      handlers: [this.sectionAHandler],
-
-      mapperRegistry: {
-        sectionA: new SectionAMapper(),
-      },
-    };
-
-    this.initialize(options);
-  }
-
-  submit() {
-    const form = this.form();
-    if (form.invalid) {
-      form.markAllAsTouched();
-      return;
-    }
-
-    this.setStatus("submitting");
-
-    const body = this.buildRequest(this.form());
-
-    apiCall(body).subscribe({
-      next: () => {
-        console.log("Success");
-        this.setStatus("success");
-      },
-      error: () => {
-        this.form().setErrors({
-          custom: "Something went wrong",
-        });
-        this.setStatus("error");
-      },
-    });
-  }
-}
-```
-
-#### Subform Component
-
-```ts
-@Component({
-  selector: "app-section-a",
-  imports: [ReactiveFormsModule, InputTextComponent],
-  template: `
-    <div [formGroup]="form">
-      <nmf-text formControlName="fieldA" label="Field A" />
-      <nmf-text formControlName="fieldB" label="Field B (depends on field A)" />
-    </div>
-  `,
-})
-export class SectionAComponent {
-  @Input({ required: true }) form!: FormGroup;
-}
-```
-
-#### Handler (Reactive Logic Layer)
-
-```ts
-const CONTROL_NAMES = ["sectionA.fieldA", "sectionA.fieldB"] as const;
-
-type ControlNames = (typeof CONTROL_NAMES)[number];
-
-@Injectable()
-export class SectionAHandler extends FormHandlerBase<ControlNames> {
-  override getReactiveLogic(form: FormGroup): Subscription {
-    this.registerControls(form, [...CONTROL_NAMES]);
-
-    return this.valueChangesOf("sectionA.fieldA").subscribe((value) => {
-      const fieldBControl = getControl("sectionA.fieldB", form);
-      if (!value) {
-        fieldBControl.reset();
-        fieldBControl.disable();
-        return;
-      }
-      fieldBControl.enable();
-    });
-  }
-}
-```
-
-#### Mapper (Data Transformation Layer)
-
-```ts
-interface ApiResponseModel {
-  fieldA: unknown;
-  fieldB: unknown;
-}
-
-interface ApiRequestModel {
-  fieldA: unknown;
-  fieldB: unknown;
-  requestedAt: Date;
-}
-
-type FormModel = ApiResponseModel;
-
-export class SectionAMapper extends FormMapperBase<ApiResponseModel, ApiRequestModel, FormModel> {
-  buildRequest(form: FormGroup): ApiRequestModel {
-    const fieldAValue = form.value.fieldA ?? "";
-    return {
-      fieldA: fieldAValue.trim().replace(/\s+/g, "-").toLowerCase(),
-      fieldB: form.value.fieldB,
-      requestedAt: new Date(),
-    };
-  }
-
-  transformModelToForm(model: ApiResponseModel): FormModel {
-    return {
-      fieldA: model.fieldA,
-      fieldB: model.fieldB,
-    };
-  }
-}
-```
-
-### Result
-
-- Subforms are fully isolated and reusable
-- Logic is centralized and testable
-- Complex dependencies are predictable and maintainable
-- Easily scales to large, multi-section or multi-step forms
-
-## Available Components
-
-### Input Components
-
-| Component  | Basic Selector   | Material Selector    | Description                     |
-| :--------- | :--------------- | :------------------- | :------------------------------ |
-| Currency   | `nmf-currency`   | `nmf-mat-currency`   | Currency input with formatting  |
-| Datepicker | `nmf-datepicker` | `nmf-mat-datepicker` | Date selection input            |
-| Select     | `nmf-select`     | `nmf-mat-select`     | Dropdown selection from options |
-| Text       | `nmf-text`       | `nmf-mat-text`       | Single-line text input          |
-| Textarea   | `nmf-textarea`   | `nmf-mat-textarea`   | Multi-line text input           |
-| Timepicker | `nmf-timepicker` | `nmf-mat-timepicker` | Time selection input            |
+- Implements `ControlValueAccessor`
+- Fully compatible with Angular Reactive Forms
+- Consistent API across all inputs
+- Built-in validation state + error messaging
+- Label, required indicator, and loading state support
+- Behavior-driven input handling (formatting, parsing, restrictions)
 
 ## When to Use
 
@@ -332,7 +119,7 @@ Use this library when your application has:
 - shared form logic across features
 - API-driven form transformations
 - nested or dynamically composed forms
-- or you just want simple declarative form structures without the boilerplate
+- or you just want **simple declarative form structures without the boilerplate**
 
 ## License
 

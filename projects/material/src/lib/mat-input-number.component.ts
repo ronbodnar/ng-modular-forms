@@ -10,9 +10,13 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { CurrencyBehavior, TextBehavior } from '@ng-modular-forms/behavior';
 import { MatFormControlBase } from './mat-form-control-base';
-import { formatNumber, parseNumber } from '@ng-modular-forms/core';
+import {
+  formatNumber,
+  parseNumber,
+  CurrencyBehavior,
+  TextBehavior,
+} from '@ng-modular-forms/core';
 import { MatButtonModule } from '@angular/material/button';
 
 @Component({
@@ -87,7 +91,7 @@ export class MatInputNumberComponent extends MatFormControlBase<number | null> {
   }
 
   handleKeyDown(event: KeyboardEvent) {
-    this.currencyBehavior.handleKeyDown(event);
+    this.currencyBehavior.blockNonDigitKey(event);
   }
 
   onInput(event: Event): void {

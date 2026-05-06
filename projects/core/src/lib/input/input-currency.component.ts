@@ -6,12 +6,9 @@ import {
 } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { CurrencyBehavior } from '@ng-modular-forms/behavior';
-import {
-  formatNumber,
-  FormControlBase,
-  parseNumber,
-} from '@ng-modular-forms/core';
+import { FormControlBase } from '../base/form-control-base';
+import { CurrencyBehavior } from '../behavior/currency.behavior';
+import { formatNumber, parseNumber } from '../form-util';
 
 @Component({
   selector: 'nmf-currency',
@@ -88,7 +85,7 @@ export class InputCurrencyComponent extends FormControlBase<number | null> {
   }
 
   handleKeyDown(event: KeyboardEvent): void {
-    this.behavior.handleKeyDown(event);
+    this.behavior.blockNonDigitKey(event);
   }
 
   onInput(event: Event) {

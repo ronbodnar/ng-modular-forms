@@ -10,9 +10,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { TextBehavior } from '@ng-modular-forms/behavior';
 import { MatFormControlBase } from './mat-form-control-base';
 import { MatButtonModule } from '@angular/material/button';
+import { TextBehavior } from '@ng-modular-forms/core';
 
 type TextInputType = 'text' | 'email' | 'tel' | 'url' | 'password' | 'search';
 

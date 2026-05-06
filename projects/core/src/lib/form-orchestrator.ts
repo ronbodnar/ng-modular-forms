@@ -43,7 +43,7 @@ export abstract class FormOrchestrator
    * Must be called before any subform registration or handler execution.
    */
   public orchestrate(options: FormOrchestratorOptions) {
-    const { form, handlers, mapperRegistry } = options;
+    const { form, handlers = [], mapperRegistry = {} } = options;
     this._form.set(form);
     this._handlers.set(handlers);
     this._mapperRegistry.set(mapperRegistry);

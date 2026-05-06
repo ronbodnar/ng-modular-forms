@@ -9,14 +9,6 @@
         "./dist/core",
         "./projects/core/src/public-api.ts"
       ],
-      "@ng-modular-forms/behavior": [
-        "./dist/behavior",
-        "./projects/behavior/src/public-api.ts"
-      ],
-      "@ng-modular-forms/input": [
-        "./dist/input",
-        "./projects/input/src/public-api.ts"
-      ],
       "@ng-modular-forms/material": [
         "./dist/material",
         "./projects/material/src/public-api.ts"

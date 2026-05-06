@@ -8,14 +8,12 @@ export class FormSerializer {
     const result: any = {};
 
     Object.entries(form.controls).forEach(([key, control]) => {
-      const mapper = registry[key];
+      const mapFn = registry[key]?.toRequest;
 
       if (control instanceof FormGroup) {
-        if (mapper) {
-          result[key] = mapper.toRequest(control.value);
-        } else {
-          result[key] = this.toRequest(control, registry);
-        }
+        result[key] = mapFn
+          ? mapFn(control.value)
+          : this.toRequest(control, registry);
         return;
       }
 

@@ -8,10 +8,13 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatFormControlBase } from './mat-form-control-base';
-import { formatNumber, parseNumber } from '@ng-modular-forms/core';
+import {
+  CurrencyBehavior,
+  formatNumber,
+  parseNumber,
+} from '@ng-modular-forms/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatInputModule } from '@angular/material/input';
-import { CurrencyBehavior } from '@ng-modular-forms/behavior';
 
 @Component({
   selector: 'nmf-mat-currency',
@@ -99,7 +102,7 @@ export class MatInputCurrencyComponent extends MatFormControlBase<
   }
 
   handleKeyDown(event: KeyboardEvent): void {
-    this.behavior.handleKeyDown(event);
+    this.behavior.blockNonDigitKey(event);
   }
 
   onInput(event: Event) {

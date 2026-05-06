@@ -15,7 +15,7 @@ import {
   InputTextComponent,
   InputTimepickerComponent,
   SelectOption,
-} from '@ng-modular-forms/input';
+} from '@ng-modular-forms/core';
 import { FormSectionComponent } from '../../shared/form-section/form-section.component';
 import { FormExampleComponent } from '../../shared/form-example/form-example.component';
 import { FormStatusOutputComponent } from '../../shared/form-status-output/form-status-output.component';

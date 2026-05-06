@@ -6,7 +6,7 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
-import { FormControlBase } from '@ng-modular-forms/core';
+import { FormControlBase } from '../base/form-control-base';
 
 @Component({
   selector: 'nmf-timepicker',

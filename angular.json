@@ -3,35 +3,6 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "behavior": {
-      "projectType": "library",
-      "root": "projects/behavior",
-      "sourceRoot": "projects/behavior/src",
-      "prefix": "lib",
-      "architect": {
-        "build": {
-          "builder": "@angular-devkit/build-angular:ng-packagr",
-          "options": {
-            "project": "projects/behavior/ng-package.json"
-          },
-          "configurations": {
-            "production": {
-              "tsConfig": "projects/behavior/tsconfig.lib.prod.json"
-            },
-            "development": {
-              "tsConfig": "projects/behavior/tsconfig.lib.json"
-            }
-          },
-          "defaultConfiguration": "production"
-        },
-        "test": {
-          "builder": "@angular/build:unit-test",
-          "options": {
-            "tsConfig": "projects/behavior/tsconfig.spec.json"
-          }
-        }
-      }
-    },
     "core": {
       "projectType": "library",
       "root": "projects/core",
@@ -57,35 +28,6 @@
           "builder": "@angular/build:unit-test",
           "options": {
             "tsConfig": "projects/core/tsconfig.spec.json"
-          }
-        }
-      }
-    },
-    "input": {
-      "projectType": "library",
-      "root": "projects/input",
-      "sourceRoot": "projects/input/src",
-      "prefix": "lib",
-      "architect": {
-        "build": {
-          "builder": "@angular-devkit/build-angular:ng-packagr",
-          "options": {
-            "project": "projects/input/ng-package.json"
-          },
-          "configurations": {
-            "production": {
-              "tsConfig": "projects/input/tsconfig.lib.prod.json"
-            },
-            "development": {
-              "tsConfig": "projects/input/tsconfig.lib.json"
-            }
-          },
-          "defaultConfiguration": "production"
-        },
-        "test": {
-          "builder": "@angular/build:unit-test",
-          "options": {
-            "tsConfig": "projects/input/tsconfig.spec.json"
           }
         }
       }

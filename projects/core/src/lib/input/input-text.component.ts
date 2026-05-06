@@ -6,8 +6,8 @@ import {
 } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { TextBehavior } from '@ng-modular-forms/behavior';
-import { FormControlBase } from '@ng-modular-forms/core';
+import { FormControlBase } from '../base/form-control-base';
+import { TextBehavior } from '../behavior/text.behavior';
 
 @Component({
   selector: 'nmf-text',
