@@ -1,6 +1,7 @@
 name: Build and deploy static content to Pages
 
 on:
+  pull_request:
   push:
     branches:
       - main
