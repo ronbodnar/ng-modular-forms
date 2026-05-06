@@ -5,7 +5,7 @@
   "scripts": {
     "ng": "ng",
     "build": "ng build",
-    "build:all": "ng build core && ng build behavior && ng build input && ng build material",
+    "build:all": "ng build core && ng build material",
     "watch": "ng build --watch --configuration development",
     "test": "vitest",
     "test:ui": "vitest --ui",
