@@ -8,12 +8,12 @@ export class FormHydrator {
     Object.entries(form.controls).forEach(([key, control]) => {
       if (!(key in model)) return;
 
-      const mapper = registry[key];
+      const mapFn = registry[key]?.fromModel;
       const value = model?.[key];
 
       if (control instanceof FormGroup) {
-        if (mapper) {
-          control.patchValue(mapper.fromModel(value), { emitEvent: false });
+        if (mapFn) {
+          control.patchValue(mapFn(value), { emitEvent: false });
         } else {
           this.hydrate(control, value, registry);
         }

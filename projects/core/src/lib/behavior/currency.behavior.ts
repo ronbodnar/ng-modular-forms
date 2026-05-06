@@ -1,5 +1,5 @@
 export class CurrencyBehavior {
-  handleKeyDown(event: KeyboardEvent) {
+  blockNonDigitKey(event: KeyboardEvent) {
     const input = event.target as HTMLInputElement;
     const value = input.value;
 

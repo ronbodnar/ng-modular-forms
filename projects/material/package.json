@@ -1,6 +1,28 @@
 {
   "name": "@ng-modular-forms/material",
-  "version": "0.5.0",
+  "version": "0.6.0",
+  "description": "Angular Material form controls built on ng-modular-forms, providing reusable Material inputs with ControlValueAccessor integration.",
+  "keywords": [
+    "angular",
+    "angular-material",
+    "forms",
+    "reactive-forms",
+    "reusable-forms",
+    "controlvalueaccessor",
+    "material-design",
+    "ui-components",
+    "form-controls",
+    "input-components",
+    "ng-modular-forms"
+  ],
+  "homepage": "https://github.com/ronbodnar/ng-modular-forms",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ronbodnar/ng-modular-forms.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ronbodnar/ng-modular-forms/issues"
+  },
   "peerDependencies": {
     "@angular/core": ">=19.0.0 <22.0.0",
     "@angular/common": ">=19.0.0 <22.0.0",
@@ -8,8 +30,8 @@
     "@angular/material": ">=19.0.0 <22.0.0",
     "@angular/cdk": ">=19.0.0 <22.0.0",
     "rxjs": ">=7 <8",
-    "@ng-modular-forms/core": "^0.3.0 <1.0.0",
-    "@ng-modular-forms/behavior": "^0.1.0 <1.0.0"
+    "@ng-modular-forms/core": "^0.6.0",
+    "@ng-modular-forms/behavior": "^0.6.0"
   },
   "dependencies": {
     "tslib": "^2.6.0"

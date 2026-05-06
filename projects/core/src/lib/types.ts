@@ -10,6 +10,6 @@ export type FormHandlerRegistry = FormHandlerBase[];
 
 export interface FormOrchestratorOptions {
   form: FormGroup;
-  handlers: FormHandlerRegistry;
-  mapperRegistry: MapperRegistry;
+  handlers?: FormHandlerRegistry;
+  mapperRegistry?: MapperRegistry;
 }

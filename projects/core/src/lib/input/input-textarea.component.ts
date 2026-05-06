@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { FormControlBase } from '@ng-modular-forms/core';
+import { FormControlBase } from '../base/form-control-base';
 
 @Component({
   selector: 'nmf-textarea',
