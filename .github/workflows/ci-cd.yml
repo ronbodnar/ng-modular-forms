@@ -1,0 +1,133 @@
+name: CI CD Pipeline
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+    tags:
+      - "v*"
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org/
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm run test
+
+      - name: Build example site
+        run: npm run build -- examples --base-href=/ng-modular-forms/
+
+      - name: Build packages
+        run: npm run build:all
+
+      - name: Set tag version in packages
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          VERSION=${GITHUB_REF_NAME#v}
+          node -e "
+            const fs = require('fs');
+            for (const pkg of ['./dist/core/package.json', './dist/material/package.json']) {
+              const json = JSON.parse(fs.readFileSync(pkg, 'utf8'));
+              json.version = '$VERSION';
+              fs.writeFileSync(pkg, JSON.stringify(json, null, 2));
+            }
+          "
+
+      - name: Upload examples site artifact
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: dist/examples/browser
+
+      - name: Upload core package artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: core-package
+          path: dist/core
+
+      - name: Upload material package artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: material-package
+          path: dist/material
+
+  deploy-gh-pages:
+    if: github.event_name == 'push'
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    needs: verify
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Setup Pages
+        uses: actions/configure-pages@v6
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5
+
+  deploy-core-to-npm:
+    if: startsWith(github.ref, 'refs/tags/v')
+
+    needs: verify
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org/
+
+      - name: Download artifact
+        uses: actions/download-artifact@v8
+        with:
+          name: core-package
+          path: core-package
+
+      - name: Publish to NPM
+        working-directory: core-package
+        run: npm publish --access public
+
+  deploy-material-to-npm:
+    if: startsWith(github.ref, 'refs/tags/v')
+
+    needs: verify
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org/
+
+      - name: Download artifact
+        uses: actions/download-artifact@v8
+        with:
+          name: material-package
+          path: material-package
+
+      - name: Publish to NPM
+        working-directory: material-package
+        run: npm publish --access public

@@ -1,6 +1,6 @@
 {
   "name": "@ng-modular-forms/core",
-  "version": "0.6.0",
+  "version": "0.0.0",
   "description": "Core primitives, behaviors, and input components for orchestrating complex Angular reactive forms.",
   "keywords": [
     "angular",

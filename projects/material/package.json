@@ -1,6 +1,6 @@
 {
   "name": "@ng-modular-forms/material",
-  "version": "0.6.0",
+  "version": "0.0.0",
   "description": "Angular Material form controls built on ng-modular-forms, providing reusable Material inputs with ControlValueAccessor integration.",
   "keywords": [
     "angular",
