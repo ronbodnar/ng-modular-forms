@@ -1,24 +1,10 @@
 import { Component } from '@angular/core';
-import { RouterLink, RouterOutlet } from '@angular/router';
-import { A11yModule } from '@angular/cdk/a11y';
-
-interface NavigationLink {
-  label: string;
-  path: string;
-}
+import { RouterOutlet, RouterLinkWithHref } from '@angular/router';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, RouterLink, A11yModule],
+  imports: [RouterOutlet, RouterLinkWithHref],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
 })
-export class AppComponent {
-  title = 'examples';
-
-  navigationLinks: NavigationLink[] = [
-    { label: 'Basic input components', path: '/forms/basic-inputs' },
-    { label: 'Material input components', path: '/forms/material-inputs' },
-    { label: 'Multi-step registration form', path: '/forms/registration' },
-  ];
-}
+export class AppComponent {}

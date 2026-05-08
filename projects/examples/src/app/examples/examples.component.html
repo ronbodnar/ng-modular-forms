@@ -1,0 +1,17 @@
+<div class="flex gap-4 px-4">
+  <nav class="flex flex-col gap-4">
+    @for (navLink of navigationLinks; track navLink.path) {
+      <a
+        class="p-2 bg-mist-300 text-neutral-800 rounded no-underline shadow-sm hover:bg-mist-200 hover:shadow-lg"
+        [routerLink]="navLink.path"
+        >{{ navLink.label }}</a
+      >
+    }
+  </nav>
+
+  <div class="flex flex-1 bg-mist-300 rounded w-full mb-4 shadow-sm">
+    <div class="w-full p-4">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>

@@ -3,6 +3,32 @@
 @import "tailwindcss/theme.css" layer(theme);
 @import "tailwindcss/utilities.css" layer(utilities);
 
+@theme {
+  --color-primary: var(--primary-color);
+  --color-secondary: var(--secondary-color);
+  --color-tertiary: var(--tertiary-color);
+  --color-accent: var(--accent-color);
+  --color-text: var(--text-color);
+}
+
+@layer base {
+  a {
+    @apply text-accent no-underline transition-all duration-200 ease-in-out;
+  }
+
+  a:hover {
+    @apply text-accent opacity-85;
+  }
+}
+
+:root {
+  --color-primary: #f4f3f2;
+  --color-secondary: #e6e6e6;
+  --color-tertiary: #d6d6d6;
+  --color-accent: #197246;
+  --color-text: #1a1a1a;
+}
+
 html,
 body {
   height: 100%;

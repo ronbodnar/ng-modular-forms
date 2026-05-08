@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 
-import { MaterialInputsFormComponent } from './material-inputs.component';
+import { NativeInputsExampleComponent } from './native-inputs.component';
 
-describe('MaterialInputsFormComponent', () => {
-  let component: MaterialInputsFormComponent;
-  let fixture: ComponentFixture<MaterialInputsFormComponent>;
+describe('BasicInputsFormComponent', () => {
+  let component: NativeInputsExampleComponent;
+  let fixture: ComponentFixture<NativeInputsExampleComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MaterialInputsFormComponent, ReactiveFormsModule],
+      imports: [NativeInputsExampleComponent, ReactiveFormsModule],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(MaterialInputsFormComponent);
+    fixture = TestBed.createComponent(NativeInputsExampleComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

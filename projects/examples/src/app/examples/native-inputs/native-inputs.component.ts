@@ -21,7 +21,7 @@ import { FormExampleComponent } from '../../shared/form-example/form-example.com
 import { FormStatusOutputComponent } from '../../shared/form-status-output/form-status-output.component';
 
 @Component({
-  selector: 'app-basic-inputs-form',
+  selector: 'app-native-inputs-example',
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -36,10 +36,9 @@ import { FormStatusOutputComponent } from '../../shared/form-status-output/form-
     FormSectionComponent,
     FormStatusOutputComponent,
   ],
-  templateUrl: './basic-inputs.component.html',
-  styleUrl: './basic-inputs.component.css',
+  templateUrl: './native-inputs.component.html',
 })
-export class BasicInputsFormComponent {
+export class NativeInputsExampleComponent {
   options = new FormGroup({
     loading: new FormControl(false),
     disabled: new FormControl(false),
@@ -72,8 +71,8 @@ export class BasicInputsFormComponent {
   countries: SelectOption[] = [
     { key: 'us', label: 'United States' },
     { key: 'ca', label: 'Canada' },
-    { key: 'uk', label: 'United Kingdom' },
-    { key: 'de', label: 'Germany' },
+    { key: 'uk', label: 'United Kingdom', disabled: true },
+    { key: 'de', label: 'Germany', disabled: true },
     { key: 'fr', label: 'France' },
     { key: 'jp', label: 'Japan' },
   ];
@@ -106,6 +105,5 @@ export class BasicInputsFormComponent {
   validateForm(): void {
     this.form.get('text')?.markAsTouched();
     this.form.markAllAsTouched();
-    console.log('Validated form');
   }
 }

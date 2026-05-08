@@ -1,25 +1,32 @@
-<div
-  class="flex flex-col bg-emerald-700 text-neutral-800 h-screen overflow-hidden"
->
-  <h1 class="pl-4 text-neutral-300 text-xl">
-    ng-modular-forms &mdash; Form Examples
-  </h1>
+<div class="flex flex-col h-screen bg-secondary">
+  <nav
+    class="flex justify-between px-4 py-2 items-center bg-tertiary sticky top-0 z-10"
+  >
+    <a class="flex gap-2 items-center" routerLink="/">
+      <img src="favicon.png" width="40" height="40" />
+      <h1 class="text-lg text-text">ng-modular-forms</h1>
+      <a
+        class="p-3 leading-none rounded-md hover:bg-teriary hover:shadow-lg"
+        routerLink="/examples"
+        >Examples</a
+      >
+    </a>
 
-  <div class="flex gap-4 px-4 min-h-0">
-    <div class="flex flex-col gap-4">
-      @for (navLink of navigationLinks; track navLink.path) {
-        <a
-          class="p-2 bg-mist-300 text-neutral-800 rounded no-underline shadow-sm hover:bg-mist-200 hover:shadow-lg"
-          [routerLink]="navLink.path"
-          >{{ navLink.label }}</a
-        >
-      }
+    <div class="flex items-center gap-6">
+      <a
+        class="p-3 leading-none rounded-md hover:bg-tertiary hover:shadow-lg"
+        href="https://github.com/ronbodnar/ng-modular-forms/"
+        target="_blank"
+        >GitHub</a
+      >
+      <a
+        class="p-3 leading-none rounded-md hover:bg-tertiary hover:shadow-lg"
+        href="https://github.com/ronbodnar/ng-modular-forms/"
+        target="_blank"
+        >NPM</a
+      >
     </div>
+  </nav>
 
-    <div class="flex flex-1 bg-mist-300 rounded w-full min-h-0 mb-4 shadow-sm">
-      <div class="w-full overflow-hidden p-4 min-h-0">
-        <router-outlet></router-outlet>
-      </div>
-    </div>
-  </div>
+  <router-outlet></router-outlet>
 </div>

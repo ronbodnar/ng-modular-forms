@@ -22,7 +22,7 @@ import { FormStatusOutputComponent } from '../../shared/form-status-output/form-
 import { RegistrationPersonalInfoComponent } from './personal-info/personal-info.component';
 import { RegistrationAccountDetailsComponent } from './account-details/account-details.component';
 import { RegistrationPreferencesComponent } from './preferences/preferences.component';
-import { RegistrationFormHandler } from './registration-form.handler';
+import { MultiStepFormHandler } from './multi-step-form.handler';
 import { AccountDetailsFormHandler } from './account-details/account-details.handler';
 import { PreferencesFormHandler } from './preferences/preferences.handler';
 import { MatButtonModule } from '@angular/material/button';
@@ -44,16 +44,16 @@ import { PreferencesMapper } from './preferences/preferences.mapper';
     RegistrationPreferencesComponent,
   ],
   providers: [
-    RegistrationFormHandler,
+    MultiStepFormHandler,
     PersonalInfoFormHandler,
     AccountDetailsFormHandler,
     PreferencesFormHandler,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './registration-form.component.html',
+  templateUrl: './multi-step-form.component.html',
 })
-export class RegistrationFormComponent extends FormOrchestrator {
-  private readonly mainHandler = inject(RegistrationFormHandler);
+export class MultiStepFormComponent extends FormOrchestrator {
+  private readonly mainHandler = inject(MultiStepFormHandler);
   private readonly personalInfoHandler = inject(PersonalInfoFormHandler);
   private readonly accountHandler = inject(AccountDetailsFormHandler);
   private readonly preferencesHandler = inject(PreferencesFormHandler);

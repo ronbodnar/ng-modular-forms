@@ -3,7 +3,7 @@ import { FormGroup, Validators } from '@angular/forms';
 import { FormHandlerBase, getControl } from '@ng-modular-forms/core';
 
 @Injectable()
-export class RegistrationFormHandler extends FormHandlerBase<
+export class MultiStepFormHandler extends FormHandlerBase<
   'personalInfo.email' | 'preferences.agreeToTerms'
 > {
   override getReactiveLogic(form?: FormGroup) {

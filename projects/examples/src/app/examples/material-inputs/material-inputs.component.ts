@@ -23,7 +23,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatButtonModule } from '@angular/material/button';
 
 @Component({
-  selector: 'app-material-inputs-form',
+  selector: 'app-material-inputs-example',
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -43,7 +43,7 @@ import { MatButtonModule } from '@angular/material/button';
   templateUrl: './material-inputs.component.html',
   styleUrl: './material-inputs.component.css',
 })
-export class MaterialInputsFormComponent implements OnInit {
+export class MaterialInputsExampleComponent implements OnInit {
   options = new FormGroup({
     appearance: new FormControl<'outline' | 'fill'>('outline'),
     loading: new FormControl(false),
@@ -83,8 +83,8 @@ export class MaterialInputsFormComponent implements OnInit {
   countries: SelectOption[] = [
     { key: 'us', label: 'United States' },
     { key: 'ca', label: 'Canada' },
-    { key: 'uk', label: 'United Kingdom' },
-    { key: 'de', label: 'Germany' },
+    { key: 'uk', label: 'United Kingdom', disabled: true },
+    { key: 'de', label: 'Germany', disabled: true },
     { key: 'fr', label: 'France' },
     { key: 'jp', label: 'Japan' },
   ];

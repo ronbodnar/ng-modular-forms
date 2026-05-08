@@ -1,15 +1,15 @@
 import { TestBed } from '@angular/core/testing';
-import { RegistrationFormComponent } from './registration-form.component';
+import { MultiStepFormComponent } from './multi-step-form.component';
 
-describe('RegistrationFormComponent (orchestration)', () => {
-  let component: RegistrationFormComponent;
+describe('MultiStepFormComponent', () => {
+  let component: MultiStepFormComponent;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RegistrationFormComponent],
+      imports: [MultiStepFormComponent],
     }).compileComponents();
 
-    const fixture = TestBed.createComponent(RegistrationFormComponent);
+    const fixture = TestBed.createComponent(MultiStepFormComponent);
     component = fixture.componentInstance;
   });
 
