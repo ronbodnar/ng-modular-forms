@@ -53,10 +53,9 @@ export class StepWrapperComponent implements OnInit {
   ngOnInit() {
     const forms = this._steps().map((s) => s.form);
 
-    merge(
-      ...forms.map((f) => f.valueChanges),
-      ...forms.map((f) => f.statusChanges),
-    ).subscribe(() => this._stepsTick.update((v) => v + 1));
+    merge(...forms.map((f) => f.events)).subscribe(() =>
+      this._stepsTick.update((v) => v + 1),
+    );
   }
 
   setCurrentStep(step: number) {
