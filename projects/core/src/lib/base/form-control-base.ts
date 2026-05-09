@@ -2,11 +2,11 @@ import {
   ControlValueAccessor,
   FormControl,
   NgControl,
+  TouchedChangeEvent,
   Validators,
 } from '@angular/forms';
 import {
   booleanAttribute,
-  ChangeDetectorRef,
   computed,
   DestroyRef,
   Directive,
@@ -15,11 +15,10 @@ import {
   signal,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { startWith } from 'rxjs';
+import { merge, startWith } from 'rxjs';
 
 @Directive()
 export abstract class FormControlBase<T> implements ControlValueAccessor {
-  protected readonly cdr = inject(ChangeDetectorRef);
   protected readonly destroyRef = inject(DestroyRef);
 
   static nextId = 0;
@@ -76,11 +75,19 @@ export abstract class FormControlBase<T> implements ControlValueAccessor {
     const control = this.ngControl?.control;
     if (!control) return;
 
-    control.statusChanges
+    merge(control.statusChanges, control.valueChanges)
       .pipe(startWith(null), takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
         this.hasErrors.set(control.invalid && control.touched);
         this.isRequired.set(control.hasValidator(Validators.required) ?? false);
+      });
+
+    control.events
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((event) => {
+        if (event instanceof TouchedChangeEvent) {
+          this.hasErrors.set(control.invalid && control.touched);
+        }
       });
   }
 
