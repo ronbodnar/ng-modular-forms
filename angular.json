@@ -82,6 +82,7 @@
             "styles": [
               "projects/examples/src/material-theme.scss",
               "projects/examples/src/styles.css",
+              "projects/core/src/lib/input/input-styles.css",
               "projects/material/src/lib/mat-input-styles.css"
             ],
             "scripts": []
@@ -139,6 +140,7 @@
             "styles": [
               "projects/examples/src/material-theme.scss",
               "projects/examples/src/styles.css",
+              "projects/core/src/lib/input/input-styles.css",
               "projects/material/src/lib/mat-input-styles.css"
             ],
             "scripts": []

@@ -11,8 +11,8 @@ export interface SelectOption {
 
 @Component({
   selector: 'nmf-select',
+  standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
-  styleUrls: ['./input-styles.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="nmf-field" [class.loading]="loading()">
@@ -24,35 +24,36 @@ export interface SelectOption {
           }
         </label>
       }
-
-      <select
-        class="nmf-input"
-        [ngClass]="classList()"
-        [class.error]="hasErrors()"
-        [class.disabled]="disabled()"
-        [required]="isRequired()"
-        [formControl]="control"
-        (blur)="onTouched()"
-      >
-        <!-- Empty option -->
-        <option [ngValue]="null" disabled>
-          {{ emptyOptionLabel() }}
-        </option>
-
-        <!-- Options -->
-        @for (option of options(); track option.key) {
-          <option [ngValue]="option.key" [disabled]="option.disabled">
-            {{ option.label }}
+      <div class="select-wrapper" [class.disabled]="disabled()">
+        <select
+          class="nmf-input"
+          [ngClass]="classList()"
+          [class.error]="hasErrors()"
+          [class.disabled]="disabled()"
+          [required]="isRequired()"
+          [formControl]="control"
+          (blur)="onTouched()"
+        >
+          <!-- Empty option -->
+          <option [ngValue]="null" disabled>
+            {{ emptyOptionLabel() }}
           </option>
-        }
 
-        <!-- Clear option -->
-        @if (clearOptionLabel()) {
-          <option [ngValue]="null">
-            {{ clearOptionLabel() }}
-          </option>
-        }
-      </select>
+          <!-- Options -->
+          @for (option of options(); track option.key) {
+            <option [ngValue]="option.key" [disabled]="option.disabled">
+              {{ option.label }}
+            </option>
+          }
+
+          <!-- Clear option -->
+          @if (clearOptionLabel()) {
+            <option [ngValue]="null">
+              {{ clearOptionLabel() }}
+            </option>
+          }
+        </select>
+      </div>
 
       @if (loading()) {
         <div class="nmf-loading">
