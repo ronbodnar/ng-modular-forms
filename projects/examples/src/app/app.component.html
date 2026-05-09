@@ -1,18 +1,37 @@
-<div class="flex flex-col h-screen bg-secondary">
+<div
+  class="flex flex-col min-h-screen bg-primary text-text font-sans selection:bg-accent/30"
+>
   <nav
     class="flex justify-between px-4 py-2 items-center bg-tertiary sticky top-0 z-10"
   >
-    <a class="flex gap-2 items-center" routerLink="/">
-      <img src="favicon.png" width="40" height="40" />
-      <h1 class="text-lg text-text">ng-modular-forms</h1>
+    <div class="flex gap-2 items-center">
+      <a class="flex gap-2 items-center" routerLink="/">
+        <img src="favicon.png" width="40" height="40" />
+        <h1 class="text-lg text-text">ng-modular-forms</h1>
+      </a>
+
       <a
-        class="p-3 leading-none rounded-md hover:bg-teriary hover:shadow-lg"
-        routerLink="/examples"
+        class="p-3 leading-none rounded-md hover:bg-tertiary hover:shadow-lg"
+        routerLink="/docs/guides/getting-started"
+        >Getting Started</a
+      >
+
+      <a
+        class="p-3 leading-none rounded-md hover:bg-tertiary hover:shadow-lg"
+        routerLink="/docs/examples"
         >Examples</a
       >
-    </a>
+    </div>
 
-    <div class="flex items-center gap-6">
+    <div class="flex gap-6 items-center">
+      <button
+        mat-icon-button
+        (click)="setNextTheme()"
+        [matTooltip]="nextThemeLabel()"
+      >
+        <mat-icon>{{ nextThemeIcon() }}</mat-icon>
+      </button>
+
       <a
         class="p-3 leading-none rounded-md hover:bg-tertiary hover:shadow-lg"
         href="https://github.com/ronbodnar/ng-modular-forms/"
@@ -21,7 +40,7 @@
       >
       <a
         class="p-3 leading-none rounded-md hover:bg-tertiary hover:shadow-lg"
-        href="https://github.com/ronbodnar/ng-modular-forms/"
+        href="https://www.npmjs.com/package/@ng-modular-forms/core"
         target="_blank"
         >NPM</a
       >
@@ -29,4 +48,14 @@
   </nav>
 
   <router-outlet></router-outlet>
+
+  <footer
+    class="mx-auto w-full max-w-5xl flex justify-between items-center text-[12px] uppercase tracking-widest opacity-40"
+  >
+    <p>&copy; 2026 ng-modular-forms</p>
+    <div class="flex gap-6">
+      <a href="https://github.com/ronbodnar/ng-modular-forms">GitHub</a>
+      <a href="https://www.npmjs.com/package/@ng-modular-forms/core">NPM</a>
+    </div>
+  </footer>
 </div>

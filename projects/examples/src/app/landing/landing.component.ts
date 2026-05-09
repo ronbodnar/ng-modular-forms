@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { FeatureComponent } from './feature.component';
-import { CopyableTerminalText } from './terminal.component';
+import { FeatureComponent } from './components/feature.component';
+import { CopyableTerminalText } from './components/terminal.component';
 
 @Component({
   selector: 'app-landing',

@@ -23,6 +23,14 @@ html {
   );
 }
 
+html {
+  color-scheme: light;
+}
+
+html.dark {
+  color-scheme: dark;
+}
+
 .mat-form-field-appearance-outline {
   @include mat.form-field-density(-3);
 }

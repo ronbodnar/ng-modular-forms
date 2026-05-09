@@ -1,9 +1,6 @@
 import { Routes } from '@angular/router';
-import { NativeInputsExampleComponent } from './examples/native-inputs/native-inputs.component';
-import { MaterialInputsExampleComponent } from './examples/material-inputs/material-inputs.component';
-import { MultiStepFormComponent } from './examples/multi-step-form/multi-step-form.component';
-import { ExamplesComponent } from './examples/examples.component';
 import { LandingComponent } from './landing/landing.component';
+import { routes as docsRoutes } from './docs/docs.routes';
 
 export const routes: Routes = [
   {
@@ -11,31 +8,11 @@ export const routes: Routes = [
     pathMatch: 'full',
     component: LandingComponent,
   },
+
+  ...docsRoutes,
+
   {
-    path: 'examples',
-    component: ExamplesComponent,
-    children: [
-      {
-        path: '',
-        pathMatch: 'full',
-        redirectTo: '/examples/basic-inputs',
-      },
-      {
-        path: 'basic-inputs',
-        component: NativeInputsExampleComponent,
-      },
-      {
-        path: 'material-inputs',
-        component: MaterialInputsExampleComponent,
-      },
-      {
-        path: 'multi-step',
-        component: MultiStepFormComponent,
-      },
-      {
-        path: '**',
-        redirectTo: '/',
-      },
-    ],
+    path: '**',
+    redirectTo: '',
   },
 ];

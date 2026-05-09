@@ -16,6 +16,7 @@
     "@angular/forms": "^19.0.0 || ^20.0.0",
     "@angular/material": "~19.2.19",
     "@tailwindcss/postcss": "^4.2.2",
+    "ngx-highlightjs": "^14.0.1",
     "postcss": "^8.5.10",
     "tailwindcss": "^4.2.2",
     "tslib": "^2.6.0"

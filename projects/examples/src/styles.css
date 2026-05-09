@@ -29,6 +29,14 @@
   --color-text: #1a1a1a;
 }
 
+html.dark {
+  --color-primary: #1a1a1a;
+  --color-secondary: #2b2b2b;
+  --color-tertiary: #3c3c3c;
+  --color-accent: #1fb86b;
+  --color-text: #f4f3f2;
+}
+
 html,
 body {
   height: 100%;
