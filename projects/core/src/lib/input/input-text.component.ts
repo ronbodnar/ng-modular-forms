@@ -36,7 +36,7 @@ import { TextBehavior } from '../behavior/text.behavior';
           [type]="computedType()"
           [required]="isRequired()"
           [placeholder]="placeholder()"
-          [formControl]="control"
+          [formControl]="formControl"
           (blur)="onTouched()"
         />
 

@@ -31,7 +31,7 @@ export interface SelectOption {
           [class.error]="hasErrors()"
           [class.disabled]="disabled()"
           [required]="isRequired()"
-          [formControl]="control"
+          [formControl]="formControl"
           (blur)="onTouched()"
         >
           <!-- Empty option -->

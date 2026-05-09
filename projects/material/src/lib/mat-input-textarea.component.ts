@@ -36,7 +36,7 @@ import { MatInputModule } from '@angular/material/input';
         [cols]="cols()"
         [required]="isRequired()"
         [placeholder]="placeholder()"
-        [formControl]="control"
+        [formControl]="formControl"
         (blur)="onTouched()"
       ></textarea>
 

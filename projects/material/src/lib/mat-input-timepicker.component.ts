@@ -44,7 +44,7 @@ import {
         [matTimepickerMax]="maxDate()"
         [required]="isRequired()"
         [placeholder]="placeholder()"
-        [formControl]="control"
+        [formControl]="formControl"
         (blur)="onTouched()"
       />
 

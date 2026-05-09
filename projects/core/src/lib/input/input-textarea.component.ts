@@ -29,7 +29,7 @@ import { FormControlBase } from '../base/form-control-base';
         [cols]="cols()"
         [required]="isRequired()"
         [placeholder]="placeholder()"
-        [formControl]="control"
+        [formControl]="formControl"
         (blur)="onTouched()"
       ></textarea>
 

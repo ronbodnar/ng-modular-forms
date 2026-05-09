@@ -50,7 +50,7 @@ type TextInputType = 'text' | 'email' | 'tel' | 'url' | 'password' | 'search';
         [type]="computedType()"
         [required]="isRequired()"
         [placeholder]="placeholder()"
-        [formControl]="control"
+        [formControl]="formControl"
         (blur)="onTouched()"
       />
 

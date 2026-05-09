@@ -53,7 +53,7 @@ import { MatButtonModule } from '@angular/material/button';
         [value]="displayValue()"
         [required]="isRequired()"
         [placeholder]="placeholder()"
-        [formControl]="control"
+        [formControl]="formControl"
         (blur)="onTouched()"
         (input)="onInput($event)"
         (keydown)="handleKeyDown($event)"

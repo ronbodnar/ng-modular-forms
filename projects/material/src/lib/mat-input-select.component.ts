@@ -47,7 +47,7 @@ export interface SelectOption {
         [panelWidth]="panelWidth()"
         [required]="isRequired()"
         [placeholder]="emptyOptionLabel()"
-        [formControl]="control"
+        [formControl]="formControl"
         (blur)="onTouched()"
       >
         <mat-option [value]="null" disabled>

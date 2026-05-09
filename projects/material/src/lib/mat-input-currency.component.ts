@@ -60,7 +60,7 @@ import { MatInputModule } from '@angular/material/input';
         [value]="displayValue()"
         [required]="isRequired()"
         [placeholder]="placeholder()"
-        [formControl]="control"
+        [formControl]="formControl"
         (blur)="onTouched()"
         (input)="onInput($event)"
         (keydown)="handleKeyDown($event)"
