@@ -77,6 +77,11 @@
               {
                 "glob": "**/*",
                 "input": "projects/examples/public"
+              },
+              {
+                "glob": "*.css",
+                "input": "node_modules/highlight.js/styles",
+                "output": "assets/highlightjs"
               }
             ],
             "styles": [
@@ -135,6 +140,11 @@
               {
                 "glob": "**/*",
                 "input": "projects/examples/public"
+              },
+              {
+                "glob": "*.css",
+                "input": "node_modules/highlight.js/styles",
+                "output": "assets/highlightjs"
               }
             ],
             "styles": [

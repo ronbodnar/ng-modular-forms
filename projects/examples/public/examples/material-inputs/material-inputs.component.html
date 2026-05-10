@@ -1,0 +1,88 @@
+<form [formGroup]="form">
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+    <nmf-mat-text
+      formControlName="text"
+      label="Text Input"
+      placeholder="Input some text..."
+      [loading]="loading()"
+      [appearance]="appearance()"
+      [shouldLabelFloat]="floatLabel()"
+    />
+
+    <nmf-mat-number
+      formControlName="number"
+      label="Number Input"
+      type="number"
+      placeholder="Enter a number"
+      [loading]="loading()"
+      [appearance]="appearance()"
+      [shouldLabelFloat]="floatLabel()"
+    />
+
+    <nmf-mat-number
+      formControlName="numberFormatted"
+      label="Number Input (formatted)"
+      type="number"
+      placeholder="Enter a number"
+      [formatNumberValue]="true"
+      [loading]="loading()"
+      [appearance]="appearance()"
+      [shouldLabelFloat]="floatLabel()"
+    />
+
+    <nmf-mat-text
+      formControlName="password"
+      label="Password Input"
+      type="password"
+      placeholder="Enter a strong password"
+      [loading]="loading()"
+      [appearance]="appearance()"
+      [shouldLabelFloat]="floatLabel()"
+    />
+
+    <nmf-mat-currency
+      formControlName="currency"
+      label="Currency Input"
+      placeholder="Enter your budget"
+      [loading]="loading()"
+      [appearance]="appearance()"
+      [shouldLabelFloat]="floatLabel()"
+    />
+
+    <nmf-mat-datepicker
+      formControlName="date"
+      label="Date Input"
+      [loading]="loading()"
+      [appearance]="appearance()"
+      [shouldLabelFloat]="floatLabel()"
+    />
+
+    <nmf-mat-timepicker
+      formControlName="time"
+      label="Time Input"
+      [loading]="loading()"
+      [appearance]="appearance()"
+      [shouldLabelFloat]="floatLabel()"
+    />
+
+    <nmf-mat-select
+      formControlName="select"
+      label="Select/Dropdown Input"
+      [options]="countries"
+      placeholder="Select an option"
+      [loading]="loading()"
+      [appearance]="appearance()"
+      [shouldLabelFloat]="floatLabel()"
+    />
+
+    <nmf-mat-textarea
+      formControlName="textarea"
+      label="Textarea Input"
+      placeholder="Tell us about yourself..."
+      [rows]="4"
+      [loading]="loading()"
+      [appearance]="appearance()"
+      [shouldLabelFloat]="floatLabel()"
+    />
+  </div>
+</form>

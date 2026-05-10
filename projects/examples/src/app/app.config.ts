@@ -3,22 +3,25 @@ import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
 import { provideHighlightOptions } from 'ngx-highlightjs';
+import { provideHttpClient } from '@angular/common/http';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideZoneChangeDetection({ eventCoalescing: true }),
+    provideHttpClient(),
 
     provideRouter(routes),
 
+    provideZoneChangeDetection({ eventCoalescing: true }),
+
     provideHighlightOptions({
       coreLibraryLoader: () => import('highlight.js/lib/core'),
-      //lineNumbersLoader: () => import('ngx-highlightjs/line-numbers'), // Optional, add line numbers if needed
       languages: {
+        shell: () => import('highlight.js/lib/languages/shell'),
+        xml: () => import('highlight.js/lib/languages/xml'),
         typescript: () => import('highlight.js/lib/languages/typescript'),
         css: () => import('highlight.js/lib/languages/css'),
-        //xml: () => import('highlight.js/lib/languages/xml'),
       },
-      //themePath: 'path-to-theme.css', // Optional, useful for dynamic theme changes
+      themePath: 'assets/highlightjs/stackoverflow-dark.css', // Optional, useful for dynamic theme changes
     }),
   ],
 };

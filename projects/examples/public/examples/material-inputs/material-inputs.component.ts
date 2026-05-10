@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -6,9 +6,6 @@ import {
   Validators,
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { FormSectionComponent } from '../shared/form-section/form-section.component';
-import { FormExampleComponent } from '../shared/form-example/form-example.component';
-import { FormStatusOutputComponent } from '../shared/form-status-output/form-status-output.component';
 import {
   SelectOption,
   MatInputTextComponent,
@@ -33,16 +30,13 @@ import { MatButtonModule } from '@angular/material/button';
     MatInputSelectComponent,
     MatInputTextareaComponent,
     MatInputCurrencyComponent,
-    FormExampleComponent,
-    FormSectionComponent,
-    FormStatusOutputComponent,
     MatInputTimepickerComponent,
     MatInputDatepickerComponent,
     MatInputNumberComponent,
   ],
   templateUrl: './material-inputs.component.html',
 })
-export class MaterialInputsExampleComponent implements OnInit {
+export class MaterialInputsExampleComponent {
   files = [
     {
       language: 'html',
@@ -53,13 +47,6 @@ export class MaterialInputsExampleComponent implements OnInit {
       path: 'examples/material-inputs/material-inputs.component.ts',
     },
   ];
-
-  options = new FormGroup({
-    appearance: new FormControl<'outline' | 'fill'>('outline'),
-    loading: new FormControl(false),
-    floatLabel: new FormControl<'auto' | 'always'>('auto'),
-    disabled: new FormControl(false),
-  });
 
   appearance = signal<'outline' | 'fill'>('outline');
   loading = signal(false);
@@ -98,37 +85,4 @@ export class MaterialInputsExampleComponent implements OnInit {
     { key: 'fr', label: 'France' },
     { key: 'jp', label: 'Japan' },
   ];
-
-  ngOnInit(): void {
-    this.options.valueChanges.subscribe((v) => {
-      this.appearance.set(v.appearance ?? 'outline');
-      this.loading.set(v.loading ?? false);
-      this.floatLabel.set(v.floatLabel ?? 'auto');
-
-      if (v.disabled) {
-        this.form.disable({ emitEvent: false });
-      } else {
-        this.form.enable({ emitEvent: false });
-      }
-    });
-  }
-
-  populateForm(): void {
-    this.form.patchValue({
-      text: 'Hello World',
-      number: 1230,
-      numberFormatted: 1230,
-      password: '12345678',
-      select: 'us',
-      currency: 1230,
-      textarea: 'Hello\n\nWorld',
-      date: new Date(),
-      time: new Date(),
-    });
-  }
-
-  validateForm(): void {
-    this.form.markAllAsTouched();
-    this.form.updateValueAndValidity();
-  }
 }

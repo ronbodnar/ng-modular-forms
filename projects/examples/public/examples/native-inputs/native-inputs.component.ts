@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -16,9 +16,6 @@ import {
   InputTimepickerComponent,
   SelectOption,
 } from '@ng-modular-forms/core';
-import { FormSectionComponent } from '../shared/form-section/form-section.component';
-import { FormExampleComponent } from '../shared/form-example/form-example.component';
-import { FormStatusOutputComponent } from '../shared/form-status-output/form-status-output.component';
 
 @Component({
   selector: 'app-native-inputs-example',
@@ -32,29 +29,10 @@ import { FormStatusOutputComponent } from '../shared/form-status-output/form-sta
     InputCurrencyComponent,
     InputDatepickerComponent,
     InputTimepickerComponent,
-    FormExampleComponent,
-    FormSectionComponent,
-    FormStatusOutputComponent,
   ],
   templateUrl: './native-inputs.component.html',
 })
-export class NativeInputsExampleComponent implements OnInit {
-  files = [
-    {
-      language: 'html',
-      path: 'examples/native-inputs/native-inputs.component.html',
-    },
-    {
-      language: 'typescript',
-      path: 'examples/native-inputs/native-inputs.component.ts',
-    },
-  ];
-
-  options = new FormGroup({
-    loading: new FormControl(false),
-    disabled: new FormControl(false),
-  });
-
+export class NativeInputsExampleComponent {
   loading = signal(false);
 
   form = new FormGroup({
@@ -87,34 +65,4 @@ export class NativeInputsExampleComponent implements OnInit {
     { key: 'fr', label: 'France' },
     { key: 'jp', label: 'Japan' },
   ];
-
-  async ngOnInit(): Promise<void> {
-    this.options.valueChanges.subscribe((v) => {
-      this.loading.set(v.loading ?? false);
-      if (v.disabled) {
-        this.form.disable({ emitEvent: false });
-      } else {
-        this.form.enable({ emitEvent: false });
-      }
-    });
-  }
-
-  populateForm(): void {
-    this.form.patchValue({
-      text: 'Hello World',
-      number: 1230,
-      numberFormatted: 1230,
-      password: '12345678',
-      select: 'us',
-      currency: 1230,
-      textarea: 'Hello\n\nWorld',
-      date: new Date(),
-      time: new Date(),
-    });
-  }
-
-  validateForm(): void {
-    this.form.get('text')?.markAsTouched();
-    this.form.markAllAsTouched();
-  }
 }

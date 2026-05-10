@@ -4,11 +4,11 @@
 @import "tailwindcss/utilities.css" layer(utilities);
 
 @theme {
-  --color-primary: var(--primary-color);
-  --color-secondary: var(--secondary-color);
-  --color-tertiary: var(--tertiary-color);
-  --color-accent: var(--accent-color);
-  --color-text: var(--text-color);
+  --color-primary: var(--color-primary);
+  --color-secondary: var(--color-secondary);
+  --color-tertiary: var(--color-tertiary);
+  --color-accent: var(--color-accent);
+  --color-text: var(--color-text);
 }
 
 @layer base {
@@ -29,7 +29,7 @@
   --color-text: #1a1a1a;
 }
 
-html.dark {
+:root.dark {
   --color-primary: #1a1a1a;
   --color-secondary: #2b2b2b;
   --color-tertiary: #3c3c3c;
@@ -49,4 +49,8 @@ body {
     Segoe UI,
     Roboto,
     sans-serif;
+}
+
+.mat-mdc-button-base {
+  color: var(--color-accent) !important;
 }

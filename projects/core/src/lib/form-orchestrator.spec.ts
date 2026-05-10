@@ -41,12 +41,12 @@ describe('FormOrchestrator', () => {
 
     orchestrator.orchestrate({
       form,
-      handlers: [handler],
+      handlerRegistry: [handler],
       mapperRegistry: {},
     });
 
     expect(orchestrator.form()).toBe(form);
-    expect(orchestrator.handlers()).toContain(handler);
+    expect(orchestrator.handlerRegistry()).toContain(handler);
     expect(handler.calls).toBe(1);
   });
 
@@ -62,7 +62,7 @@ describe('FormOrchestrator', () => {
 
     orchestrator.orchestrate({
       form,
-      handlers: [],
+      handlerRegistry: [],
       mapperRegistry: { sub: mapper },
     });
 
@@ -83,7 +83,7 @@ describe('FormOrchestrator', () => {
 
     orchestrator.orchestrate({
       form,
-      handlers: [],
+      handlerRegistry: [],
       mapperRegistry: {},
     });
 
@@ -103,7 +103,7 @@ describe('FormOrchestrator', () => {
 
     orchestrator.orchestrate({
       form,
-      handlers: [],
+      handlerRegistry: [],
       mapperRegistry: {},
     });
 
@@ -118,7 +118,7 @@ describe('FormOrchestrator', () => {
 
     orchestrator.orchestrate({
       form,
-      handlers: [],
+      handlerRegistry: [],
       mapperRegistry: {},
     });
 
