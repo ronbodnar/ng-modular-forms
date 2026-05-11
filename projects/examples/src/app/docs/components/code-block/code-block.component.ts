@@ -1,10 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, input, signal } from '@angular/core';
-import { Highlight } from 'ngx-highlightjs';
+import { Component, effect, input, signal } from '@angular/core';
+import { Highlight, HighlightLoader } from 'ngx-highlightjs';
+import { ThemeService } from '../../../core/theme.service';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-code-block',
-  imports: [CommonModule, Highlight],
+  imports: [CommonModule, Highlight, MatIconModule],
   templateUrl: './code-block.component.html',
 })
 export class CodeBlockComponent {
@@ -14,6 +16,21 @@ export class CodeBlockComponent {
   classList = input<string>('');
 
   loadingCode = signal(true);
+
+  constructor(
+    private hljsLoader: HighlightLoader,
+    private themeService: ThemeService,
+  ) {
+    effect(() => {
+      const theme = this.themeService.effectiveTheme();
+
+      this.hljsLoader.setTheme(
+        theme === 'dark'
+          ? 'assets/highlightjs/stackoverflow-dark.css'
+          : 'assets/highlightjs/stackoverflow-light.css',
+      );
+    });
+  }
 
   readonly copied = signal<Record<string, boolean>>({});
 

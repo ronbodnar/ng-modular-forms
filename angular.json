@@ -76,7 +76,8 @@
             "assets": [
               {
                 "glob": "**/*",
-                "input": "projects/examples/public"
+                "input": "projects/examples/public",
+                "output": "assets"
               },
               {
                 "glob": "*.css",
@@ -139,10 +140,11 @@
             "assets": [
               {
                 "glob": "**/*",
-                "input": "projects/examples/public"
+                "input": "projects/examples/public",
+                "output": "assets"
               },
               {
-                "glob": "*.css",
+                "glob": "stackoverflow*.css",
                 "input": "node_modules/highlight.js/styles",
                 "output": "assets/highlightjs"
               }

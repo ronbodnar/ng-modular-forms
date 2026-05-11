@@ -1,11 +1,12 @@
-import { Component, signal } from '@angular/core';
+import { Component } from '@angular/core';
 import {
-  FormControl,
-  FormGroup,
   ReactiveFormsModule,
+  FormGroup,
+  FormControl,
   Validators,
 } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import {
   SelectOption,
   MatInputTextComponent,
@@ -16,13 +17,10 @@ import {
   MatInputDatepickerComponent,
   MatInputNumberComponent,
 } from '@ng-modular-forms/material';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-material-inputs-example',
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     MatCheckboxModule,
     MatButtonModule,
@@ -37,21 +35,6 @@ import { MatButtonModule } from '@angular/material/button';
   templateUrl: './material-inputs.component.html',
 })
 export class MaterialInputsExampleComponent {
-  files = [
-    {
-      language: 'html',
-      path: 'examples/material-inputs/material-inputs.component.html',
-    },
-    {
-      language: 'typescript',
-      path: 'examples/material-inputs/material-inputs.component.ts',
-    },
-  ];
-
-  appearance = signal<'outline' | 'fill'>('outline');
-  loading = signal(false);
-  floatLabel = signal<'auto' | 'always'>('auto');
-
   form = new FormGroup({
     text: new FormControl('', [Validators.required, Validators.minLength(3)]),
     number: new FormControl<number | null>(null, [

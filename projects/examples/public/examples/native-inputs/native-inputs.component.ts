@@ -5,7 +5,6 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { CommonModule } from '@angular/common';
 import {
   InputCurrencyComponent,
   InputDatepickerComponent,
@@ -20,7 +19,6 @@ import {
 @Component({
   selector: 'app-native-inputs-example',
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     InputTextComponent,
     InputSelectComponent,

@@ -18,6 +18,7 @@ export const appConfig: ApplicationConfig = {
       languages: {
         shell: () => import('highlight.js/lib/languages/shell'),
         xml: () => import('highlight.js/lib/languages/xml'),
+        json: () => import('highlight.js/lib/languages/json'),
         typescript: () => import('highlight.js/lib/languages/typescript'),
         css: () => import('highlight.js/lib/languages/css'),
       },

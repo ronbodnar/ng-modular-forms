@@ -35,7 +35,7 @@ jobs:
         run: npm run test
 
       - name: Build example site
-        run: npm run build -- examples --base-href=/ng-modular-forms/
+        run: npm run build -- examples
 
       - name: Build packages
         run: npm run build:all

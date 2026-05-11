@@ -1,9 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { StepWrapperComponent, Step } from './step-wrapper.component';
+import { FormStepWrapperComponent, Step } from './form-step-wrapper.component';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
-describe('StepWrapperComponent', () => {
-  let fixture: ComponentFixture<StepWrapperComponent>;
+describe('FormStepWrapperComponent', () => {
+  let fixture: ComponentFixture<FormStepWrapperComponent>;
 
   const createStep = (valid = true): Step => {
     const control = new FormControl(
@@ -21,10 +21,10 @@ describe('StepWrapperComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [StepWrapperComponent],
+      imports: [FormStepWrapperComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(StepWrapperComponent);
+    fixture = TestBed.createComponent(FormStepWrapperComponent);
   });
 
   function setSteps(steps: Step[]) {

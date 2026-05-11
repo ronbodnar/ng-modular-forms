@@ -44,9 +44,31 @@
           Continue
         </button>
       } @else {
-        <app-form-submit-button [loading]="submitting()"
-          >Submit Form</app-form-submit-button
+        <button
+          type="submit"
+          mat-raised-button
+          class="bg-accent/80! text-neutral-200!"
+          [disabled]="submitting()"
         >
+          <span
+            class="transition-opacity duration-150"
+            [class.opacity-0]="submitting()"
+          >
+            Submit Form
+          </span>
+
+          @if (submitting()) {
+            <div
+              class="absolute top-0 left-0 w-full h-full flex items-center justify-center"
+            >
+              <mat-spinner
+                class="white-spinner m-auto"
+                diameter="16"
+                strokeWidth="2"
+              ></mat-spinner>
+            </div>
+          }
+        </button>
       }
     </div>
   </div>

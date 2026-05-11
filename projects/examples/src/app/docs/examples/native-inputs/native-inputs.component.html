@@ -1,7 +1,4 @@
-<app-form-example
-  title="Native Input Components"
-  sourceUrl="https://github.com/ronbodnar/ng-modular-forms/tree/main/projects/examples/src/app/forms/basic-inputs"
->
+<app-form-example title="Native Input Components">
   <form [formGroup]="options" class="flex gap-4">
     <input type="checkbox" formControlName="loading" />Show Loading
     <input type="checkbox" formControlName="disabled" />Disable Inputs
@@ -10,9 +7,9 @@
     <button (click)="validateForm()">Validate Form</button>
   </form>
 
-  <form [formGroup]="form">
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-      <app-form-section title="Input Types">
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+    <app-form-section title="Input Types">
+      <form [formGroup]="form">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-2">
           <nmf-text
             formControlName="text"
@@ -81,9 +78,9 @@
             [rows]="4"
           />
         </div>
-      </app-form-section>
+      </form>
+    </app-form-section>
 
-      <app-form-status-output [output]="form.value" [files]="files" />
-    </div>
-  </form>
+    <app-form-status-output [output]="form.value" [files]="files" />
+  </div>
 </app-form-example>

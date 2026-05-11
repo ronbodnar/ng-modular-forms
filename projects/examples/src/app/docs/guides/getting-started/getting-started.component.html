@@ -58,7 +58,7 @@
         } @else if (step.tabs.length) {
           <mat-tab-group>
             @for (tab of step.tabs; track tab.id) {
-              <mat-tab label="{{ tab.label }}">
+              <mat-tab>
                 <ng-template mat-tab-label>
                   <app-tech-icon
                     class="w-5 h-5 mr-2 rounded"

@@ -6,9 +6,9 @@ import {
   Validators,
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { FormSectionComponent } from '../shared/form-section/form-section.component';
-import { FormExampleComponent } from '../shared/form-example/form-example.component';
-import { FormStatusOutputComponent } from '../shared/form-status-output/form-status-output.component';
+import { FormSectionComponent } from '../../components/form-section/form-section.component';
+import { FormExampleComponent } from '../../components/form-example/form-example.component';
+import { FormStatusOutputComponent } from '../../components/form-status-output/form-status-output.component';
 import {
   SelectOption,
   MatInputTextComponent,
@@ -46,11 +46,11 @@ export class MaterialInputsExampleComponent implements OnInit {
   files = [
     {
       language: 'html',
-      path: 'examples/material-inputs/material-inputs.component.html',
+      path: 'assets/examples/material-inputs/material-inputs.component.html',
     },
     {
       language: 'typescript',
-      path: 'examples/material-inputs/material-inputs.component.ts',
+      path: 'assets/examples/material-inputs/material-inputs.component.ts',
     },
   ];
 

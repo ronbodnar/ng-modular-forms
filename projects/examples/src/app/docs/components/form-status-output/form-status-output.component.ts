@@ -3,13 +3,20 @@ import { Component, effect, inject, input, signal } from '@angular/core';
 import { FormStatus } from '@ng-modular-forms/core';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatIconModule } from '@angular/material/icon';
-import { CodeBlockComponent } from '../../../shared/code-block/code-block.component';
 import { HttpClient } from '@angular/common/http';
 import { forkJoin } from 'rxjs';
+import { CodeBlockComponent } from '../code-block/code-block.component';
+import { TechIconComponent } from '../../../icons/tech-icon.component';
 
 @Component({
   selector: 'app-form-status-output',
-  imports: [JsonPipe, MatTabsModule, MatIconModule, CodeBlockComponent],
+  imports: [
+    JsonPipe,
+    MatTabsModule,
+    MatIconModule,
+    CodeBlockComponent,
+    TechIconComponent,
+  ],
   template: `
     <mat-tab-group class="border border-tertiary rounded-lg">
       <mat-tab>
@@ -32,10 +39,12 @@ import { forkJoin } from 'rxjs';
           @if (output()) {
             <div class="text-sm">
               <span>Value:</span>
-              <pre
-                class="whitespace-pre-wrap font-mono text-sm bg-secondary rounded p-2.5 shadow-sm mt-1"
-                >{{ output() | json }}</pre
-              >
+              <!-- assumes only one form output rendered per page -->
+              <app-code-block
+                id="form-output"
+                [code]="output() | json"
+                language="json"
+              />
             </div>
           }
         </div>
@@ -57,12 +66,20 @@ import { forkJoin } from 'rxjs';
         } @else if (resolvedFiles().length > 1) {
           <mat-tab-group class="bg-primary">
             @for (file of resolvedFiles(); track file.path) {
-              <mat-tab label="{{ file.label }}">
+              <mat-tab>
+                <ng-template mat-tab-label>
+                  <app-tech-icon
+                    class="w-5 h-5 mr-2 rounded"
+                    [name]="file.language"
+                    [label]="file.label"
+                  />
+                  {{ file.label }}
+                </ng-template>
                 <app-code-block
                   [id]="file.path"
                   [code]="file.code"
                   [language]="file.language"
-                  [classList]="'max-h-120'"
+                  [classList]="'max-h-120 rounded-b-lg'"
                 />
               </mat-tab>
             }
@@ -89,8 +106,6 @@ export class FormStatusOutputComponent {
     effect(() => {
       const files = this.files();
 
-      console.log('files', files);
-
       if (!files?.length) {
         this.resolvedFiles.set([]);
         return;
@@ -99,7 +114,6 @@ export class FormStatusOutputComponent {
       forkJoin(
         files.map((f) => this.http.get(f.path, { responseType: 'text' })),
       ).subscribe((codes) => {
-        console.log('codes', codes);
         this.resolvedFiles.set(
           files.map((f, i) => ({
             ...f,

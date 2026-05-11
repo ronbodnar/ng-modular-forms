@@ -1,7 +1,6 @@
 import { computed, effect, inject, Injectable, signal } from '@angular/core';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { HighlightLoader } from 'ngx-highlightjs';
 
 export type Theme = 'dark' | 'light' | 'system';
 
@@ -9,7 +8,6 @@ export type Theme = 'dark' | 'light' | 'system';
   providedIn: 'root',
 })
 export class ThemeService {
-  private hljsLoader = inject(HighlightLoader);
   private breakpointObserver = inject(BreakpointObserver);
 
   private readonly _theme = signal<Theme>(
@@ -54,12 +52,6 @@ export class ThemeService {
       const theme = this.effectiveTheme();
 
       document.documentElement.classList.toggle('dark', theme === 'dark');
-
-      this.hljsLoader.setTheme(
-        theme === 'dark'
-          ? 'assets/highlightjs/stackoverflow-dark.css'
-          : 'assets/highlightjs/stackoverflow-light.css',
-      );
     });
   }
 

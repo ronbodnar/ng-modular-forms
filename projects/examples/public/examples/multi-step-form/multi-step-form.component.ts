@@ -1,45 +1,31 @@
+import { Component, signal, computed, inject } from '@angular/core';
 import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  inject,
-  signal,
-} from '@angular/core';
-import {
-  FormControl,
-  FormGroup,
   ReactiveFormsModule,
+  FormGroup,
+  FormControl,
   Validators,
 } from '@angular/forms';
-import { CommonModule } from '@angular/common';
-import {
-  FormHydrator,
-  FormOrchestrator,
-  FormOrchestratorOptions,
-  FormSerializer,
-} from '@ng-modular-forms/core';
-import { FormExampleComponent } from '../../components/form-example/form-example.component';
-import { FormStatusOutputComponent } from '../../components/form-status-output/form-status-output.component';
-import { RegistrationPersonalInfoComponent } from './subforms/personal-info/personal-info.component';
-import { RegistrationAccountDetailsComponent } from './subforms/account-details/account-details.component';
-import { MultiStepFormHandler } from './multi-step-form.handler';
-import { AccountDetailsFormHandler } from './subforms/account-details/account-details.handler';
 import { MatButtonModule } from '@angular/material/button';
-import { PersonalInfoFormHandler } from './subforms/personal-info/personal-info.handler';
-import { FormStepWrapperComponent } from '../../components/form-step-wrapper/form-step-wrapper.component';
-import { RegistrationPreferencesComponent } from './subforms/preferences/preferences.component';
-import { PreferencesFormHandler } from './subforms/preferences/preferences.handler';
-import { PreferencesMapper } from './subforms/preferences/preferences.mapper';
+import {
+  FormOrchestrator,
+  FormHydrator,
+  FormSerializer,
+  FormOrchestratorOptions,
+} from '@ng-modular-forms/core';
+import { RegistrationAccountDetailsComponent } from './account-details.component';
+import { AccountDetailsFormHandler } from './account-details.handler';
+import { RegistrationPersonalInfoComponent } from './personal-info.component';
+import { PersonalInfoFormHandler } from './personal-info.handler';
+import { RegistrationPreferencesComponent } from './preferences.component';
+import { PreferencesFormHandler } from './preferences.handler';
+import { PreferencesMapper } from './preferences.mapper';
+import { MultiStepFormHandler } from './multi-step-form.handler';
 
 @Component({
   selector: 'app-registration-form',
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     MatButtonModule,
-    FormStepWrapperComponent,
-    FormExampleComponent,
-    FormStatusOutputComponent,
     RegistrationPersonalInfoComponent,
     RegistrationAccountDetailsComponent,
     RegistrationPreferencesComponent,
@@ -50,7 +36,6 @@ import { PreferencesMapper } from './subforms/preferences/preferences.mapper';
     AccountDetailsFormHandler,
     PreferencesFormHandler,
   ],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './multi-step-form.component.html',
 })
 export class MultiStepFormComponent extends FormOrchestrator {
@@ -58,64 +43,6 @@ export class MultiStepFormComponent extends FormOrchestrator {
   private readonly personalInfoHandler = inject(PersonalInfoFormHandler);
   private readonly accountHandler = inject(AccountDetailsFormHandler);
   private readonly preferencesHandler = inject(PreferencesFormHandler);
-
-  files = [
-    {
-      path: 'assets/examples/multi-step-form/multi-step-form.component.html',
-      language: 'html',
-    },
-    {
-      path: 'assets/examples/multi-step-form/multi-step-form.component.ts',
-      language: 'typescript',
-    },
-    {
-      path: 'assets/examples/multi-step-form/personal-info.component.ts',
-      language: 'typescript',
-    },
-    {
-      path: 'assets/examples/multi-step-form/personal-info.handler.ts',
-      language: 'typescript',
-    },
-    {
-      path: 'assets/examples/multi-step-form/account-details.component.ts',
-      language: 'typescript',
-    },
-    {
-      path: 'assets/examples/multi-step-form/account-details.handler.ts',
-      language: 'typescript',
-    },
-    {
-      path: 'assets/examples/multi-step-form/preferences.component.ts',
-      language: 'typescript',
-    },
-    {
-      path: 'assets/examples/multi-step-form/preferences.handler.ts',
-      language: 'typescript',
-    },
-    {
-      path: 'assets/examples/multi-step-form/preferences.mapper.ts',
-      language: 'typescript',
-    },
-  ];
-
-  currentStep = signal(1);
-
-  readonly steps = computed(() => {
-    return [
-      {
-        label: 'Personal Information',
-        form: this.getSubForm('personalInfo'),
-      },
-      {
-        label: 'Account Details',
-        form: this.getSubForm('accountDetails'),
-      },
-      {
-        label: 'Preferences & Consent',
-        form: this.getSubForm('preferences'),
-      },
-    ];
-  });
 
   constructor(
     override readonly hydrator: FormHydrator,
@@ -184,14 +111,6 @@ export class MultiStepFormComponent extends FormOrchestrator {
     this.orchestrate(options);
   }
 
-  setCurrentStep(step: number) {
-    this.currentStep.set(step);
-  }
-
-  getFormForStep(step: number) {
-    return this.steps()[step].form;
-  }
-
   submit() {
     if (!this.form().valid) {
       this.form().markAllAsTouched();
@@ -202,5 +121,33 @@ export class MultiStepFormComponent extends FormOrchestrator {
 
     this.setStatus('submitting');
     setTimeout(() => this.setStatus('success'), 1000);
+  }
+
+  // Step wrapper-related -- not part of forms
+  currentStep = signal(1);
+
+  readonly steps = computed(() => {
+    return [
+      {
+        label: 'Personal Information',
+        form: this.getSubForm('personalInfo'),
+      },
+      {
+        label: 'Account Details',
+        form: this.getSubForm('accountDetails'),
+      },
+      {
+        label: 'Preferences & Consent',
+        form: this.getSubForm('preferences'),
+      },
+    ];
+  });
+
+  setCurrentStep(step: number) {
+    this.currentStep.set(step);
+  }
+
+  getFormForStep(step: number) {
+    return this.steps()[step].form;
   }
 }

@@ -1,39 +1,35 @@
-<app-form-example
-  title="Multi-step Registration Form"
-  sourceUrl="https://github.com/ronbodnar/ng-modular-forms/tree/main/projects/examples/src/app/forms/registration-form"
->
-  <form
-    [formGroup]="form()"
-    (ngSubmit)="submit()"
-    class="space-y-6 grid grid-cols-1 lg:grid-cols-2 gap-4"
-  >
-    <app-step-wrapper
-      [steps]="steps()"
-      [submitting]="status() === 'submitting'"
-      (stepChange)="setCurrentStep($event)"
-    >
-      <ng-container [ngSwitch]="currentStep()">
-        <app-registration-personal-info
-          *ngSwitchCase="1"
-          [form]="getFormForStep(0)"
-        />
+<app-form-example title="Multi-step Registration Form">
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+    <form [formGroup]="form()" (ngSubmit)="submit()">
+      <app-form-step-wrapper
+        [steps]="steps()"
+        [submitting]="status() === 'submitting'"
+        (stepChange)="setCurrentStep($event)"
+      >
+        <ng-container [ngSwitch]="currentStep()">
+          <app-registration-personal-info
+            *ngSwitchCase="1"
+            [form]="getFormForStep(0)"
+          />
 
-        <app-registration-account-details
-          *ngSwitchCase="2"
-          [form]="getFormForStep(1)"
-        />
+          <app-registration-account-details
+            *ngSwitchCase="2"
+            [form]="getFormForStep(1)"
+          />
 
-        <app-registration-preferences
-          *ngSwitchCase="3"
-          [form]="getFormForStep(2)"
-        />
-      </ng-container>
-    </app-step-wrapper>
+          <app-registration-preferences
+            *ngSwitchCase="3"
+            [form]="getFormForStep(2)"
+          />
+        </ng-container>
+      </app-form-step-wrapper>
+    </form>
 
     <app-form-status-output
       [status]="status()"
       [errorMessage]="errorMessage()"
       [output]="form().value"
+      [files]="files"
     ></app-form-status-output>
-  </form>
+  </div>
 </app-form-example>

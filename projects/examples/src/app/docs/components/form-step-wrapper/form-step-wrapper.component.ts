@@ -10,8 +10,8 @@ import {
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
-import { FormSubmitButtonComponent } from '../form-submit-button/form-submit-button.component';
 import { merge } from 'rxjs';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 export interface Step {
   label: string;
@@ -20,17 +20,17 @@ export interface Step {
 }
 
 @Component({
-  selector: 'app-step-wrapper',
+  selector: 'app-form-step-wrapper',
   imports: [
     CommonModule,
     ReactiveFormsModule,
     MatButtonModule,
-    FormSubmitButtonComponent,
+    MatProgressSpinnerModule,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './step-wrapper.component.html',
+  templateUrl: './form-step-wrapper.component.html',
 })
-export class StepWrapperComponent implements OnInit {
+export class FormStepWrapperComponent implements OnInit {
   readonly stepChange = output<number>();
 
   readonly submitting = input<boolean>(false);
@@ -63,7 +63,6 @@ export class StepWrapperComponent implements OnInit {
     this._currentStep.set(step);
     this.stepChange.emit(step);
     this.getStep(lastStep).form.markAllAsTouched();
-    console.log('Form', this.getStep(lastStep).form);
   }
 
   getStep(step: number = this.currentStep()): Step {

@@ -8,14 +8,8 @@ import { Component, input, signal } from '@angular/core';
         {{ title() }}
       </h1>
 
-      @if (sourceUrl()) {
-        <a [href]="sourceUrl()" target="_blank" class="text-sm mt-1">
-          View source on GitHub
-        </a>
-      }
-
       <div
-        class="flex flex-col gap-4 mt-4 border-t-2 flex-1 min-h-0 overflow-y-auto p-4 self-stretch"
+        class="flex flex-col gap-4 mt-4 border-t-2 border-t-tertiary flex-1 min-h-0 overflow-y-auto p-4 self-stretch"
       >
         <ng-content></ng-content>
       </div>

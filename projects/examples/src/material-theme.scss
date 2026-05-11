@@ -8,6 +8,11 @@
 
 :root {
   @include mat.form-field-density(0);
+  @include mat.tabs-overrides(
+    (
+      label-text-size: 0.75rem,
+    )
+  );
 }
 
 html {

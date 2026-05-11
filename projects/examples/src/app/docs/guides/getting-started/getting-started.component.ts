@@ -3,7 +3,7 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { ThemeService } from '../../../core/theme.service';
 import { MatTabsModule } from '@angular/material/tabs';
 import { GETTING_STARTED_STEPS } from './getting-started.steps';
-import { CodeBlockComponent } from '../../shared/code-block/code-block.component';
+import { CodeBlockComponent } from '../../components/code-block/code-block.component';
 import { DocStep } from '../../types';
 import { TechIconComponent } from '../../../icons/tech-icon.component';
 

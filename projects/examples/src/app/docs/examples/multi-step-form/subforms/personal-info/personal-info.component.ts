@@ -8,7 +8,7 @@ import {
   SelectOption,
 } from '@ng-modular-forms/material';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { FormSectionComponent } from '../../../shared/form-section/form-section.component';
+import { FormSectionComponent } from '../../../../components/form-section/form-section.component';
 
 @Component({
   selector: 'app-registration-personal-info',

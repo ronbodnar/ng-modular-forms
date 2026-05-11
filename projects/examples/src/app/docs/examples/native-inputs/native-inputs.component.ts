@@ -16,9 +16,9 @@ import {
   InputTimepickerComponent,
   SelectOption,
 } from '@ng-modular-forms/core';
-import { FormSectionComponent } from '../shared/form-section/form-section.component';
-import { FormExampleComponent } from '../shared/form-example/form-example.component';
-import { FormStatusOutputComponent } from '../shared/form-status-output/form-status-output.component';
+import { FormSectionComponent } from '../../components/form-section/form-section.component';
+import { FormExampleComponent } from '../../components/form-example/form-example.component';
+import { FormStatusOutputComponent } from '../../components/form-status-output/form-status-output.component';
 
 @Component({
   selector: 'app-native-inputs-example',
@@ -42,11 +42,11 @@ export class NativeInputsExampleComponent implements OnInit {
   files = [
     {
       language: 'html',
-      path: 'examples/native-inputs/native-inputs.component.html',
+      path: 'assets/examples/native-inputs/native-inputs.component.html',
     },
     {
       language: 'typescript',
-      path: 'examples/native-inputs/native-inputs.component.ts',
+      path: 'assets/examples/native-inputs/native-inputs.component.ts',
     },
   ];
 
