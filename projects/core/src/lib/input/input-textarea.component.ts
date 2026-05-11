@@ -6,7 +6,6 @@ import { FormControlBase } from '../base/form-control-base';
 @Component({
   selector: 'nmf-textarea',
   standalone: true,
-  styleUrls: ['./input-styles.css'],
   imports: [CommonModule, ReactiveFormsModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
@@ -30,7 +29,7 @@ import { FormControlBase } from '../base/form-control-base';
         [cols]="cols()"
         [required]="isRequired()"
         [placeholder]="placeholder()"
-        [formControl]="control"
+        [formControl]="formControl"
         (blur)="onTouched()"
       ></textarea>
 

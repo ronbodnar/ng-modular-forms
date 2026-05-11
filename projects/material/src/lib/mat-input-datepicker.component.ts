@@ -49,7 +49,7 @@ import { MatInputModule } from '@angular/material/input';
         [matDatepickerFilter]="dateFilter()"
         [required]="isRequired()"
         [placeholder]="placeholder()"
-        [formControl]="control"
+        [formControl]="formControl"
         (blur)="onTouched()"
       />
 

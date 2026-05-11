@@ -14,7 +14,6 @@ import { formatNumber, parseNumber } from '../form-util';
 @Component({
   selector: 'nmf-number',
   standalone: true,
-  styleUrls: ['./input-styles.css'],
   imports: [CommonModule, ReactiveFormsModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `

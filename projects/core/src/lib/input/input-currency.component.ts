@@ -14,7 +14,6 @@ import { formatNumber, parseNumber } from '../form-util';
   selector: 'nmf-currency',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
-  styleUrls: ['./input-styles.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="nmf-field">

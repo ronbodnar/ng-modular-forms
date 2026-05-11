@@ -76,12 +76,19 @@
             "assets": [
               {
                 "glob": "**/*",
-                "input": "projects/examples/public"
+                "input": "projects/examples/public",
+                "output": "assets"
+              },
+              {
+                "glob": "*.css",
+                "input": "node_modules/highlight.js/styles",
+                "output": "assets/highlightjs"
               }
             ],
             "styles": [
               "projects/examples/src/material-theme.scss",
               "projects/examples/src/styles.css",
+              "projects/core/src/lib/input/input-styles.css",
               "projects/material/src/lib/mat-input-styles.css"
             ],
             "scripts": []
@@ -133,12 +140,19 @@
             "assets": [
               {
                 "glob": "**/*",
-                "input": "projects/examples/public"
+                "input": "projects/examples/public",
+                "output": "assets"
+              },
+              {
+                "glob": "stackoverflow*.css",
+                "input": "node_modules/highlight.js/styles",
+                "output": "assets/highlightjs"
               }
             ],
             "styles": [
               "projects/examples/src/material-theme.scss",
               "projects/examples/src/styles.css",
+              "projects/core/src/lib/input/input-styles.css",
               "projects/material/src/lib/mat-input-styles.css"
             ],
             "scripts": []

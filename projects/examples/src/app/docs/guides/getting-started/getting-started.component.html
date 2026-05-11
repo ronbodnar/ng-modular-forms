@@ -1,0 +1,88 @@
+<main class="px-6 max-w-3xl font-sans">
+  <!-- HERO -->
+  <section class="mb-10">
+    <h1 class="font-serif text-4xl font-light mb-3">Getting started</h1>
+
+    <p class="text-sm opacity-60">
+      Start with lightweight form fields and introduce orchestration, mapping,
+      hydration, and reactive behavior only when your application needs it.
+    </p>
+  </section>
+
+  <!-- CALLOUT -->
+  <aside
+    class="mb-10 bg-primary/40 border-l-4 border-accent rounded-r-lg px-4 py-3.5"
+  >
+    <p class="text-sm font-medium">
+      Every feature is designed to work independently.
+    </p>
+
+    <span class="text-xs opacity-60">
+      Inputs, orchestration, handlers, mappers, hydration, and serialization can
+      all be adopted independently alongside existing Angular Reactive
+      Forms.</span
+    >
+  </aside>
+
+  <!-- STEPS -->
+  <div class="flex flex-col gap-8 pb-10">
+    @for (step of steps(); track step.id) {
+      <section
+        class="rounded-xl border border-tertiary overflow-hidden bg-primary"
+        [attr.aria-label]="'Step ' + step.id + ': ' + step.title"
+      >
+        <!-- HEADER -->
+        <div class="flex items-start gap-4 px-6 py-2 border-b border-tertiary">
+          <span
+            class="w-7 h-7 rounded-full flex self-center items-center justify-center text-xs font-bold"
+            [ngClass]="stepColorClasses()[step.variant]"
+            >{{ step.id }}</span
+          >
+
+          <div class="flex-1">
+            <h2 class="text-base mb-0.5">
+              {{ step.title }}
+            </h2>
+            <p class="text-xs opacity-60">
+              {{ step.description }}
+            </p>
+          </div>
+        </div>
+
+        @if (step.tabs.length === 1 && step.variant === "install") {
+          <app-code-block
+            [id]="step.id + '-' + step.tabs[0].id"
+            [code]="step.tabs[0].code"
+            [language]="step.tabs[0].language"
+          />
+        } @else if (step.tabs.length) {
+          <mat-tab-group>
+            @for (tab of step.tabs; track tab.id) {
+              <mat-tab>
+                <ng-template mat-tab-label>
+                  <app-tech-icon
+                    class="w-5 h-5 mr-2 rounded"
+                    [name]="tab.language"
+                    [label]="tab.label"
+                  />
+                  {{ tab.label }}
+                </ng-template>
+                <app-code-block
+                  [id]="step.id + '-' + tab.id"
+                  [code]="tab.code"
+                  [language]="tab.language"
+                />
+              </mat-tab>
+            }
+          </mat-tab-group>
+        }
+
+        @if (step.note) {
+          <p class="my-0 p-4 text-xs opacity-60 border-t border-tertiary">
+            {{ step.note }}
+          </p>
+        }
+      </section>
+    }
+  </div>
+</main>

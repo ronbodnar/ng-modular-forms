@@ -7,30 +7,26 @@ import {
 } from '@angular/forms';
 import {
   booleanAttribute,
-  ChangeDetectorRef,
   computed,
   DestroyRef,
   Directive,
-  effect,
   inject,
   input,
   signal,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { startWith, Subscription } from 'rxjs';
+import { merge, startWith } from 'rxjs';
 
 @Directive()
 export abstract class FormControlBase<T> implements ControlValueAccessor {
-  protected readonly cdr = inject(ChangeDetectorRef);
   protected readonly destroyRef = inject(DestroyRef);
 
   static nextId = 0;
-
   readonly id = input<string | null>(
     `nmf-form-control-${FormControlBase.nextId++}`,
+    { alias: 'id' },
   );
 
-  readonly _id = input<string | null>(null, { alias: 'id' });
   readonly label = input<string>('');
   readonly classList = input<string[]>([]);
   readonly loading = input<boolean>(false);
@@ -47,7 +43,14 @@ export abstract class FormControlBase<T> implements ControlValueAccessor {
     optional: true,
   });
 
-  protected readonly control = new FormControl<T | null>(null);
+  protected readonly standaloneControl = new FormControl<T | null>(null);
+
+  get formControl(): FormControl<T | null> {
+    return (
+      (this.ngControl?.control as FormControl<T | null> | null) ??
+      this.standaloneControl
+    );
+  }
 
   protected readonly disabled = computed(
     () => this._disabledByInput() || this._disabledByCva(),
@@ -59,8 +62,6 @@ export abstract class FormControlBase<T> implements ControlValueAccessor {
 
   protected readonly hasErrors = signal(false);
 
-  private changeSub = new Subscription();
-
   protected onChange: (value: T | null) => void = () => {};
   protected onTouched: () => void = () => {};
 
@@ -68,68 +69,39 @@ export abstract class FormControlBase<T> implements ControlValueAccessor {
     if (this.ngControl) {
       this.ngControl.valueAccessor = this;
     }
-
-    effect(() => {
-      const inputDisabled = this._disabledByInput();
-      const cvaDisabled = this._disabledByCva();
-
-      if (inputDisabled || cvaDisabled) {
-        this.control.disable({ emitEvent: false });
-      } else {
-        this.control.enable({ emitEvent: true });
-      }
-    });
   }
 
   ngOnInit() {
-    const parent = this.ngControl?.control;
-    if (!parent) return;
+    const control = this.ngControl?.control;
+    if (!control) return;
 
-    parent.statusChanges
+    merge(control.statusChanges, control.valueChanges)
       .pipe(startWith(null), takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
-        this.control.setValidators(parent.validator ?? null);
-        this.control.setAsyncValidators(parent.asyncValidator ?? null);
-        this.control.updateValueAndValidity({ emitEvent: false });
-
-        this.hasErrors.set(parent.invalid && parent.touched);
-        this.isRequired.set(parent.hasValidator(Validators.required) ?? false);
-
-        this.cdr.markForCheck();
+        this.hasErrors.set(control.invalid && control.touched);
+        this.isRequired.set(control.hasValidator(Validators.required) ?? false);
       });
 
-    parent.events
+    control.events
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((event) => {
         if (event instanceof TouchedChangeEvent) {
-          if (parent.touched) {
-            this.control.markAsTouched();
-          } else {
-            this.control.markAsUntouched();
-          }
-          this.hasErrors.set(parent.invalid && parent.touched);
-          this.cdr.markForCheck();
+          this.hasErrors.set(control.invalid && control.touched);
         }
       });
-
-    parent.valueChanges
-      .pipe(startWith(null), takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => this.cdr.markForCheck());
   }
 
-  writeValue(value: T): void {
-    this.control.setValue(value, { emitEvent: false });
+  writeValue(value: T | null): void {
+    const control = this.ngControl?.control;
+    if (!control) return;
+
+    if (control.value !== value) {
+      control.setValue(value, { emitEvent: false });
+    }
   }
 
   registerOnChange(fn: (value: T | null) => void): void {
     this.onChange = fn;
-
-    this.changeSub.unsubscribe();
-    this.changeSub = this.control.valueChanges
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((v) => {
-        fn(v);
-      });
   }
 
   registerOnTouched(fn: () => void): void {
@@ -150,23 +122,31 @@ export abstract class FormControlBase<T> implements ControlValueAccessor {
     switch (firstKey) {
       case 'required':
         return 'This field is required';
+
       case 'minlength':
         return `Minimum length is ${error.requiredLength}`;
+
       case 'maxlength':
         return `Maximum length is ${error.requiredLength}`;
+
       case 'min':
         return `Minimum value is ${error.min}`;
+
       case 'max':
         return `Maximum value is ${error.max}`;
+
       case 'email':
         return 'Invalid email address';
+
       case 'pattern':
         return 'Invalid format';
+
       case 'custom':
         if (typeof error === 'string') {
           return error;
         }
         return 'Invalid value';
+
       default:
         return 'Invalid value';
     }

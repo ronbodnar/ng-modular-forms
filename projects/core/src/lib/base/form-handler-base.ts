@@ -10,7 +10,7 @@ export abstract class FormHandlerBase<ControlNames extends string = string> {
   /**
    * Registers form controls for later reactive access.
    */
-  registerControls(form: FormGroup, controlNames: ControlNames[]): void {
+  public registerControls(form: FormGroup, controlNames: ControlNames[]): void {
     controlNames.forEach((cn) => {
       const control = getControl(cn.replace(/_/g, '.'), form);
 
@@ -25,7 +25,7 @@ export abstract class FormHandlerBase<ControlNames extends string = string> {
     });
   }
 
-  valueChangesOf<T>(key: ControlNames): Observable<T> {
+  public valueChangesOf<T>(key: ControlNames): Observable<T> {
     if (!this.registeredControls[key]) {
       throw new Error(
         `Control with name: "${key}" not found. Ensure it is registered in registerControls(...)`,

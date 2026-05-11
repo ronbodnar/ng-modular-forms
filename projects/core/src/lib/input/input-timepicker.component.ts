@@ -12,7 +12,6 @@ import { FormControlBase } from '../base/form-control-base';
   selector: 'nmf-timepicker',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
-  styleUrls: ['./input-styles.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="nmf-field" [class.loading]="loading()">

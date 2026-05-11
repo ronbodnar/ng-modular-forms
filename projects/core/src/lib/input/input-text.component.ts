@@ -12,7 +12,6 @@ import { TextBehavior } from '../behavior/text.behavior';
 @Component({
   selector: 'nmf-text',
   standalone: true,
-  styleUrls: ['./input-styles.css'],
   imports: [CommonModule, ReactiveFormsModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
@@ -37,16 +36,15 @@ import { TextBehavior } from '../behavior/text.behavior';
           [type]="computedType()"
           [required]="isRequired()"
           [placeholder]="placeholder()"
-          [formControl]="control"
+          [formControl]="formControl"
           (blur)="onTouched()"
         />
 
-        @if (type() === 'password' && !loading()) {
+        @if (type() === 'password' && !loading() && !disabled()) {
           <button
             type="button"
             class="nmf-password-toggle"
             aria-label="Toggle password visibility"
-            [disabled]="disabled()"
             (click)="behavior.toggleShowPassword($event)"
           >
             @if (behavior.showPassword()) {

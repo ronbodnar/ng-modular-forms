@@ -18,13 +18,13 @@ export abstract class FormOrchestrator
   implements OnDestroy
 {
   private readonly _form = signal<FormGroup>(new FormGroup({}));
-  private readonly _handlers = signal<FormHandlerRegistry>([]);
+  private readonly _handlerRegistry = signal<FormHandlerRegistry>([]);
   private readonly _mapperRegistry = signal<MapperRegistry>({});
   private readonly _status = signal<FormStatus>('idle');
   private readonly _errorMessage = signal<string | null>(null);
 
   public readonly form = this._form.asReadonly();
-  public readonly handlers = this._handlers.asReadonly();
+  public readonly handlerRegistry = this._handlerRegistry.asReadonly();
   public readonly mapperRegistry = this._mapperRegistry.asReadonly();
   public readonly status = this._status.asReadonly();
   public readonly errorMessage = this._errorMessage.asReadonly();
@@ -43,12 +43,12 @@ export abstract class FormOrchestrator
    * Must be called before any subform registration or handler execution.
    */
   public orchestrate(options: FormOrchestratorOptions) {
-    const { form, handlers = [], mapperRegistry = {} } = options;
+    const { form, mapperRegistry = {}, handlerRegistry = [] } = options;
     this._form.set(form);
-    this._handlers.set(handlers);
     this._mapperRegistry.set(mapperRegistry);
+    this._handlerRegistry.set(handlerRegistry);
 
-    Object.values(this.handlers()).forEach((handler) => {
+    Object.values(this.handlerRegistry()).forEach((handler) => {
       this.addReactiveLogic(handler.getReactiveLogic(form));
     });
   }
@@ -61,8 +61,8 @@ export abstract class FormOrchestrator
     return this.form().get(key) as FormGroup;
   }
 
-  public addHandler(handler: FormHandlerBase) {
-    this._handlers.set([...this._handlers(), handler]);
+  public addHandlerToRegistry(handler: FormHandlerBase) {
+    this._handlerRegistry.set([...this._handlerRegistry(), handler]);
   }
 
   public addReactiveLogic(subscription: Subscription) {

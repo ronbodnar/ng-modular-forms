@@ -1,0 +1,63 @@
+<main class="mx-auto max-w-3xl px-6 pt-16 pb-32">
+  <section class="flex flex-col items-center text-center">
+    <img
+      src="assets/icons/apple-touch-icon.png"
+      alt="logo"
+      class="h-28 rounded-2xl shadow-sm"
+    />
+
+    <h1 class="mt-8 text-4xl font-bold tracking-tighter">ng-modular-forms</h1>
+
+    <p class="mt-6 text-lg opacity-60">
+      A lightweight architectural layer for Angular Reactive Forms. Engineered
+      for <span class="text-accent">orchestration</span>, reactive isolation,
+      and scalable composition.
+    </p>
+
+    <div class="mt-12 flex flex-col gap-4 sm:flex-row sm:items-center">
+      <app-copyable-terminal-text [command]="coreInstall" />
+      <app-copyable-terminal-text [command]="materialInstall" />
+    </div>
+
+    <div class="mt-12">
+      <a
+        routerLink="/docs/examples"
+        class="text-sm font-semibold text-accent hover:underline"
+      >
+        Explore interactive examples &rarr;
+      </a>
+    </div>
+  </section>
+
+  <section class="mt-32">
+    <h2 class="text-center text-[12px] uppercase tracking-widest opacity-40">
+      Features / Benefits
+    </h2>
+
+    <div class="mt-6 grid gap-16 md:grid-cols-2">
+      <app-feature title="Reactive Isolation">
+        Move enable/disable flows and dependent field logic into reusable
+        <strong>handlers</strong>. Stop scattering
+        <code class="text-accent">valueChanges</code> across component lifecycle
+        hooks.
+      </app-feature>
+
+      <app-feature title="Data Mapping">
+        A dedicated layer for API transformations. Use
+        <strong>mappers</strong> to convert complex JSON into structured form
+        states and back again with type-safety.
+      </app-feature>
+
+      <app-feature title="UI Primitives">
+        Consistent declarative components built on
+        <code class="text-accent">CVA</code>. Swap between native and UI
+        implementations (like Material) without touching your core logic.
+      </app-feature>
+
+      <app-feature title="Scales with Complexity">
+        Engineered for ERP systems and administrative tools where standard forms
+        inevitably become a technical debt burden.
+      </app-feature>
+    </div>
+  </section>
+</main>
