@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { MultiStepFormComponent } from './multi-step-form.component';
+import { provideHttpClient } from '@angular/common/http';
 
 describe('MultiStepFormComponent', () => {
   let component: MultiStepFormComponent;
@@ -7,6 +8,7 @@ describe('MultiStepFormComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [MultiStepFormComponent],
+      providers: [provideHttpClient()],
     }).compileComponents();
 
     const fixture = TestBed.createComponent(MultiStepFormComponent);

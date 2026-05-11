@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 
 import { MaterialInputsExampleComponent } from './material-inputs.component';
+import { provideHttpClient } from '@angular/common/http';
 
 describe('MaterialInputsFormComponent', () => {
   let component: MaterialInputsExampleComponent;
@@ -10,6 +11,7 @@ describe('MaterialInputsFormComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [MaterialInputsExampleComponent, ReactiveFormsModule],
+      providers: [provideHttpClient()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(MaterialInputsExampleComponent);

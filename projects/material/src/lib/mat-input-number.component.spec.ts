@@ -33,7 +33,6 @@ describe('MatInputNumberComponent', () => {
   });
 
   it('calls onChange with parsed number on input when type is number and formatNumberValue is true', () => {
-    fixture.componentRef.setInput('type', 'number');
     fixture.componentRef.setInput('formatNumberValue', true);
     fixture.detectChanges();
 

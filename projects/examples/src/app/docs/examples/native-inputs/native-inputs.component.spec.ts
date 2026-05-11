@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 
 import { NativeInputsExampleComponent } from './native-inputs.component';
+import { provideHttpClient } from '@angular/common/http';
 
 describe('BasicInputsFormComponent', () => {
   let component: NativeInputsExampleComponent;
@@ -10,6 +11,7 @@ describe('BasicInputsFormComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [NativeInputsExampleComponent, ReactiveFormsModule],
+      providers: [provideHttpClient()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(NativeInputsExampleComponent);
