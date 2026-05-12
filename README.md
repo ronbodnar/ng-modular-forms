@@ -1,19 +1,33 @@
-# ng-modular-forms
+<p align="center">
+  <img src="projects/examples/public/icons/apple-touch-icon.png" height="120" alt="ng-modular-forms logo" />
+</p>
 
-**A structured Angular forms architecture for complex, scalable applications.**
+<h1 align="center">ng-modular-forms</h1>
 
-`ng-modular-forms` provides separation of UI, orchestration, reactive logic, and data mapping into clearly
-defined, reusable primitives.
+<p align="center">
+  <strong>A structured Angular forms architecture built for complex, scalable applications.</strong>
+</p>
 
-[![npm version](https://badge.fury.io/js/%40ng-modular-forms%2Fcore.svg)](https://badge.fury.io/js/%40ng-modular-forms%2Fcore)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+<p align="center">
+  <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT" />
+  <img src="https://badge.fury.io/js/%40ng-modular-forms%2Fcore.svg" alt="npm version" />
+  <img src="https://img.shields.io/badge/Angular-v19--21-DD0031?logo=angular" alt="Angular Version" />
+</p>
 
-## Packages
+## Why ng-modular-forms?
 
-| Package                        | Description                                                                 |
-| :----------------------------- | :-------------------------------------------------------------------------- |
-| **@ng-modular-forms/core**     | Orchestration, handlers, mapping, input components                          |
-| **@ng-modular-forms/material** | Angular Material-based input components                                     |
+Angular Reactive Forms tend to grow into tightly coupled components containing UI logic, reactive subscriptions, and API mapping.
+
+`ng-modular-forms` introduces a separation of concerns that keeps forms scalable and maintainable.
+
+It splits form logic into reusable building blocks:
+
+- **FormOrchestrator** – form lifecycle and composition
+- **FormHandlerBase** – reactive logic and cross-field behavior
+- **FormMapperBase** – API ↔ UI transformations
+- **FormControlBase** – reusable form controls (CVA-based)
+
+**Note:** `ng-modular-forms` builds on top of Angular Reactive Forms. It does not replace them.
 
 ## Installation
 
@@ -39,35 +53,16 @@ npm install @angular/material @angular/cdk
 
 ## Quick Start
 
-1. **Install the packages** you need
-2. **Check out the examples** in the `/projects/examples` directory
-3. **Run the demo app**:
+Clone and run the examples app:
 
 ```bash
 git clone https://github.com/ronbodnar/ng-modular-forms.git
 cd ng-modular-forms
 npm install
-npm run start:examples
+ng serve
 ```
 
-Navigate to `http://localhost:4200` to see the interactive examples.
-
-## The Problem
-
-Angular reactive forms often become:
-
-- tightly coupled to components
-- overloaded with subscriptions
-- hard to scale and reuse
-
-## The Solution
-
-ng-modular-forms separates concerns:
-
-- **Orchestration** → form lifecycle + composition  
-- **Handlers** → reactive logic  
-- **Mappers** → API transformations  
-- **UI** → reusable input components
+Navigate to `http://localhost:4200/docs/examples` to see the interactive examples.
 
 ##  Simple Example
 
@@ -88,38 +83,40 @@ export class ExampleComponent {
 }
 ```
 
-##  Available Input Components
+## Packages
 
-All inputs share a consistent API and can be swapped between native and Material implementations without changing form logic.
+| Package                        | Description                                                          |
+| :----------------------------- | :------------------------------------------------------------------- |
+| **@ng-modular-forms/core**     | Orchestration, handlers, mapping, hydration, serialization, controls |
+| **@ng-modular-forms/material** | Angular Material-based input components                              |
 
-| Input Type      | Native Selector                | Material Selector                  | Description                                                                      |
-|-----------------|--------------------------------|------------------------------------|----------------------------------------------------------------------------------|
-| Text / Password | `nmf-text`                     | `nmf-mat-text`                     | Supports multiple input types including password with visibility toggle          |
-| Number          | `nmf-number`                   | `nmf-mat-number`                   | Numeric input with type-safe value handling                                      |
-| Currency        | `nmf-currency`                 | `nmf-mat-currency`                 | Formatted currency input with parsing and display formatting                     |
-| Date            | `nmf-datepicker`               | `nmf-mat-datepicker`               | Date selection with native or Angular Material datepicker UI                     |
-| Time            | `nmf-timepicker`               | `nmf-mat-timepicker`               | Time input with structured formatting                                            |
-| Select          | `nmf-select`                   | `nmf-mat-select`                   | Dropdown/select with support for disabled options                                |
-| Textarea        | `nmf-textarea`                 | `nmf-mat-textarea`                 | Multi-line text input with configurable rows                                     |
+##  Input Components
+
+All inputs share a consistent API and are interchangeable between Native and Material implementations without changing form logic.
+
+| Input Type      | Native Selector                | Material Selector                  | Description                                 |
+|-----------------|--------------------------------|------------------------------------|---------------------------------------------|
+| Text / Password | `nmf-text`                     | `nmf-mat-text`                     | Text / password input with toggle support   |
+| Number          | `nmf-number`                   | `nmf-mat-number`                   | Type-safe numeric input                     |
+| Currency        | `nmf-currency`                 | `nmf-mat-currency`                 | Formatting + parsing support                |
+| Date            | `nmf-datepicker`               | `nmf-mat-datepicker`               | Native or Material datepicker               |
+| Time            | `nmf-timepicker`               | `nmf-mat-timepicker`               | Structured time input                       |
+| Select          | `nmf-select`                   | `nmf-mat-select`                   | Dropdown with option support                |
+| Textarea        | `nmf-textarea`                 | `nmf-mat-textarea`                 | Multi-line input                            |
 
 ###  Shared Features
 
-- Implements `ControlValueAccessor`
+- `ControlValueAccessor` compatible
 - Fully compatible with Angular Reactive Forms
 - Consistent API across all inputs
 - Built-in validation state + error messaging
 - Label, required indicator, and loading state support
 - Behavior-driven input handling (formatting, parsing, restrictions)
 
-## When to Use
+## Requirements
 
-Use this library when your application has:
-
-- complex or multi-step forms
-- shared form logic across features
-- API-driven form transformations
-- nested or dynamically composed forms
-- or you just want **simple declarative form structures without the boilerplate**
+- Angular 19–21
+- Reactive Forms module
 
 ## License
 

@@ -11,7 +11,7 @@ npm install @ng-modular-forms/material
 ## Example
 
 ```ts
-import { MatInputTextComponent } from "@ng-modular-forms/input";
+import { MatInputTextComponent } from "@ng-modular-forms/material";
 
 @Component({
   template: `
