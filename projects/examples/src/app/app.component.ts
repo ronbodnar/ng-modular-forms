@@ -1,61 +1,25 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { RouterOutlet, RouterLink } from '@angular/router';
-import { ThemeService } from './core/theme.service';
+import { RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { TechIconComponent } from './icons/tech-icon.component';
+import { AppShellComponent } from './layout/app-shell/app-shell.component';
 
 @Component({
   selector: 'app-root',
   imports: [
     CommonModule,
     RouterOutlet,
-    RouterLink,
     MatButtonModule,
     MatIconModule,
     MatTooltipModule,
-    TechIconComponent,
+    AppShellComponent,
   ],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.css',
+  template: `
+    <app-app-shell-content>
+      <router-outlet />
+    </app-app-shell-content>
+  `,
 })
-export class AppComponent {
-  private themeService = inject(ThemeService);
-
-  navigationLinks = [
-    { label: 'Getting Started', path: '/docs/guides/getting-started' },
-    { label: 'Examples', path: '/docs/examples' },
-  ];
-
-  readonly nextThemeIcon = computed(() => {
-    switch (this.themeService.nextTheme()) {
-      case 'light':
-        return 'light_mode';
-
-      case 'dark':
-        return 'dark_mode';
-
-      default:
-        return 'brightness_auto';
-    }
-  });
-
-  readonly nextThemeLabel = computed(() => {
-    switch (this.themeService.nextTheme()) {
-      case 'dark':
-        return 'Dark mode';
-
-      case 'light':
-        return 'Light mode';
-
-      default:
-        return 'System theme';
-    }
-  });
-
-  setNextTheme() {
-    this.themeService.setNextTheme();
-  }
-}
+export class AppComponent {}

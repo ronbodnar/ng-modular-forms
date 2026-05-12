@@ -1,5 +1,11 @@
-<app-form-example title="Native Input Components">
-  <form [formGroup]="options" class="flex gap-4">
+<app-docs-page
+  title="Native Input Components"
+  [bodyClass]="'self-stretch pt-6'"
+>
+  <form
+    [formGroup]="options"
+    class="grid grid-cols-2 mb-6 lg:mb-3 lg:flex gap-4"
+  >
     <input type="checkbox" formControlName="loading" />Show Loading
     <input type="checkbox" formControlName="disabled" />Disable Inputs
 
@@ -83,4 +89,4 @@
 
     <app-form-status-output [output]="form.value" [files]="files" />
   </div>
-</app-form-example>
+</app-docs-page>

@@ -17,7 +17,7 @@ import { MatIconModule } from '@angular/material/icon';
     >
       <div class="flex items-center gap-2">
         <mat-icon class="text-sm! size-5! text-accent!">{{ icon() }}</mat-icon>
-        <code class="text-sm opacity-80"> {{ command() }}</code>
+        <code class="text-xs lg:text-sm opacity-80"> {{ command() }}</code>
       </div>
     </button>
   `,

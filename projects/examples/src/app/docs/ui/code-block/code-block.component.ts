@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, effect, input, signal } from '@angular/core';
 import { Highlight, HighlightLoader } from 'ngx-highlightjs';
-import { ThemeService } from '../../../core/theme.service';
 import { MatIconModule } from '@angular/material/icon';
+import { ThemeService } from '../../../core/theme.service';
 
 @Component({
   selector: 'app-code-block',
@@ -12,6 +12,7 @@ import { MatIconModule } from '@angular/material/icon';
 export class CodeBlockComponent {
   id = input.required<string>();
   code = input.required<string>();
+  copyable = input<boolean>(true);
   language = input<string>('typescript');
   classList = input<string>('');
 

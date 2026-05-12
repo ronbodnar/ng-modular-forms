@@ -2,15 +2,13 @@ import { Routes } from '@angular/router';
 import { MaterialInputsExampleComponent } from './examples/material-inputs/material-inputs.component';
 import { MultiStepFormComponent } from './examples/multi-step-form/multi-step-form.component';
 import { NativeInputsExampleComponent } from './examples/native-inputs/native-inputs.component';
-import { DocsComponent } from './docs.component';
 import { GettingStartedComponent } from './guides/getting-started/getting-started.component';
 
 export const routes: Routes = [
   {
     path: 'docs',
-    component: DocsComponent,
     children: [
-      { path: '', pathMatch: 'full', redirectTo: 'examples' },
+      { path: '', pathMatch: 'full', redirectTo: 'guides' },
 
       {
         path: 'guides',
@@ -19,16 +17,17 @@ export const routes: Routes = [
           { path: 'getting-started', component: GettingStartedComponent },
         ],
       },
+
       {
         path: 'examples',
         children: [
           {
             path: '',
             pathMatch: 'full',
-            redirectTo: 'basic-inputs',
+            redirectTo: 'native-inputs',
           },
           {
-            path: 'basic-inputs',
+            path: 'native-inputs',
             component: NativeInputsExampleComponent,
           },
           {
@@ -36,7 +35,7 @@ export const routes: Routes = [
             component: MaterialInputsExampleComponent,
           },
           {
-            path: 'multi-step',
+            path: 'multi-step-form',
             component: MultiStepFormComponent,
           },
         ],

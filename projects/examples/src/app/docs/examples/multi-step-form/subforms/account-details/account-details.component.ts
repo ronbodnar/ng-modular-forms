@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup } from '@angular/forms';
 import { MatInputTextComponent } from '@ng-modular-forms/material';
-import { FormSectionComponent } from '../../../../components/form-section/form-section.component';
+import { FormSectionComponent } from '../../../../ui/form-section/form-section.component';
 
 @Component({
   selector: 'app-registration-account-details',

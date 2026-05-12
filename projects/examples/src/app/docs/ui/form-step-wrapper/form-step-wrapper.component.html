@@ -25,9 +25,7 @@
 
   <ng-content></ng-content>
 
-  <div
-    class="flex flex-col lg:flex-1 lg:flex-row lg:justify-between lg:items-end"
-  >
+  <div class="flex items-start lg:flex-1 justify-between lg:items-end">
     <button
       mat-raised-button
       class="bg-primary! text-text!"
@@ -38,38 +36,36 @@
       Back
     </button>
 
-    <div class="flex flex-wrap gap-3">
-      @if (currentStep() < steps().length) {
-        <button type="button" mat-raised-button (click)="nextStep()">
-          Continue
-        </button>
-      } @else {
-        <button
-          type="submit"
-          mat-raised-button
-          class="bg-accent/80! text-neutral-200!"
-          [disabled]="submitting()"
+    @if (currentStep() < steps().length) {
+      <button type="button" mat-raised-button (click)="nextStep()">
+        Continue
+      </button>
+    } @else {
+      <button
+        type="submit"
+        mat-raised-button
+        class="bg-accent/80! text-neutral-200!"
+        [disabled]="submitting()"
+      >
+        <span
+          class="transition-opacity duration-150"
+          [class.opacity-0]="submitting()"
         >
-          <span
-            class="transition-opacity duration-150"
-            [class.opacity-0]="submitting()"
-          >
-            Submit Form
-          </span>
+          Submit Form
+        </span>
 
-          @if (submitting()) {
-            <div
-              class="absolute top-0 left-0 w-full h-full flex items-center justify-center"
-            >
-              <mat-spinner
-                class="white-spinner m-auto"
-                diameter="16"
-                strokeWidth="2"
-              ></mat-spinner>
-            </div>
-          }
-        </button>
-      }
-    </div>
+        @if (submitting()) {
+          <div
+            class="absolute top-0 left-0 w-full h-full flex items-center justify-center"
+          >
+            <mat-spinner
+              class="white-spinner m-auto"
+              diameter="16"
+              strokeWidth="2"
+            ></mat-spinner>
+          </div>
+        }
+      </button>
+    }
   </div>
 </div>

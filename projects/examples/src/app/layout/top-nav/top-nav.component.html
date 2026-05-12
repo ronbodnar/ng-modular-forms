@@ -1,0 +1,42 @@
+<mat-toolbar class="sticky top-0 z-10">
+  <div class="flex w-full lg:justify-between items-center">
+    <div class="flex lg:gap-x-4 items-center">
+      @if (isMobile()) {
+        <button
+          class="h-full flex items-center justify-center border-0 bg-transparent"
+          (click)="navToggled.emit()"
+        >
+          <mat-icon class="text-4xl! w-10! h-10!">menu</mat-icon>
+        </button>
+      }
+
+      <a class="flex gap-2 items-center" routerLink="/">
+        <img
+          class="w-10 h-10"
+          src="assets/icons/apple-touch-icon.png"
+          alt="ng-modular-forms logo"
+        />
+        <div class="flex flex-col items-center gap-y-1">
+          <span class="text-lg lg:text-base text-text font-medium leading-none"
+            >ng-modular-forms</span
+          >
+        </div>
+      </a>
+
+      @if (!isMobile()) {
+        @for (navItem of navItems; track navItem) {
+          <button mat-button routerLink="{{ navItem.path }}">
+            {{ navItem.label }}
+          </button>
+        }
+      }
+    </div>
+
+    @if (!isMobile()) {
+      <div class="flex gap-6 items-center">
+        <app-toggle-theme />
+        <app-social-links class="flex gap-6 items-center" />
+      </div>
+    }
+  </div>
+</mat-toolbar>

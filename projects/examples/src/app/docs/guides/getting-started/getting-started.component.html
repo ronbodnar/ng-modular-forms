@@ -1,17 +1,11 @@
-<main class="px-6 max-w-3xl font-sans">
-  <!-- HERO -->
-  <section class="mb-10">
-    <h1 class="font-serif text-4xl font-light mb-3">Getting started</h1>
+<app-docs-page title="Getting Started" [bodyClass]="'max-w-2xl'">
+  <p class="text-sm opacity-60">
+    Start with lightweight form fields and introduce orchestration, mapping,
+    hydration, and reactive behavior only when your application needs it.
+  </p>
 
-    <p class="text-sm opacity-60">
-      Start with lightweight form fields and introduce orchestration, mapping,
-      hydration, and reactive behavior only when your application needs it.
-    </p>
-  </section>
-
-  <!-- CALLOUT -->
   <aside
-    class="mb-10 bg-primary/40 border-l-4 border-accent rounded-r-lg px-4 py-3.5"
+    class="mb-8 bg-primary/40 border-l-4 border-accent rounded-r-lg px-4 py-3.5"
   >
     <p class="text-sm font-medium">
       Every feature is designed to work independently.
@@ -25,10 +19,10 @@
   </aside>
 
   <!-- STEPS -->
-  <div class="flex flex-col gap-8 pb-10">
+  <div class="flex flex-col gap-16 pb-10">
     @for (step of steps(); track step.id) {
       <section
-        class="rounded-xl border border-tertiary overflow-hidden bg-primary"
+        class="rounded-xl border border-tertiary bg-primary"
         [attr.aria-label]="'Step ' + step.id + ': ' + step.title"
       >
         <!-- HEADER -->
@@ -85,4 +79,4 @@
       </section>
     }
   </div>
-</main>
+</app-docs-page>

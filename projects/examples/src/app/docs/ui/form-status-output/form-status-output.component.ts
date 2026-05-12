@@ -5,8 +5,8 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatIconModule } from '@angular/material/icon';
 import { HttpClient } from '@angular/common/http';
 import { forkJoin } from 'rxjs';
-import { CodeBlockComponent } from '../code-block/code-block.component';
 import { TechIconComponent } from '../../../icons/tech-icon.component';
+import { CodeBlockComponent } from '../code-block/code-block.component';
 
 @Component({
   selector: 'app-form-status-output',

@@ -1,0 +1,52 @@
+@if (isMobile()) {
+  <div class="flex gap-6 items-center justify-center py-4">
+    <app-toggle-theme />
+    <app-social-links class="flex gap-6 items-center" />
+  </div>
+}
+
+<nav class="flex flex-col gap-4 p-3">
+  @for (navItem of navItems; track navItem.sectionName) {
+    <button
+      type="button"
+      class="flex items-center justify-between w-full bg-transparent cursor-pointer border-0 font-bold text-text text-sm uppercase tracking-wide"
+      (click)="onNavigationClick(navItem)"
+      [attr.aria-expanded]="isOpen(navItem.sectionName)"
+      [attr.aria-controls]="navItem.sectionName"
+    >
+      <div class="flex items-center gap-3">
+        @if (navItem.icon) {
+          <mat-icon>{{ navItem.icon }}</mat-icon>
+        }
+        {{ navItem.label }}
+      </div>
+
+      @if (navItem.children?.length) {
+        <mat-icon
+          class="transition-transform duration-200"
+          [class.rotate-180]="isOpen(navItem.sectionName)"
+        >
+          expand_more
+        </mat-icon>
+      }
+    </button>
+
+    <!-- CHILDREN -->
+    @if (isOpen(navItem.sectionName) && navItem.children?.length) {
+      <div class="flex flex-col gap-3">
+        @for (child of navItem.children; track child.label; let i = $index) {
+          <button
+            type="button"
+            class="p-2 pl-4 pr-10 rounded no-underline text-start text-accent text-base border-0 shadow-sm hover:shadow-lg ring-accent bg-secondary cursor-pointer"
+            [routerLink]="child.route"
+            [routerLinkActive]="'ring-2'"
+            [attr.aria-label]="child.label"
+            (click)="onNavigationClick(navItem, i)"
+          >
+            {{ child.label }}
+          </button>
+        }
+      </div>
+    }
+  }
+</nav>

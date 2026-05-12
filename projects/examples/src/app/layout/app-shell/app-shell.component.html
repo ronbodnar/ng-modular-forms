@@ -1,0 +1,68 @@
+<div class="flex flex-col h-dvh overflow-hidden overscroll-none">
+  <app-top-nav (navToggled)="snav.toggle()" />
+
+  <mat-sidenav-container class="flex-1">
+    <mat-sidenav
+      #snav
+      class="rounded-none!"
+      [mode]="isMobile() ? 'over' : 'side'"
+      [opened]="!isMobile() && showDocsNav()"
+      [autoFocus]="false"
+      [fixedInViewport]="isMobile()"
+      [style.width]="isMobile() ? '100%' : '250px'"
+      (openedChange)="onSidenavOpenedChange($event)"
+      fixedTopGap="56"
+    >
+      <div
+        class="h-full border-r bg-primary border-tertiary shadow-sm flex flex-col select-none text-text"
+      >
+        <app-side-nav (navigated)="snav.close()" />
+      </div>
+    </mat-sidenav>
+
+    <mat-sidenav-content
+      role="main"
+      tabindex="-1"
+      class="bg-primary flex flex-col"
+    >
+      <div class="flex-1">
+        <ng-content></ng-content>
+      </div>
+
+      <footer
+        class="mx-auto px-4 py-6 lg:w-full lg:max-w-5xl flex flex-col-reverse lg:flex-row items-center justify-between gap-4 text-xs uppercase tracking-widest text-text/50"
+      >
+        <div
+          class="flex lg:flex-row items-center gap-4 lg:gap-4 text-center lg:text-left flex-col-reverse"
+        >
+          <span>&copy; 2026 ng-modular-forms</span>
+          <span class="hidden lg:inline text-text/30">&ndash;</span>
+          <span>
+            Built & maintained by
+            <a
+              href="https://ronbodnar.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              >Ron Bodnar</a
+            >
+          </span>
+        </div>
+
+        <div class="flex items-center gap-6 text-text/70">
+          <a
+            href="https://github.com/ronbodnar/ng-modular-forms/"
+            target="_blank"
+            rel="noopener noreferrer"
+            >GitHub</a
+          >
+          <a
+            href="https://www.npmjs.com/package/@ng-modular-forms/core"
+            target="_blank"
+            rel="noopener noreferrer"
+            >NPM</a
+          >
+        </div>
+      </footer>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>

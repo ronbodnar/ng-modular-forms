@@ -18,18 +18,18 @@ import {
   FormOrchestratorOptions,
   FormSerializer,
 } from '@ng-modular-forms/core';
-import { FormExampleComponent } from '../../components/form-example/form-example.component';
-import { FormStatusOutputComponent } from '../../components/form-status-output/form-status-output.component';
 import { RegistrationPersonalInfoComponent } from './subforms/personal-info/personal-info.component';
 import { RegistrationAccountDetailsComponent } from './subforms/account-details/account-details.component';
 import { MultiStepFormHandler } from './multi-step-form.handler';
 import { AccountDetailsFormHandler } from './subforms/account-details/account-details.handler';
 import { MatButtonModule } from '@angular/material/button';
 import { PersonalInfoFormHandler } from './subforms/personal-info/personal-info.handler';
-import { FormStepWrapperComponent } from '../../components/form-step-wrapper/form-step-wrapper.component';
 import { RegistrationPreferencesComponent } from './subforms/preferences/preferences.component';
 import { PreferencesFormHandler } from './subforms/preferences/preferences.handler';
 import { PreferencesMapper } from './subforms/preferences/preferences.mapper';
+import { DocsPageComponent } from '../../ui/docs-page/docs-page.component';
+import { FormStatusOutputComponent } from '../../ui/form-status-output/form-status-output.component';
+import { FormStepWrapperComponent } from '../../ui/form-step-wrapper/form-step-wrapper.component';
 
 @Component({
   selector: 'app-registration-form',
@@ -38,7 +38,7 @@ import { PreferencesMapper } from './subforms/preferences/preferences.mapper';
     ReactiveFormsModule,
     MatButtonModule,
     FormStepWrapperComponent,
-    FormExampleComponent,
+    DocsPageComponent,
     FormStatusOutputComponent,
     RegistrationPersonalInfoComponent,
     RegistrationAccountDetailsComponent,

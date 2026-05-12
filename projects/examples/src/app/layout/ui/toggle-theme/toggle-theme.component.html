@@ -1,0 +1,9 @@
+<button
+  mat-icon-button
+  class="text-text!"
+  (click)="setNextTheme()"
+  [matTooltip]="nextThemeLabel()"
+  [attr.aria-label]="'Set theme to ' + nextThemeLabel()"
+>
+  <mat-icon>{{ nextThemeIcon() }}</mat-icon>
+</button>

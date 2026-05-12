@@ -1,5 +1,5 @@
 <div class="relative bg-primary overflow-auto" [ngClass]="classList()">
-  @if (!loadingCode()) {
+  @if (!loadingCode() && copyable()) {
     <button
       type="button"
       class="absolute top-3 right-3 flex items-center gap-2 px-2.5 py-1 text-xs rounded-md border border-tertiary bg-primary opacity-80 hover:opacity-50 transition-opacity"
@@ -13,7 +13,9 @@
 
       {{ isCopied(id()) ? "Copied" : "Copy" }}
     </button>
-  } @else {
+  }
+
+  @if (loadingCode()) {
     <div class="p-4 space-y-2 animate-pulse">
       <div class="h-3 w-3/4 bg-tertiary/30 rounded"></div>
       <div class="h-3 w-2/3 bg-tertiary/30 rounded"></div>

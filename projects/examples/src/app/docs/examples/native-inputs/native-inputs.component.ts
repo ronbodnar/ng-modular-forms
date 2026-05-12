@@ -16,9 +16,9 @@ import {
   InputTimepickerComponent,
   SelectOption,
 } from '@ng-modular-forms/core';
-import { FormSectionComponent } from '../../components/form-section/form-section.component';
-import { FormExampleComponent } from '../../components/form-example/form-example.component';
-import { FormStatusOutputComponent } from '../../components/form-status-output/form-status-output.component';
+import { DocsPageComponent } from '../../ui/docs-page/docs-page.component';
+import { FormSectionComponent } from '../../ui/form-section/form-section.component';
+import { FormStatusOutputComponent } from '../../ui/form-status-output/form-status-output.component';
 
 @Component({
   selector: 'app-native-inputs-example',
@@ -32,7 +32,7 @@ import { FormStatusOutputComponent } from '../../components/form-status-output/f
     InputCurrencyComponent,
     InputDatepickerComponent,
     InputTimepickerComponent,
-    FormExampleComponent,
+    DocsPageComponent,
     FormSectionComponent,
     FormStatusOutputComponent,
   ],

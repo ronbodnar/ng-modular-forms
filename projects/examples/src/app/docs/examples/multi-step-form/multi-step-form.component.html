@@ -1,4 +1,7 @@
-<app-form-example title="Multi-step Registration Form">
+<app-docs-page
+  title="Multi-step Registration Form"
+  [bodyClass]="'self-stretch pt-6'"
+>
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
     <form [formGroup]="form()" (ngSubmit)="submit()">
       <app-form-step-wrapper
@@ -32,4 +35,4 @@
       [files]="files"
     ></app-form-status-output>
   </div>
-</app-form-example>
+</app-docs-page>

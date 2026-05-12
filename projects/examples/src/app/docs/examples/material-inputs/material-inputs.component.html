@@ -1,6 +1,12 @@
-<app-form-example title="Material Input Components">
+<app-docs-page
+  title="Material Input Components"
+  [bodyClass]="'self-stretch pt-6'"
+>
   <!-- Options form -->
-  <form [formGroup]="options" class="flex gap-4">
+  <form
+    [formGroup]="options"
+    class="grid grid-cols-2 mb-6 lg:mb-0 lg:flex gap-4"
+  >
     <nmf-mat-select
       formControlName="appearance"
       [options]="[
@@ -123,4 +129,4 @@
 
     <app-form-status-output [output]="form.value" [files]="files" />
   </div>
-</app-form-example>
+</app-docs-page>
