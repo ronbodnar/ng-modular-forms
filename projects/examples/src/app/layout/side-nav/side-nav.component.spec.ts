@@ -6,6 +6,7 @@ import {
   provideHttpClient,
   withInterceptorsFromDi,
 } from '@angular/common/http';
+import { provideRouter } from '@angular/router';
 
 describe('SideNavbarComponent', () => {
   let component: SideNavComponent;
@@ -17,6 +18,7 @@ describe('SideNavbarComponent', () => {
       providers: [
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
+        provideRouter([]),
       ],
     }).compileComponents();
 

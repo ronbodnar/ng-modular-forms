@@ -23,7 +23,7 @@ describe('AppComponent', () => {
 
   it('should render title', () => {
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).includes(
+    expect(compiled.querySelector('span')?.textContent).includes(
       'ng-modular-forms',
     );
   });
