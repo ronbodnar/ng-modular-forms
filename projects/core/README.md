@@ -57,12 +57,15 @@ npm install @ng-modular-forms/material
 Coordinates form structure and lifecycle.
 
 ```ts
-import { FormOrchestrator, FormHydrator, FormSerializer } from '@ng-modular-forms/core';
+import {
+  FormOrchestrator, FormHydrator, FormSerializer
+} from '@ng-modular-forms/core';
 
 @Component({
   selector: 'app-example',
   imports: [ReactiveFormsModule],
-  providers: [SectionAHandler], // Handlers are scoped to the component, not the whole application.
+  // Handlers are scoped to the component, not the whole application.
+  providers: [SectionAHandler],
   template: `
     <form [formGroup]="form" (ngSubmit)="submit()">
       <app-section-a [form]="getSubForm('sectionA')" />
@@ -90,7 +93,7 @@ export class ExampleComponent extends FormOrchestrator {
       sectionA: new SectionAMapper()
     };
 
-    // The mapperRegistry and handlerRegistry are optional, for when components grow
+    // The mapperRegistry and handlerRegistry are optional
     this.orchestrate({ form, handlerRegistry, mapperRegistry });
 
     const model = { fieldA: "aValue", fieldB: "bValue" };
@@ -174,7 +177,9 @@ Handles transformations between API and form. `FormHydrator` and `FormSerializer
 ```ts
 import { FormMapperBase, getControlValue } from '@ng-modular-forms/core';
 
-export class SectionAMapper extends FormMapperBase<ApiModel, RequestModel, FormModel> {
+export class SectionAMapper extends FormMapperBase<
+  ApiModel, RequestModel, FormModel
+> {
   toRequest(form: FormGroup): RequestModel {
     const fieldAValue = getControlValue<string>('fieldA', form);
     const fieldBValue = getControlValue<string>('fieldB', form);
@@ -192,8 +197,9 @@ export class SectionAMapper extends FormMapperBase<ApiModel, RequestModel, FormM
   }
 }
 
-// Each model can have its own shape. If all are the same, you only need one and others will inherit from it.
-// FormMapperBase<ApiModel> is the same as FormMapperBase<ApiModel, ApiModel, ApiModel>
+// Each model can have its own shape.
+// If all are the same, you only need one and others will inherit from it.
+// FormMapperBase<T> is the same as FormMapperBase<T, T, T>
 type ApiModel = {
   fieldA: string;
   fieldB: string;
@@ -245,7 +251,9 @@ export class ExampleComponent {
 
 FormOrchestrator usage:
 ```ts
-import { FormOrchestrator, FormHydrator, FormSerializer } from '@ng-modular-forms/core';
+import {
+  FormOrchestrator, FormHydrator, FormSerializer
+} from '@ng-modular-forms/core';
 
 @Component({...})
 export class ExampleComponent extends FormOrchestrator {
@@ -296,7 +304,9 @@ export class ExampleComponent {
 
 FormOrchestrator usage:
 ```ts
-import { FormOrchestrator, FormHydrator, FormSerializer } from '@ng-modular-forms/core';
+import {
+  FormOrchestrator, FormHydrator, FormSerializer
+} from '@ng-modular-forms/core';
 
 @Component({...})
 export class ExampleComponent extends FormOrchestrator {
@@ -324,7 +334,9 @@ export class ExampleComponent extends FormOrchestrator {
 ##  Input Component Example (No Orchestration)
 
 ```ts
-import { InputTextComponent, InputCurrencyComponent } from '@ng-modular-forms/core';
+import {
+  InputTextComponent, InputCurrencyComponent
+} from '@ng-modular-forms/core';
 
 @Component({
   template: `
