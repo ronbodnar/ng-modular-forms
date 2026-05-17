@@ -2,11 +2,11 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatNativeDateModule } from '@angular/material/core';
-import {
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import type {
   DateFilterFn,
   MatCalendarCellClassFunction,
   MatCalendarView,
-  MatDatepickerModule,
 } from '@angular/material/datepicker';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatFormControlBase } from './mat-form-control-base';

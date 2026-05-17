@@ -1,12 +1,12 @@
 import { JsonPipe } from '@angular/common';
 import { Component, effect, inject, input, signal } from '@angular/core';
-import { FormStatus } from '@ng-modular-forms/core';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatIconModule } from '@angular/material/icon';
 import { HttpClient } from '@angular/common/http';
 import { forkJoin } from 'rxjs';
 import { TechIconComponent } from '../../../icons/tech-icon.component';
 import { CodeBlockComponent } from '../code-block/code-block.component';
+import type { FormStatus } from '@ng-modular-forms/core';
 
 @Component({
   selector: 'app-form-status-output',
@@ -38,7 +38,9 @@ import { CodeBlockComponent } from '../code-block/code-block.component';
 
           @if (output()) {
             <div class="text-sm">
-              <span>Value:</span>
+              @if (status() || errorMessage()) {
+                <span>Value:</span>
+              }
               <!-- assumes only one form output rendered per page -->
               <app-code-block
                 id="form-output"
@@ -94,7 +96,7 @@ export class FormStatusOutputComponent {
 
   status = input<FormStatus | null>(null);
   errorMessage = input<string | null>(null);
-  output = input<{ [key: string]: any } | null>(null);
+  output = input<{ [key: string]: unknown } | null>(null);
 
   files = input<{ language: string; path: string }[]>([]);
 

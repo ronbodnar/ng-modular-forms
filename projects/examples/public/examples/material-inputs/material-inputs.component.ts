@@ -8,7 +8,6 @@ import {
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import {
-  SelectOption,
   MatInputTextComponent,
   MatInputSelectComponent,
   MatInputTextareaComponent,
@@ -17,6 +16,7 @@ import {
   MatInputDatepickerComponent,
   MatInputNumberComponent,
 } from '@ng-modular-forms/material';
+import type { SelectOption } from '@ng-modular-forms/core';
 
 @Component({
   selector: 'app-material-inputs-example',

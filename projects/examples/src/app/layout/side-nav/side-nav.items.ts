@@ -1,4 +1,4 @@
-import { NavItem } from './side-nav.types';
+import type { NavItem } from './side-nav.types';
 
 export const SIDE_NAV_ITEMS: NavItem[] = [
   {

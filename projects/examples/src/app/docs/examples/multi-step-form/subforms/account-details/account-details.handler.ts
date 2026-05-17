@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { FormHandlerBase, getControl } from '@ng-modular-forms/core';
-import { FormGroup } from '@angular/forms';
+import type { FormGroup } from '@angular/forms';
 
 const CONTROL_NAMES = [
   'accountDetails.password',

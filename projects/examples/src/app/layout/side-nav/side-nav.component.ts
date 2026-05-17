@@ -13,11 +13,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { CommonModule } from '@angular/common';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { NavItem } from './side-nav.types';
 import { SIDE_NAV_ITEMS } from './side-nav.items';
 import { MediaService } from '../../core/media.service';
 import { ToggleThemeComponent } from '../ui/toggle-theme/toggle-theme.component';
 import { SocialLinksComponent } from '../ui/social-links/social-links.component';
+import type { MatSidenav } from '@angular/material/sidenav';
+import type { NavItem } from './side-nav.types';
 
 @Component({
   selector: 'app-side-nav',
@@ -42,7 +43,7 @@ export class SideNavComponent {
 
   navigated = output<void>();
 
-  @ViewChild('snav') snav!: any;
+  @ViewChild('snav') snav!: MatSidenav;
 
   navItems = SIDE_NAV_ITEMS;
 

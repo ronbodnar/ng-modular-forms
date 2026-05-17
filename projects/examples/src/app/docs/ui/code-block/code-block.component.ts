@@ -3,7 +3,7 @@ import { Component, effect, input, signal } from '@angular/core';
 import { Highlight, HighlightLoader } from 'ngx-highlightjs';
 import { MatIconModule } from '@angular/material/icon';
 import { ThemeService } from '../../../core/theme.service';
-
+import type { HighlightResult } from 'highlight.js';
 @Component({
   selector: 'app-code-block',
   imports: [CommonModule, Highlight, MatIconModule],
@@ -35,7 +35,7 @@ export class CodeBlockComponent {
 
   readonly copied = signal<Record<string, boolean>>({});
 
-  onCodeReady(code: any) {
+  onCodeReady(code: HighlightResult): void {
     if (code !== null) {
       this.loadingCode.set(false);
     }

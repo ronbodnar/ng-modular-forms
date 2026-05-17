@@ -1,6 +1,6 @@
-import { FormControl, FormGroup } from '@angular/forms';
-import { Observable, Subscription } from 'rxjs';
-import { getControl } from '../form-util';
+import type { FormControl, FormGroup } from '@angular/forms';
+import type { Observable, Subscription } from 'rxjs';
+import { getControl } from '../form-utils';
 
 export abstract class FormHandlerBase<ControlNames extends string = string> {
   abstract getReactiveLogic(form: FormGroup): Subscription;

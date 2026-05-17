@@ -5,7 +5,7 @@ import { MaterialInputsExampleComponent } from './material-inputs.component';
 import { provideHttpClient } from '@angular/common/http';
 
 describe('MaterialInputsFormComponent', () => {
-  let component: MaterialInputsExampleComponent;
+  let _component: MaterialInputsExampleComponent;
   let fixture: ComponentFixture<MaterialInputsExampleComponent>;
 
   beforeEach(async () => {
@@ -15,7 +15,7 @@ describe('MaterialInputsFormComponent', () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(MaterialInputsExampleComponent);
-    component = fixture.componentInstance;
+    _component = fixture.componentInstance;
     fixture.detectChanges();
   });
 

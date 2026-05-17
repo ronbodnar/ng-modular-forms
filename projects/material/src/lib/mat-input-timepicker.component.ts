@@ -5,10 +5,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatFormControlBase } from './mat-form-control-base';
 import { CommonModule } from '@angular/common';
 import { MatInputModule } from '@angular/material/input';
-import {
-  MatTimepickerModule,
-  MatTimepickerOption,
-} from '@angular/material/timepicker';
+import { MatTimepickerModule } from '@angular/material/timepicker';
+import type { MatTimepickerOption } from '@angular/material/timepicker';
 
 @Component({
   selector: 'nmf-mat-timepicker',

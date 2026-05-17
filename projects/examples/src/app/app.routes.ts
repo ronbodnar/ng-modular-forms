@@ -1,4 +1,4 @@
-import { Routes } from '@angular/router';
+import type { Routes } from '@angular/router';
 import { LandingComponent } from './landing/landing.component';
 import { routes as docsRoutes } from './docs/docs.routes';
 

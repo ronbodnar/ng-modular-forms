@@ -5,10 +5,10 @@ import {
   MatInputCurrencyComponent,
   MatInputSelectComponent,
   MatInputTextareaComponent,
-  SelectOption,
 } from '@ng-modular-forms/material';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { FormSectionComponent } from '../../../../ui/form-section/form-section.component';
+import type { SelectOption } from '@ng-modular-forms/core';
 
 @Component({
   selector: 'app-registration-preferences',

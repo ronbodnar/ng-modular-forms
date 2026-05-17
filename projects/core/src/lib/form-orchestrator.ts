@@ -5,12 +5,13 @@ import { FormHandlerBase } from './base/form-handler-base';
 import { FormMapperBase } from './base/form-mapper-base';
 import { FormHydrator } from './form-hydrator';
 import { FormSerializer } from './form-serializer';
-import {
+import type {
   FormHandlerRegistry,
   FormOrchestratorOptions,
   FormStatus,
   MapperRegistry,
 } from './types';
+import { isRecord } from './type-guards';
 
 @Directive()
 export abstract class FormOrchestrator
@@ -77,7 +78,9 @@ export abstract class FormOrchestrator
     this._errorMessage.set(message);
   }
 
-  public hydrateFromModel(model: any) {
+  public hydrateFromModel<TModel extends Record<string, unknown>>(
+    model: TModel,
+  ) {
     const form = this.form();
     const registry = this.mapperRegistry();
 
@@ -88,15 +91,16 @@ export abstract class FormOrchestrator
       const value = model?.[key];
 
       if (control instanceof FormGroup) {
-        this.hydrator.hydrate(
-          control,
-          mapper ? mapper.fromModel(value) : value,
-        );
+        const mapped = mapper ? mapper.fromModel(value) : value;
+
+        if (isRecord(mapped)) {
+          this.hydrator.hydrate(control, mapped);
+        }
       }
     });
   }
 
-  public buildRequest(): any {
+  public buildRequest(): Record<string, unknown> {
     return this.serializer.toRequest(this.form(), this.mapperRegistry());
   }
 

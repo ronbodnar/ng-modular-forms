@@ -20,5 +20,6 @@ export * from './lib/input/input-timepicker.component';
 export * from './lib/form-hydrator';
 export * from './lib/form-orchestrator';
 export * from './lib/form-serializer';
-export * from './lib/form-util';
+export * from './lib/form-utils';
+export * from './lib/number-utils';
 export * from './lib/types';

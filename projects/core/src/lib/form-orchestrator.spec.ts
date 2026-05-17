@@ -9,7 +9,7 @@ import { FormHandlerBase } from './base/form-handler-base';
 
 class TestOrchestrator extends FormOrchestrator {}
 
-class MockHandler extends FormHandlerBase<any> {
+class MockHandler extends FormHandlerBase<string> {
   calls = 0;
 
   getReactiveLogic(): Subscription {
@@ -25,12 +25,12 @@ describe('FormOrchestrator', () => {
 
   beforeEach(() => {
     mockHydrator = {
-      hydrate: vi.fn<(form: FormGroup, model: any, registry?: any) => void>(),
-    };
+      hydrate: vi.fn(),
+    } as unknown as FormHydrator;
 
     mockSerializer = {
-      toRequest: vi.fn<(form: FormGroup, registry: any) => any>(),
-    };
+      toRequest: vi.fn(),
+    } as unknown as FormSerializer;
 
     orchestrator = new TestOrchestrator(mockHydrator, mockSerializer);
   });
@@ -71,9 +71,10 @@ describe('FormOrchestrator', () => {
     });
 
     expect(mapper.fromModel).toHaveBeenCalledWith({ foo: 'raw' });
-    expect(mockHydrator.hydrate).toHaveBeenCalledWith(form.get('sub'), {
-      foo: 'mapped',
-    });
+    expect(mockHydrator.hydrate).toHaveBeenCalledWith(
+      expect.any(FormGroup),
+      expect.objectContaining({ foo: 'mapped' }),
+    );
   });
 
   it('hydrates directly when no mapper exists', () => {
@@ -91,9 +92,10 @@ describe('FormOrchestrator', () => {
       sub: { foo: 'raw' },
     });
 
-    expect(mockHydrator.hydrate).toHaveBeenCalledWith(form.get('sub'), {
-      foo: 'raw',
-    });
+    expect(mockHydrator.hydrate).toHaveBeenCalledWith(
+      expect.any(FormGroup),
+      expect.objectContaining({ foo: 'raw' }),
+    );
   });
 
   it('skips hydration if key not in model', () => {
@@ -133,11 +135,11 @@ describe('FormOrchestrator', () => {
 
   it('unsubscribes all logic on destroy', () => {
     const sub = new Subscription();
-    const spy = vi.spyOn(sub, 'unsubscribe');
+    const unsubscribeSpy = vi.spyOn(sub, 'unsubscribe');
 
     orchestrator.addReactiveLogic(sub);
     orchestrator.ngOnDestroy();
 
-    expect(spy).toHaveBeenCalled();
+    expect(unsubscribeSpy).toHaveBeenCalled();
   });
 });

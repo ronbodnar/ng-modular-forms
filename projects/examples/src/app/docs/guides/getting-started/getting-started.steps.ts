@@ -1,4 +1,4 @@
-import { DocStep } from '../../docs.types';
+import type { DocStep } from '../../docs.types';
 
 export const GETTING_STARTED_STEPS: DocStep[] = [
   /** STEP 1 **/

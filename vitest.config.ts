@@ -3,7 +3,7 @@ import { defineConfig } from 'vite';
 import angular from '@analogjs/vite-plugin-angular';
 import tsconfigPaths from 'vite-tsconfig-paths';
 
-export default defineConfig(({ mode }) => ({
+export default defineConfig(({ mode: _ }) => ({
   plugins: [angular(), tsconfigPaths()],
   test: {
     globals: true,

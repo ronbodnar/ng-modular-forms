@@ -10,8 +10,8 @@ import {
   FormOrchestrator,
   FormHydrator,
   FormSerializer,
-  FormOrchestratorOptions,
 } from '@ng-modular-forms/core';
+import type { FormOrchestratorOptions } from '@ng-modular-forms/core';
 import { RegistrationAccountDetailsComponent } from './account-details.component';
 import { AccountDetailsFormHandler } from './account-details.handler';
 import { RegistrationPersonalInfoComponent } from './personal-info.component';

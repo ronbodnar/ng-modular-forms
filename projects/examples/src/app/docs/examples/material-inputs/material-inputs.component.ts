@@ -7,7 +7,6 @@ import {
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import {
-  SelectOption,
   MatInputTextComponent,
   MatInputSelectComponent,
   MatInputTextareaComponent,
@@ -21,6 +20,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { FormSectionComponent } from '../../ui/form-section/form-section.component';
 import { DocsPageComponent } from '../../ui/docs-page/docs-page.component';
 import { FormStatusOutputComponent } from '../../ui/form-status-output/form-status-output.component';
+import type { SelectOption } from '@ng-modular-forms/core';
 
 @Component({
   selector: 'app-material-inputs-example',

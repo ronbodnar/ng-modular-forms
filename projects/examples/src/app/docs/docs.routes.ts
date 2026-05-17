@@ -1,4 +1,4 @@
-import { Routes } from '@angular/router';
+import type { Routes } from '@angular/router';
 import { MaterialInputsExampleComponent } from './examples/material-inputs/material-inputs.component';
 import { MultiStepFormComponent } from './examples/multi-step-form/multi-step-form.component';
 import { NativeInputsExampleComponent } from './examples/native-inputs/native-inputs.component';

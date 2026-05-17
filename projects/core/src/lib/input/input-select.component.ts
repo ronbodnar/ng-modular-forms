@@ -67,7 +67,9 @@ export interface SelectOption {
     </div>
   `,
 })
-export class InputSelectComponent extends FormControlBase<any> {
+export class InputSelectComponent extends FormControlBase<
+  string | number | null
+> {
   options = input<SelectOption[]>([]);
   emptyOptionLabel = input<string>('Select an option');
   clearOptionLabel = input<string | null>('Clear selection');

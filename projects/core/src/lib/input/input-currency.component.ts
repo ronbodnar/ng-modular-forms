@@ -8,7 +8,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { FormControlBase } from '../base/form-control-base';
 import { CurrencyBehavior } from '../behavior/currency.behavior';
-import { formatNumber, parseNumber } from '../form-util';
+import { formatNumber, parseNumber } from '../number-utils';
 
 @Component({
   selector: 'nmf-currency',

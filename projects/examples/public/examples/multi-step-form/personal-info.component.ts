@@ -1,12 +1,12 @@
 import { Component, input } from '@angular/core';
 import { ReactiveFormsModule, FormGroup } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { SelectOption } from '@ng-modular-forms/core';
 import {
   MatInputTextComponent,
   MatInputSelectComponent,
   MatInputDatepickerComponent,
 } from '@ng-modular-forms/material';
+import type { SelectOption } from '@ng-modular-forms/core';
 
 @Component({
   selector: 'app-registration-personal-info',

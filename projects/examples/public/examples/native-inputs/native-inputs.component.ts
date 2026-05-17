@@ -13,8 +13,8 @@ import {
   InputTextareaComponent,
   InputTextComponent,
   InputTimepickerComponent,
-  SelectOption,
 } from '@ng-modular-forms/core';
+import type { SelectOption } from '@ng-modular-forms/core';
 
 @Component({
   selector: 'app-native-inputs-example',

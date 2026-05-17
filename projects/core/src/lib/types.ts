@@ -1,10 +1,13 @@
-import { FormGroup } from '@angular/forms';
-import { FormMapperBase } from './base/form-mapper-base';
-import { FormHandlerBase } from './base/form-handler-base';
+import type { FormGroup } from '@angular/forms';
+import type { FormMapperBase } from './base/form-mapper-base';
+import type { FormHandlerBase } from './base/form-handler-base';
 
 export type FormStatus = 'idle' | 'submitting' | 'error' | 'success';
 
-export type MapperRegistry = Record<string, FormMapperBase<any, any, any>>;
+export type MapperRegistry = Record<
+  string,
+  FormMapperBase<unknown, unknown, unknown>
+>;
 
 export type FormHandlerRegistry = FormHandlerBase[];
 

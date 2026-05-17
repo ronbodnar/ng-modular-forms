@@ -1,10 +1,15 @@
 import { Injectable } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { MapperRegistry } from './types';
+import { isRecord } from './type-guards';
+import type { MapperRegistry } from './types';
 
 @Injectable({ providedIn: 'root' })
 export class FormHydrator {
-  hydrate(form: FormGroup, model: any, registry: MapperRegistry = {}) {
+  hydrate<TModel extends Record<string, unknown>>(
+    form: FormGroup,
+    model: TModel,
+    registry: MapperRegistry = {},
+  ) {
     Object.entries(form.controls).forEach(([key, control]) => {
       if (!(key in model)) return;
 
@@ -13,9 +18,17 @@ export class FormHydrator {
 
       if (control instanceof FormGroup) {
         if (mapFn) {
-          control.patchValue(mapFn(value), { emitEvent: false });
+          const mapped = mapFn(value);
+
+          if (isRecord(mapped)) {
+            control.patchValue(mapped, { emitEvent: false });
+          }
         } else {
-          this.hydrate(control, value, registry);
+          this.hydrate(
+            control,
+            (value ?? {}) as Record<string, unknown>,
+            registry,
+          );
         }
         return;
       }

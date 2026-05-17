@@ -3,10 +3,10 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { ThemeService } from '../../../core/theme.service';
 import { MatTabsModule } from '@angular/material/tabs';
 import { GETTING_STARTED_STEPS } from './getting-started.steps';
-import { DocStep } from '../../docs.types';
 import { TechIconComponent } from '../../../icons/tech-icon.component';
 import { CodeBlockComponent } from '../../ui/code-block/code-block.component';
 import { DocsPageComponent } from '../../ui/docs-page/docs-page.component';
+import type { DocStep } from '../../docs.types';
 
 @Component({
   selector: 'app-getting-started',

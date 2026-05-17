@@ -14,11 +14,11 @@ import {
   InputTextareaComponent,
   InputTextComponent,
   InputTimepickerComponent,
-  SelectOption,
 } from '@ng-modular-forms/core';
 import { DocsPageComponent } from '../../ui/docs-page/docs-page.component';
 import { FormSectionComponent } from '../../ui/form-section/form-section.component';
 import { FormStatusOutputComponent } from '../../ui/form-status-output/form-status-output.component';
+import type { SelectOption } from '@ng-modular-forms/core';
 
 @Component({
   selector: 'app-native-inputs-example',

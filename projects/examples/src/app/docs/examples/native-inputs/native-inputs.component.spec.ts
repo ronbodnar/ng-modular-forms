@@ -5,7 +5,7 @@ import { NativeInputsExampleComponent } from './native-inputs.component';
 import { provideHttpClient } from '@angular/common/http';
 
 describe('BasicInputsFormComponent', () => {
-  let component: NativeInputsExampleComponent;
+  let _component: NativeInputsExampleComponent;
   let fixture: ComponentFixture<NativeInputsExampleComponent>;
 
   beforeEach(async () => {
@@ -15,7 +15,7 @@ describe('BasicInputsFormComponent', () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(NativeInputsExampleComponent);
-    component = fixture.componentInstance;
+    _component = fixture.componentInstance;
     fixture.detectChanges();
   });
 
