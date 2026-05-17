@@ -30,9 +30,9 @@ export abstract class FormControlBase<T> implements ControlValueAccessor {
   readonly label = input<string>('');
   readonly classList = input<string[]>([]);
   readonly loading = input<boolean>(false);
-
   readonly name = input<string>('');
   readonly placeholder = input<string>('');
+
   readonly _disabledByInput = input<boolean, unknown>(false, {
     transform: booleanAttribute,
   });

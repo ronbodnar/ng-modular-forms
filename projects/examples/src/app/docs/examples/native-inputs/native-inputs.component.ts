@@ -39,24 +39,6 @@ import { FormStatusOutputComponent } from '../../ui/form-status-output/form-stat
   templateUrl: './native-inputs.component.html',
 })
 export class NativeInputsExampleComponent implements OnInit {
-  files = [
-    {
-      language: 'html',
-      path: 'assets/examples/native-inputs/native-inputs.component.html',
-    },
-    {
-      language: 'typescript',
-      path: 'assets/examples/native-inputs/native-inputs.component.ts',
-    },
-  ];
-
-  options = new FormGroup({
-    loading: new FormControl(false),
-    disabled: new FormControl(false),
-  });
-
-  loading = signal(false);
-
   form = new FormGroup({
     text: new FormControl('', [Validators.required, Validators.minLength(3)]),
     number: new FormControl<number | null>(null, [
@@ -87,6 +69,25 @@ export class NativeInputsExampleComponent implements OnInit {
     { key: 'fr', label: 'France' },
     { key: 'jp', label: 'Japan' },
   ];
+
+  // Example-specific -- not part of forms
+  files = [
+    {
+      language: 'html',
+      path: 'assets/examples/native-inputs/native-inputs.component.html',
+    },
+    {
+      language: 'typescript',
+      path: 'assets/examples/native-inputs/native-inputs.component.ts',
+    },
+  ];
+
+  options = new FormGroup({
+    loading: new FormControl(false),
+    disabled: new FormControl(false),
+  });
+
+  loading = signal(false);
 
   async ngOnInit(): Promise<void> {
     this.options.valueChanges.subscribe((v) => {

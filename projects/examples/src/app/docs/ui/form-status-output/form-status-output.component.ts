@@ -18,14 +18,14 @@ import { CodeBlockComponent } from '../code-block/code-block.component';
     TechIconComponent,
   ],
   template: `
-    <mat-tab-group class="border border-tertiary rounded-lg">
+    <mat-tab-group class="border border-tertiary rounded-md">
       <mat-tab>
         <ng-template mat-tab-label>
           <mat-icon class="pr-2">data_object</mat-icon>
           Form Output
         </ng-template>
 
-        <div class="flex flex-col gap-2 p-3 bg-primary rounded-b-lg">
+        <div class="flex flex-col gap-2 p-3 bg-primary rounded-b-md">
           @if (status()) {
             <p class="my-0 text-sm">
               Status: <span class="font-medium">{{ status() }}</span>
@@ -61,7 +61,7 @@ import { CodeBlockComponent } from '../code-block/code-block.component';
             [id]="resolvedFiles()[0].path"
             [code]="resolvedFiles()[0].code"
             [language]="resolvedFiles()[0].language"
-            [classList]="'max-h-120'"
+            [classList]="'max-h-120 rounded-b-md'"
           />
         } @else if (resolvedFiles().length > 1) {
           <mat-tab-group class="bg-primary">
@@ -69,7 +69,7 @@ import { CodeBlockComponent } from '../code-block/code-block.component';
               <mat-tab>
                 <ng-template mat-tab-label>
                   <app-tech-icon
-                    class="w-5 h-5 mr-2 rounded"
+                    class="w-5 h-5 mr-2 rounded-md"
                     [name]="file.language"
                     [label]="file.label"
                   />
@@ -79,7 +79,7 @@ import { CodeBlockComponent } from '../code-block/code-block.component';
                   [id]="file.path"
                   [code]="file.code"
                   [language]="file.language"
-                  [classList]="'max-h-120 rounded-b-lg'"
+                  [classList]="'max-h-120 rounded-b-md'"
                 />
               </mat-tab>
             }

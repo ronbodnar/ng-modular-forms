@@ -8,7 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
     <button
       type="button"
       title="Click to copy to clipboard"
-      class="group rounded-lg border border-secondary/10 bg-black/20 py-1.5 pr-4 transition hover:border-accent/40 cursor-copy"
+      class="group rounded-md border border-secondary/50 bg-black/20 py-1.5 pr-4 transition hover:border-accent/40 cursor-copy"
       [attr.aria-pressed]="copied()"
       [attr.aria-label]="'Copy command: ' + command()"
       (click)="copy()"

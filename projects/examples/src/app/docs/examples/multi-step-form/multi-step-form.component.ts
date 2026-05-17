@@ -59,64 +59,6 @@ export class MultiStepFormComponent extends FormOrchestrator {
   private readonly accountHandler = inject(AccountDetailsFormHandler);
   private readonly preferencesHandler = inject(PreferencesFormHandler);
 
-  files = [
-    {
-      path: 'assets/examples/multi-step-form/multi-step-form.component.html',
-      language: 'html',
-    },
-    {
-      path: 'assets/examples/multi-step-form/multi-step-form.component.ts',
-      language: 'typescript',
-    },
-    {
-      path: 'assets/examples/multi-step-form/personal-info.component.ts',
-      language: 'typescript',
-    },
-    {
-      path: 'assets/examples/multi-step-form/personal-info.handler.ts',
-      language: 'typescript',
-    },
-    {
-      path: 'assets/examples/multi-step-form/account-details.component.ts',
-      language: 'typescript',
-    },
-    {
-      path: 'assets/examples/multi-step-form/account-details.handler.ts',
-      language: 'typescript',
-    },
-    {
-      path: 'assets/examples/multi-step-form/preferences.component.ts',
-      language: 'typescript',
-    },
-    {
-      path: 'assets/examples/multi-step-form/preferences.handler.ts',
-      language: 'typescript',
-    },
-    {
-      path: 'assets/examples/multi-step-form/preferences.mapper.ts',
-      language: 'typescript',
-    },
-  ];
-
-  currentStep = signal(1);
-
-  readonly steps = computed(() => {
-    return [
-      {
-        label: 'Personal Information',
-        form: this.getSubForm('personalInfo'),
-      },
-      {
-        label: 'Account Details',
-        form: this.getSubForm('accountDetails'),
-      },
-      {
-        label: 'Preferences & Consent',
-        form: this.getSubForm('preferences'),
-      },
-    ];
-  });
-
   constructor(
     override readonly hydrator: FormHydrator,
     override readonly serializer: FormSerializer,
@@ -184,14 +126,6 @@ export class MultiStepFormComponent extends FormOrchestrator {
     this.orchestrate(options);
   }
 
-  setCurrentStep(step: number) {
-    this.currentStep.set(step);
-  }
-
-  getFormForStep(step: number) {
-    return this.steps()[step].form;
-  }
-
   submit() {
     if (!this.form().valid) {
       this.form().markAllAsTouched();
@@ -203,4 +137,71 @@ export class MultiStepFormComponent extends FormOrchestrator {
     this.setStatus('submitting');
     setTimeout(() => this.setStatus('success'), 1000);
   }
+
+  // Example-specific -- not part of forms
+  currentStep = signal(1);
+
+  readonly steps = computed(() => {
+    return [
+      {
+        label: 'Personal Information',
+        form: this.getSubForm('personalInfo'),
+      },
+      {
+        label: 'Account Details',
+        form: this.getSubForm('accountDetails'),
+      },
+      {
+        label: 'Preferences & Consent',
+        form: this.getSubForm('preferences'),
+      },
+    ];
+  });
+
+  setCurrentStep(step: number) {
+    this.currentStep.set(step);
+  }
+
+  getFormForStep(step: number) {
+    return this.steps()[step].form;
+  }
+
+  files = [
+    {
+      path: 'assets/examples/multi-step-form/multi-step-form.component.html',
+      language: 'html',
+    },
+    {
+      path: 'assets/examples/multi-step-form/multi-step-form.component.ts',
+      language: 'typescript',
+    },
+    {
+      path: 'assets/examples/multi-step-form/personal-info.component.ts',
+      language: 'typescript',
+    },
+    {
+      path: 'assets/examples/multi-step-form/personal-info.handler.ts',
+      language: 'typescript',
+    },
+    {
+      path: 'assets/examples/multi-step-form/account-details.component.ts',
+      language: 'typescript',
+    },
+    {
+      path: 'assets/examples/multi-step-form/account-details.handler.ts',
+      language: 'typescript',
+    },
+    {
+      path: 'assets/examples/multi-step-form/preferences.component.ts',
+      language: 'typescript',
+    },
+    {
+      path: 'assets/examples/multi-step-form/preferences.handler.ts',
+      language: 'typescript',
+    },
+    {
+      path: 'assets/examples/multi-step-form/preferences.mapper.ts',
+      language: 'typescript',
+    },
+  ];
 }

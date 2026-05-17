@@ -12,7 +12,7 @@ export class PreferencesMapper extends FormMapperBase<PreferencesModel> {
     return {
       monthlyBudget: model.monthlyBudget,
       referralSource: model.referralSource,
-      comments: model.comments?.trim().replace(/ {2,}/g, ' '),
+      comments: model.comments?.replace(/ {2,}/g, ' ').trim(),
       agreeToTerms: model.agreeToTerms,
     };
   }

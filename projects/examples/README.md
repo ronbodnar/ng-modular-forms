@@ -128,7 +128,7 @@ export class ExampleComponent extends FormOrchestrator {
       },
     };
 
-    this.initialize(options);
+    this.orchestrate(options);
   }
 
   submit() {

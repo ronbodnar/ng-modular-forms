@@ -3,7 +3,7 @@
     @for (step of steps(); track step.label; let index = $index) {
       <button
         type="button"
-        class="rounded-2xl border-2 px-4 py-3 text-left transition bg-secondary"
+        class="rounded-md border px-4 py-3 text-left transition bg-secondary"
         (click)="goToStep(index + 1)"
         [class.border-tertiary]="currentStep() !== index + 1"
         [class.border-accent]="currentStep() === index + 1"

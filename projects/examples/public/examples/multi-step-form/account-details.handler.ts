@@ -15,7 +15,7 @@ export class AccountDetailsFormHandler extends FormHandlerBase<ControlNames> {
     if (!form) {
       throw new Error('AccountDetailsFormHandler requires a form instance');
     }
-    this.registerControls(form, [...CONTROL_NAMES]);
+    this.registerControls(form, CONTROL_NAMES);
 
     return this.valueChangesOf<string>('accountDetails.password').subscribe(
       (password) => {

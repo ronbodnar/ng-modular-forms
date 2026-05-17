@@ -125,7 +125,7 @@ export class ParentComponent extends FormOrchestrator {
     const handlerRegistry = [this.sectionAHandler];
 
     // The mapperRegistry and handlerRegistry are optional, for when components grow
-    this.initialize({ form, mapperRegistry, handlerRegistry });
+    this.orchestrate({ form, mapperRegistry, handlerRegistry });
   }
 
   submit() {
@@ -199,22 +199,18 @@ export class SectionAHandler extends FormHandlerBase<ControlNames> {
 
     const sub = new Subscription();
 
-    sub.add(this.fieldAChangeSub(form));
+    sub.add(
+      this.valueChangesOf('sectionA.fieldA').subscribe(value => {
+        const fieldB = getControl('sectionA.fieldB', form);
+        if (!value) {
+          fieldB.reset();
+          fieldB.disable();
+          return;
+        }
+        fieldB.enable();
+      }));
 
     return sub;
-  }
-
-  private fieldAChangeSub(form: FormGroup): Subscription {
-    // valueChangesOf and getControl are typed from CONTROLS to ensure correct control name usage.
-    return this.valueChangesOf('sectionA.fieldA').subscribe(value => {
-      const fieldB = getControl('sectionA.fieldB', form);
-      if (!value) {
-        fieldB.reset();
-        fieldB.disable();
-        return;
-      }
-      fieldB.enable();
-    });
   }
 }`,
       },

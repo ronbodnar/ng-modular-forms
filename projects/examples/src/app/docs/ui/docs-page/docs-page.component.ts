@@ -9,7 +9,7 @@ import { Component, input } from '@angular/core';
       <h1 class="text-2xl font-semibold my-0">{{ title() }}</h1>
 
       <div
-        class="flex flex-col gap-4 mt-4 pt-4 border-t-2 border-t-tertiary flex-1"
+        class="flex flex-col flex-1 gap-4 mt-4 pt-4 border-t-2 border-t-tertiary"
         [ngClass]="bodyClass()"
       >
         <ng-content></ng-content>

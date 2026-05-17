@@ -16,13 +16,13 @@ export class PersonalInfoFormHandler extends FormHandlerBase<ControlNames> {
       throw new Error('PersonalInfoFormHandler requires a form instance');
     }
 
-    this.registerControls(form, [...CONTROL_NAMES]);
+    this.registerControls(form, CONTROL_NAMES);
 
-    return this.valueChangesOf<string>('personalInfo.newsletter').subscribe(
-      (newsletter) => {
+    return this.valueChangesOf<boolean>('personalInfo.newsletter').subscribe(
+      (acceptedNewsletter) => {
         const emailControl = getControl('personalInfo.email', form);
 
-        if (newsletter) {
+        if (acceptedNewsletter) {
           emailControl.setValidators([Validators.required, Validators.email]);
         } else {
           emailControl.setValidators([Validators.email]);

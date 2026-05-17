@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "ng": "ng",
+    "start": "ng serve",
     "build": "ng build",
     "build:all": "ng build core && ng build material",
     "watch": "ng build --watch --configuration development",

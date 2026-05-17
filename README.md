@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="projects/examples/public/icons/apple-touch-icon.png" height="120" alt="ng-modular-forms logo" />
+  <img src="https://raw.githubusercontent.com/ronbodnar/ng-modular-forms/main/projects/examples/public/icons/apple-touch-icon.png" height="120" alt="ng-modular-forms logo" />
 </p>
 
 <h1 align="center">ng-modular-forms</h1>
@@ -9,25 +9,68 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT" />
-  <img src="https://badge.fury.io/js/%40ng-modular-forms%2Fcore.svg" alt="npm version" />
-  <img src="https://img.shields.io/badge/Angular-v19--21-DD0031?logo=angular" alt="Angular Version" />
+  <a href="https://github.com/ronbodnar/ng-modular-forms/actions/workflows/ci-cd.yml"><img src="https://github.com/ronbodnar/ng-modular-forms/actions/workflows/ci-cd.yml/badge.svg" alt="CI/CD" /></a>
+  <a href="https://angular.dev"><img src="https://img.shields.io/badge/Angular-19--21-DD0031?logo=angular" alt="Angular Version" /></a>
+  <a href="https://www.npmjs.com/package/@ng-modular-forms/core"><img src="https://badge.fury.io/js/%40ng-modular-forms%2Fcore.svg" alt="npm version" /></a>
+  <a href="/LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT" /></a>
+</p>
+
+<p align="center">
+  <a href="https://ngmf.ronbodnar.com/docs/examples">
+    <strong>Live Examples & Interactive Demo</strong>
+  </a>
 </p>
 
 ## Why ng-modular-forms?
 
-Angular Reactive Forms tend to grow into tightly coupled components containing UI logic, reactive subscriptions, and API mapping.
+Angular Reactive Forms often become difficult to maintain as applications grow:
 
-`ng-modular-forms` introduces a separation of concerns that keeps forms scalable and maintainable.
+- Reactive subscriptions spread across components
+- Cross-field behavior becomes tightly coupled
+- API mapping logic becomes duplicated
+- Large forms become difficult to test and reuse
 
-It splits form logic into reusable building blocks:
+`@ng-modular-forms/core` introduces a modular architecture that separates:
 
-- **FormOrchestrator** – form lifecycle and composition
-- **FormHandlerBase** – reactive logic and cross-field behavior
-- **FormMapperBase** – API ↔ UI transformations
-- **FormControlBase** – reusable form controls (CVA-based)
+- form orchestration
+- reactive behavior
+- API mapping
+- reusable form controls
 
-**Note:** `ng-modular-forms` builds on top of Angular Reactive Forms. It does not replace them.
+Built on top of Angular Reactive Forms — not a replacement.
+
+Compatible with Angular 19–21.
+
+## Packages
+<table>
+  <tr>
+    <th style="white-space: nowrap;">Package</th>
+    <th>Description</th>
+    <th style="white-space: nowrap;">Links</th>
+  </tr>
+
+  <tr>
+    <td style="white-space: nowrap;"><b>@ng-modular-forms/core</b></td>
+    <td>
+      Form orchestration, reactive behavior handling, API mapping, and state hydration
+    </td>
+    <td style="white-space: nowrap;">
+      <a href="https://www.npmjs.com/package/@ng-modular-forms/core">npm</a>,
+      <a href="https://github.com/ronbodnar/ng-modular-forms/tree/main/projects/core#readme">docs</a>
+    </td>
+  </tr>
+
+  <tr>
+    <td style="white-space: nowrap;"><b>@ng-modular-forms/material</b></td>
+    <td>
+      Angular Material-based input components
+    </td>
+    <td style="white-space: nowrap;">
+      <a href="https://www.npmjs.com/package/@ng-modular-forms/material">npm</a>,
+      <a href="https://github.com/ronbodnar/ng-modular-forms/tree/main/projects/material#readme">docs</a>
+    </td>
+  </tr>
+</table>
 
 ## Installation
 
@@ -59,7 +102,7 @@ Clone and run the examples app:
 git clone https://github.com/ronbodnar/ng-modular-forms.git
 cd ng-modular-forms
 npm install
-ng serve
+npm start
 ```
 
 Navigate to `http://localhost:4200/docs/examples` to see the interactive examples.
@@ -82,13 +125,6 @@ export class ExampleComponent {
   });
 }
 ```
-
-## Packages
-
-| Package                        | Description                                                          |
-| :----------------------------- | :------------------------------------------------------------------- |
-| **@ng-modular-forms/core**     | Orchestration, handlers, mapping, hydration, serialization, controls |
-| **@ng-modular-forms/material** | Angular Material-based input components                              |
 
 ##  Input Components
 

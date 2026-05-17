@@ -37,6 +37,9 @@ jobs:
       - name: Build example site
         run: npm run build -- examples
 
+      - name: Add SPA fallback for GitHub Pages
+        run: cp dist/examples/browser/index.html dist/examples/browser/404.html
+
       - name: Build packages
         run: npm run build:all
 

@@ -16,16 +16,13 @@ export class PreferencesFormHandler extends FormHandlerBase<ControlNames> {
       throw new Error('PreferencesFormHandler requires a form instance');
     }
 
-    this.registerControls(form, [
-      'preferences.agreeToTerms',
-      'preferences.referralSource',
-    ]);
+    this.registerControls(form, CONTROL_NAMES);
 
     return this.valueChangesOf<boolean>('preferences.agreeToTerms').subscribe(
-      (newsletter) => {
+      (acceptedTerms) => {
         const referralControl = getControl('preferences.referralSource', form);
 
-        if (newsletter) {
+        if (acceptedTerms) {
           referralControl.setValidators([Validators.required]);
         } else {
           referralControl.clearValidators();

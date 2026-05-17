@@ -43,28 +43,6 @@ import { FormStatusOutputComponent } from '../../ui/form-status-output/form-stat
   templateUrl: './material-inputs.component.html',
 })
 export class MaterialInputsExampleComponent implements OnInit {
-  files = [
-    {
-      language: 'html',
-      path: 'assets/examples/material-inputs/material-inputs.component.html',
-    },
-    {
-      language: 'typescript',
-      path: 'assets/examples/material-inputs/material-inputs.component.ts',
-    },
-  ];
-
-  options = new FormGroup({
-    appearance: new FormControl<'outline' | 'fill'>('outline'),
-    loading: new FormControl(false),
-    floatLabel: new FormControl<'auto' | 'always'>('auto'),
-    disabled: new FormControl(false),
-  });
-
-  appearance = signal<'outline' | 'fill'>('outline');
-  loading = signal(false);
-  floatLabel = signal<'auto' | 'always'>('auto');
-
   form = new FormGroup({
     text: new FormControl('', [Validators.required, Validators.minLength(3)]),
     number: new FormControl<number | null>(null, [
@@ -98,6 +76,29 @@ export class MaterialInputsExampleComponent implements OnInit {
     { key: 'fr', label: 'France' },
     { key: 'jp', label: 'Japan' },
   ];
+
+  // Example-specific -- not part of forms
+  files = [
+    {
+      language: 'html',
+      path: 'assets/examples/material-inputs/material-inputs.component.html',
+    },
+    {
+      language: 'typescript',
+      path: 'assets/examples/material-inputs/material-inputs.component.ts',
+    },
+  ];
+
+  options = new FormGroup({
+    appearance: new FormControl<'outline' | 'fill'>('outline'),
+    loading: new FormControl(false),
+    floatLabel: new FormControl<'auto' | 'always'>('auto'),
+    disabled: new FormControl(false),
+  });
+
+  appearance = signal<'outline' | 'fill'>('outline');
+  loading = signal(false);
+  floatLabel = signal<'auto' | 'always'>('auto');
 
   ngOnInit(): void {
     this.options.valueChanges.subscribe((v) => {

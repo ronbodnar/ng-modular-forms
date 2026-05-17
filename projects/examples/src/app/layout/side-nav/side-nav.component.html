@@ -37,9 +37,9 @@
         @for (child of navItem.children; track child.label; let i = $index) {
           <button
             type="button"
-            class="p-2 pl-4 pr-10 rounded no-underline text-start text-accent text-base border-0 shadow-sm hover:shadow-lg ring-accent bg-secondary cursor-pointer"
+            class="p-2 pl-4 pr-10 rounded-md no-underline text-start text-accent text-base border-0 shadow-sm hover:shadow-lg ring-accent bg-secondary cursor-pointer"
             [routerLink]="child.route"
-            [routerLinkActive]="'ring-2'"
+            [routerLinkActive]="'ring'"
             [attr.aria-label]="child.label"
             (click)="onNavigationClick(navItem, i)"
           >
