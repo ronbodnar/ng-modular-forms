@@ -8,23 +8,20 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { FormControlBase } from '../base/form-control-base';
 import { TextBehavior } from '../behavior/text.behavior';
+import { FormFieldComponent } from './form-field.component';
 
 @Component({
   selector: 'nmf-text',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormFieldComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="nmf-field">
-      @if (label()) {
-        <label class="nmf-label">
-          {{ label() }}
-          @if (isRequired()) {
-            <span class="nmf-required">*</span>
-          }
-        </label>
-      }
-
+    <nmf-form-field
+      [label]="label()"
+      [isRequired]="isRequired()"
+      [loading]="loading()"
+      [errorMessage]="errorMessage()"
+    >
       <div class="nmf-input-wrapper">
         <input
           class="nmf-input"
@@ -55,19 +52,7 @@ import { TextBehavior } from '../behavior/text.behavior';
           </button>
         }
       </div>
-
-      <ng-content></ng-content>
-
-      <p class="nmf-error">
-        {{ errorMessage() }}
-      </p>
-
-      @if (loading()) {
-        <div class="nmf-loading">
-          <span class="nmf-spinner"></span>
-        </div>
-      }
-    </div>
+    </nmf-form-field>
 
     <ng-template #eyeIcon>
       <svg

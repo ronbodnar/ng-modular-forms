@@ -9,23 +9,20 @@ import { CommonModule } from '@angular/common';
 import { FormControlBase } from '../base/form-control-base';
 import { CurrencyBehavior } from '../behavior/currency.behavior';
 import { formatNumber, parseNumber } from '../number-utils';
+import { FormFieldComponent } from './form-field.component';
 
 @Component({
   selector: 'nmf-currency',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormFieldComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="nmf-field">
-      @if (label()) {
-        <label class="nmf-label">
-          {{ label() }}
-          @if (isRequired()) {
-            <span class="nmf-required">*</span>
-          }
-        </label>
-      }
-
+    <nmf-form-field
+      [label]="label()"
+      [isRequired]="isRequired()"
+      [loading]="loading()"
+      [errorMessage]="errorMessage()"
+    >
       <div class="nmf-input-wrapper nmf-input-prefix">
         @if (displayValue() != null) {
           <span
@@ -58,19 +55,7 @@ import { formatNumber, parseNumber } from '../number-utils';
           (keydown)="handleKeyDown($event)"
         />
       </div>
-
-      <ng-content></ng-content>
-
-      @if (loading()) {
-        <div class="nmf-loading">
-          <span class="nmf-spinner"></span>
-        </div>
-      }
-
-      <p class="nmf-error">
-        {{ errorMessage() }}
-      </p>
-    </div>
+    </nmf-form-field>
   `,
 })
 export class InputCurrencyComponent extends FormControlBase<number | null> {

@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { FormControlBase } from '../base/form-control-base';
+import { FormFieldComponent } from './form-field.component';
 
 export interface SelectOption {
   key: string | number;
@@ -12,18 +13,15 @@ export interface SelectOption {
 @Component({
   selector: 'nmf-select',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormFieldComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="nmf-field" [class.loading]="loading()">
-      @if (label()) {
-        <label class="nmf-label">
-          {{ label() }}
-          @if (isRequired()) {
-            <span class="nmf-required">*</span>
-          }
-        </label>
-      }
+    <nmf-form-field
+      [label]="label()"
+      [isRequired]="isRequired()"
+      [loading]="loading()"
+      [errorMessage]="errorMessage()"
+    >
       <div class="select-wrapper" [class.disabled]="disabled()">
         <select
           class="nmf-input"
@@ -54,17 +52,7 @@ export interface SelectOption {
           }
         </select>
       </div>
-
-      @if (loading()) {
-        <div class="nmf-loading">
-          <span class="nmf-spinner"></span>
-        </div>
-      }
-
-      <p class="nmf-error">
-        {{ errorMessage() }}
-      </p>
-    </div>
+    </nmf-form-field>
   `,
 })
 export class InputSelectComponent extends FormControlBase<

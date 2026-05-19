@@ -2,23 +2,20 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { FormControlBase } from '../base/form-control-base';
+import { FormFieldComponent } from './form-field.component';
 
 @Component({
   selector: 'nmf-textarea',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormFieldComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="nmf-field">
-      @if (label()) {
-        <label class="nmf-label">
-          {{ label() }}
-          @if (isRequired()) {
-            <span class="nmf-required">*</span>
-          }
-        </label>
-      }
-
+    <nmf-form-field
+      [label]="label()"
+      [isRequired]="isRequired()"
+      [loading]="loading()"
+      [errorMessage]="errorMessage()"
+    >
       <textarea
         class="nmf-input"
         [ngClass]="classList()"
@@ -32,17 +29,7 @@ import { FormControlBase } from '../base/form-control-base';
         [formControl]="formControl"
         (blur)="onTouched()"
       ></textarea>
-
-      <p class="nmf-error">
-        {{ errorMessage() }}
-      </p>
-
-      @if (loading()) {
-        <div class="nmf-loading">
-          <span class="nmf-spinner"></span>
-        </div>
-      }
-    </div>
+    </nmf-form-field>
   `,
 })
 export class InputTextareaComponent extends FormControlBase<string | null> {
