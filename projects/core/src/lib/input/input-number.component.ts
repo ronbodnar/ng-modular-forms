@@ -32,7 +32,7 @@ import { FormFieldComponent } from './form-field.component';
         [class.disabled]="disabled()"
         [id]="id()"
         [name]="name()"
-        [type]="formatNumberValue() ? 'text' : 'number'"
+        [type]="formatValue() ? 'text' : 'number'"
         [value]="displayValue()"
         [disabled]="disabled()"
         [required]="isRequired()"
@@ -47,7 +47,7 @@ import { FormFieldComponent } from './form-field.component';
 export class InputNumberComponent extends FormControlBase<
   string | number | null
 > {
-  formatNumberValue = input<boolean>(false);
+  formatValue = input<boolean>(false);
   displayValue = signal<string>('');
 
   behavior = new TextBehavior();
@@ -74,7 +74,7 @@ export class InputNumberComponent extends FormControlBase<
   }
 
   updateDisplayValue(value: string | number | null) {
-    if (this.formatNumberValue() && value != null) {
+    if (this.formatValue() && value != null) {
       this.displayValue.set(formatNumber(value) ?? '');
     } else {
       this.displayValue.set(value != null ? String(value) : '');

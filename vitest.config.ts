@@ -10,6 +10,10 @@ export default defineConfig(({ mode: _ }) => ({
     environment: 'jsdom',
     setupFiles: ['./test-setup.ts'],
     include: ['projects/**/lib/**/*.spec.ts', 'projects/**/src/**/*.spec.ts'],
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'html', 'json'],
+    },
     reports: ['default'],
   },
 }));

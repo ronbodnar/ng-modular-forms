@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatInputNumberComponent } from './mat-input-number.component';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { By } from '@angular/platform-browser';
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 
 describe('MatInputNumberComponent', () => {
   let fixture: ComponentFixture<MatInputNumberComponent>;
@@ -47,5 +47,16 @@ describe('MatInputNumberComponent', () => {
     input.dispatchEvent(new Event('input'));
 
     expect(onChangeMock).toHaveBeenCalledWith(1234);
+  });
+
+  it('clears the input when writeValue is called with null', () => {
+    component.writeValue(null);
+    fixture.detectChanges();
+
+    const input: HTMLInputElement = fixture.debugElement.query(
+      By.css('input'),
+    ).nativeElement;
+
+    expect(input.value).toBe('');
   });
 });

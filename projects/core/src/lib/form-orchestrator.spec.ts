@@ -133,6 +133,30 @@ describe('FormOrchestrator', () => {
     expect(result).toEqual({ ok: true });
   });
 
+  it('sets form state using setForm and returns subform by key', () => {
+    const firstForm = new FormGroup({});
+    const secondForm = new FormGroup({ sub: new FormGroup({}) });
+
+    orchestrator.orchestrate({
+      form: firstForm,
+      handlerRegistry: [],
+      mapperRegistry: {},
+    });
+
+    orchestrator.setForm(secondForm);
+
+    expect(orchestrator.form()).toBe(secondForm);
+    expect(orchestrator.getSubForm('sub')).toBeInstanceOf(FormGroup);
+  });
+
+  it('manages status and error state through setters', () => {
+    orchestrator.setStatus('submitting');
+    orchestrator.setErrorMessage('failed');
+
+    expect(orchestrator.status()).toBe('submitting');
+    expect(orchestrator.errorMessage()).toBe('failed');
+  });
+
   it('unsubscribes all logic on destroy', () => {
     const sub = new Subscription();
     const unsubscribeSpy = vi.spyOn(sub, 'unsubscribe');
