@@ -35,6 +35,7 @@ export abstract class FormControlBase<T> implements ControlValueAccessor {
 
   readonly _disabledByInput = input<boolean, unknown>(false, {
     transform: booleanAttribute,
+    alias: 'disabledOverride',
   });
   readonly _disabledByCva = signal(false);
 

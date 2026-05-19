@@ -9,7 +9,10 @@ describe('CurrencyBehavior', () => {
 
   function createEvent(
     key: string,
-    options: Partial<KeyboardEvent> & { value?: string } = {},
+    options: Partial<KeyboardEvent> & {
+      value?: string;
+      selectionStart?: number;
+    } = {},
   ) {
     return {
       key,
@@ -17,7 +20,8 @@ describe('CurrencyBehavior', () => {
       metaKey: false,
       preventDefault: vi.fn(),
       target: {
-        value: '',
+        value: options.value ?? '',
+        selectionStart: options.selectionStart ?? 0,
       },
       ...options,
     } as unknown as KeyboardEvent;
@@ -51,5 +55,32 @@ describe('CurrencyBehavior', () => {
     const event = createEvent('$');
     behavior.blockNonDigitKey(event);
     expect(event.preventDefault).toHaveBeenCalled();
+  });
+
+  it('allows a single decimal point and blocks a second one', () => {
+    const first = createEvent('.', { value: '123' });
+    behavior.blockNonDigitKey(first);
+    expect(first.preventDefault).not.toHaveBeenCalled();
+
+    const second = createEvent('.', { value: '1.23' });
+    behavior.blockNonDigitKey(second);
+    expect(second.preventDefault).toHaveBeenCalled();
+  });
+
+  it('allows a leading minus and blocks invalid minus locations', () => {
+    const allowed = createEvent('-', { value: '123', selectionStart: 0 });
+    behavior.blockNonDigitKey(allowed);
+    expect(allowed.preventDefault).not.toHaveBeenCalled();
+
+    const blockedLater = createEvent('-', { value: '123', selectionStart: 1 });
+    behavior.blockNonDigitKey(blockedLater);
+    expect(blockedLater.preventDefault).toHaveBeenCalled();
+
+    const blockedDuplicate = createEvent('-', {
+      value: '-123',
+      selectionStart: 0,
+    });
+    behavior.blockNonDigitKey(blockedDuplicate);
+    expect(blockedDuplicate.preventDefault).toHaveBeenCalled();
   });
 });

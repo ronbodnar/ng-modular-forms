@@ -33,6 +33,14 @@ describe('MatInputTextComponent', () => {
     expect(input.type).toBe('text');
   });
 
+  it('does not render the password toggle when the type is not password', () => {
+    fixture.componentRef.setInput('type', 'text');
+    fixture.detectChanges();
+
+    const button = fixture.debugElement.query(By.css('.nmf-password-toggle'));
+    expect(button).toBeNull();
+  });
+
   it('hides password toggle when loading is true', () => {
     fixture.componentRef.setInput('type', 'password');
     fixture.componentRef.setInput('loading', true);

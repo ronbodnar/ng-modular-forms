@@ -1,6 +1,7 @@
 export function parseNumber(
   input: string | number | null | undefined,
 ): number | null {
+  console.log('PARSING Number', input);
   if (input == null || input === '') return null;
 
   if (typeof input === 'number') {
