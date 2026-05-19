@@ -23,7 +23,7 @@
 
 ## Why ng-modular-forms?
 
-Angular Reactive Forms often become difficult to maintain as applications grow:
+Angular Reactive Forms often become difficult to maintain or scale as applications grow:
 
 - Reactive subscriptions spread across components
 - Cross-field behavior becomes tightly coupled
@@ -38,6 +38,8 @@ Angular Reactive Forms often become difficult to maintain as applications grow:
 - reusable form controls
 
 Built on top of Angular Reactive Forms — not a replacement.
+
+Designed for scalable, enterprise-grade Angular applications.
 
 Compatible with Angular 19–21.
 

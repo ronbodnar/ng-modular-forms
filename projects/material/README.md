@@ -5,7 +5,9 @@
 <h1 align="center">@ng-modular-forms/material</h1>
 
 <p align="center">
-  <strong>Angular Material implementation of ng-modular-forms inputs.</strong>
+  <strong>
+    Angular Material form controls for typed reactive forms with CVA support.
+  </strong>
 </p>
 
 <p align="center">
@@ -51,17 +53,46 @@ export class ExampleComponent {
 }
 ```
 
+## Why ng-modular-forms?
+
+Angular Reactive Forms often become difficult to maintain as applications grow:
+
+- Reactive subscriptions spread across components
+- Cross-field behavior becomes tightly coupled
+- API mapping logic becomes duplicated
+- Large forms become difficult to test and reuse
+
+`@ng-modular-forms/core` introduces a modular architecture that separates:
+
+- form orchestration
+- reactive behavior
+- API mapping
+- reusable form controls
+
+Built on top of Angular Reactive Forms — not a replacement.
+
+Designed for scalable, enterprise-grade Angular applications.
+
+Compatible with Angular 19–21.
+
 ## Built On
 
+- Angular Reactive Forms
 - Angular Material
-- ControlValueAccessor
+- ControlValueAccessor (CVA)
+- Standalone Components
+- RxJS
 
 ## Features
 
-- Material styling
-- Floating labels
-- Validation UI
-- Loading states
+- Reusable Angular Material form controls
+- Typed reactive forms support
+- Built-in ControlValueAccessor integration
+- Consistent validation and error handling
+- Loading and disabled states
+- Standalone component support
+- Reduced reactive forms boilerplate
+- Enterprise-ready form architecture
 
 ### Requires
 

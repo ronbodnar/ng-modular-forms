@@ -5,7 +5,7 @@
 <h1 align="center">@ng-modular-forms/core</h1>
 
 <p align="center">
-  <strong>Core primitives, behaviors, and input components for orchestrating complex Angular reactive forms.</strong>
+  <strong>Composable primitives for building scalable Angular reactive form architectures.</strong>
 </p>
 
 <p align="center">
@@ -38,6 +38,8 @@ Angular Reactive Forms often become difficult to maintain as applications grow:
 - reusable form controls
 
 Built on top of Angular Reactive Forms — not a replacement.
+
+Designed for scalable, enterprise-grade Angular applications.
 
 Compatible with Angular 19–21.
 
