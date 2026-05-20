@@ -17,8 +17,8 @@ describe('MatInputNumberComponent', () => {
     component = fixture.componentInstance;
   });
 
-  it('formats values when formatNumberValue is true', () => {
-    fixture.componentRef.setInput('formatNumberValue', true);
+  it('formats values when formatValue is true', () => {
+    fixture.componentRef.setInput('formatValue', true);
     fixture.detectChanges();
 
     component.writeValue(1234);
@@ -32,8 +32,8 @@ describe('MatInputNumberComponent', () => {
     expect(input.value).toBe('1,234');
   });
 
-  it('calls onChange with parsed number on input when type is number and formatNumberValue is true', () => {
-    fixture.componentRef.setInput('formatNumberValue', true);
+  it('calls onChange with parsed number on input when type is number and formatValue is true', () => {
+    fixture.componentRef.setInput('formatValue', true);
     fixture.detectChanges();
 
     const onChangeMock = vi.fn();

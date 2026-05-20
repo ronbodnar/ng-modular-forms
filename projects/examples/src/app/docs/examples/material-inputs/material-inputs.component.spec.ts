@@ -5,33 +5,34 @@ import { MaterialInputsExampleComponent } from './material-inputs.component';
 import { provideHttpClient } from '@angular/common/http';
 
 describe('MaterialInputsFormComponent', () => {
-  let _component: MaterialInputsExampleComponent;
   let fixture: ComponentFixture<MaterialInputsExampleComponent>;
+  let component: MaterialInputsExampleComponent;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
+  beforeAll(() => {
+    TestBed.configureTestingModule({
       imports: [MaterialInputsExampleComponent, ReactiveFormsModule],
       providers: [provideHttpClient()],
-    }).compileComponents();
+    });
+  });
 
+  beforeEach(async () => {
     fixture = TestBed.createComponent(MaterialInputsExampleComponent);
-    _component = fixture.componentInstance;
-    fixture.detectChanges();
+    component = fixture.componentInstance;
   });
 
   it('sets expected values when populateForm is called', () => {
-    const component = fixture.componentInstance;
-
     component.populateForm();
 
-    const value = component.form.value;
-
-    expect(value.text).toBe('Hello World');
-    expect(value.number).toBe(1230);
-    expect(value.numberFormatted).toBe(1230);
-    expect(value.password).toBe('12345678');
-    expect(value.select).toBe('us');
-    expect(value.currency).toBe(1230);
-    expect(value.textarea).toContain('Hello');
+    expect(component.form.value).toEqual({
+      text: 'Hello World',
+      date: expect.any(Date),
+      time: expect.any(Date),
+      number: 1230,
+      numberFormatted: 1230,
+      password: '12345678',
+      select: 'us',
+      currency: 1230,
+      textarea: expect.stringContaining('Hello'),
+    });
   });
 });

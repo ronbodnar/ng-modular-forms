@@ -49,7 +49,7 @@ import { MatButtonModule } from '@angular/material/button';
         matInput
         [ngClass]="classList"
         [name]="name()"
-        [type]="formatNumberValue() ? 'text' : 'number'"
+        [type]="formatValue() ? 'text' : 'number'"
         [value]="displayValue()"
         [required]="isRequired()"
         [placeholder]="placeholder()"
@@ -79,7 +79,7 @@ import { MatButtonModule } from '@angular/material/button';
   `,
 })
 export class MatInputNumberComponent extends MatFormControlBase<number | null> {
-  formatNumberValue = input<boolean>(false);
+  formatValue = input<boolean>(false);
   displayValue = signal<string>('');
 
   behavior = new TextBehavior();
@@ -104,7 +104,7 @@ export class MatInputNumberComponent extends MatFormControlBase<number | null> {
   }
 
   updateDisplayValue(value: number | null) {
-    if (this.formatNumberValue() && value != null) {
+    if (this.formatValue() && value != null) {
       this.displayValue.set(formatNumber(value) ?? '');
     } else {
       this.displayValue.set(value != null ? String(value) : '');

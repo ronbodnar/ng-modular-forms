@@ -15,11 +15,7 @@ import {
   selector: 'test-form-control-base',
   imports: [ReactiveFormsModule],
   template: `
-    <input
-      [formControl]="formControl"
-      (blur)="onTouched()"
-      [disabled]="disabled()"
-    />
+    <input [formControl]="formControl" (blur)="onTouched()" />
 
     <div class="error">{{ errorMessage() }}</div>
   `,
