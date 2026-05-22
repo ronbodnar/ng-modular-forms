@@ -78,9 +78,7 @@ export abstract class FormOrchestrator
     this._errorMessage.set(message);
   }
 
-  public hydrateFromModel<TModel extends Record<string, unknown>>(
-    model: TModel,
-  ) {
+  public hydrateFromModel<TModel extends object>(model: TModel) {
     const form = this.form();
     const registry = this.mapperRegistry();
 
@@ -88,7 +86,7 @@ export abstract class FormOrchestrator
       if (!(key in model)) return;
 
       const mapper = registry[key];
-      const value = model?.[key];
+      const value = (model as Record<string, unknown>)[key];
 
       if (control instanceof FormGroup) {
         const mapped = mapper ? mapper.fromModel(value) : value;

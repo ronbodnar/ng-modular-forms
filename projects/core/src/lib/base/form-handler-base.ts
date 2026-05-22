@@ -29,6 +29,18 @@ export abstract class FormHandlerBase<ControlNames extends string = string> {
     });
   }
 
+  public getControl<T>(key: ControlNames): T {
+    const control = this.registeredControls[key];
+
+    if (!control) {
+      throw new Error(
+        `Control with name: "${key}" not found. Ensure it is registered in registerControls(...) before usage.`,
+      );
+    }
+
+    return control as T;
+  }
+
   public valueChangesOf<T>(key: ControlNames): Observable<T> {
     const control = this.registeredControls[key];
 
