@@ -4,7 +4,11 @@ import type { MapperRegistry } from './types';
 
 @Injectable({ providedIn: 'root' })
 export class FormSerializer {
-  toRequest(form: FormGroup, registry: MapperRegistry = {}) {
+  toRequest<TOptions extends object = object>(
+    form: FormGroup,
+    registry: MapperRegistry = {},
+    options?: TOptions,
+  ): Record<string, unknown> {
     const result: Record<string, unknown> = {};
 
     Object.entries(form.controls).forEach(([key, control]) => {
@@ -12,8 +16,8 @@ export class FormSerializer {
 
       if (control instanceof FormGroup) {
         result[key] = mapFn
-          ? mapFn(control.value)
-          : this.toRequest(control, registry);
+          ? mapFn(control.value, options)
+          : this.toRequest(control, registry, options);
         return;
       }
 

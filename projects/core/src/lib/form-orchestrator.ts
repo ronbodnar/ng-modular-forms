@@ -98,8 +98,14 @@ export abstract class FormOrchestrator
     });
   }
 
-  public buildRequest(): Record<string, unknown> {
-    return this.serializer.toRequest(this.form(), this.mapperRegistry());
+  public buildRequest<TOptions extends object>(
+    options?: TOptions,
+  ): Record<string, unknown> {
+    return this.serializer.toRequest<TOptions>(
+      this.form(),
+      this.mapperRegistry(),
+      options,
+    );
   }
 
   ngOnDestroy(): void {
