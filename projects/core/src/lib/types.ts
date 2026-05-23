@@ -1,4 +1,4 @@
-import type { FormGroup } from '@angular/forms';
+import type { FormControl, FormGroup } from '@angular/forms';
 import type { FormMapperBase } from './base/form-mapper-base';
 import type { FormHandlerBase } from './base/form-handler-base';
 
@@ -9,7 +9,9 @@ export type MapperRegistry = Record<
   FormMapperBase<unknown, unknown, unknown>
 >;
 
-export type FormHandlerRegistry = FormHandlerBase[];
+export type FormHandlerRegistry = FormHandlerBase<
+  Record<string, FormControl<unknown>>
+>[];
 
 export interface FormOrchestratorOptions {
   form: FormGroup;
