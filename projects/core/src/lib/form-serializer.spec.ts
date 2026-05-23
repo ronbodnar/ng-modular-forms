@@ -34,7 +34,7 @@ describe('FormSerializer', () => {
 
     const result = serializer.toRequest(form, { sub: mapper });
 
-    expect(mapper.toRequest).toHaveBeenCalledWith({ bar: 'value' });
+    expect(mapper.toRequest).toHaveBeenCalledWith({ bar: 'value' }, undefined);
     expect(result).toEqual({ sub: { bar: 'mapped' } });
   });
 });
