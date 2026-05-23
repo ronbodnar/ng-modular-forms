@@ -1,4 +1,4 @@
-import { FormGroup } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { Directive, OnDestroy, signal } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { FormHandlerBase } from './base/form-handler-base';
@@ -62,7 +62,9 @@ export abstract class FormOrchestrator
     return this.form().get(key) as FormGroup;
   }
 
-  public addHandlerToRegistry(handler: FormHandlerBase) {
+  public addHandlerToRegistry<TControls extends Record<string, FormControl>>(
+    handler: FormHandlerBase<TControls>,
+  ) {
     this._handlerRegistry.set([...this._handlerRegistry(), handler]);
   }
 

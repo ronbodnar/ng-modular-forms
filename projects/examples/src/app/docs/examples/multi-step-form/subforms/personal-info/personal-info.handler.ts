@@ -1,24 +1,22 @@
 import { Injectable } from '@angular/core';
 import { FormHandlerBase, getControl } from '@ng-modular-forms/core';
-import { FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
-const CONTROL_NAMES = [
-  'personalInfo.newsletter',
-  'personalInfo.email',
-] as const;
-
-type ControlNames = (typeof CONTROL_NAMES)[number];
+type Controls = {
+  'personalInfo.newsletter': FormControl<boolean>;
+  'personalInfo.email': FormControl<string>;
+};
 
 @Injectable()
-export class PersonalInfoFormHandler extends FormHandlerBase<ControlNames> {
+export class PersonalInfoFormHandler extends FormHandlerBase<Controls> {
   override getReactiveLogic(form?: FormGroup) {
     if (!form) {
       throw new Error('PersonalInfoFormHandler requires a form instance');
     }
 
-    this.registerControls(form, CONTROL_NAMES);
+    this.initializeForm(form);
 
-    return this.valueChangesOf<boolean>('personalInfo.newsletter').subscribe(
+    return this.valueChangesOf('personalInfo.newsletter').subscribe(
       (acceptedNewsletter) => {
         const emailControl = getControl('personalInfo.email', form);
 

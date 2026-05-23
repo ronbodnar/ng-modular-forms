@@ -9,7 +9,7 @@ import { FormHandlerBase } from './base/form-handler-base';
 
 class TestOrchestrator extends FormOrchestrator {}
 
-class MockHandler extends FormHandlerBase<string> {
+class MockHandler extends FormHandlerBase<{ foo: FormControl }> {
   calls = 0;
 
   getReactiveLogic(): Subscription {

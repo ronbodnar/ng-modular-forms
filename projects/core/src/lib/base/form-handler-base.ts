@@ -2,54 +2,30 @@ import type { FormControl, FormGroup } from '@angular/forms';
 import type { Observable, Subscription } from 'rxjs';
 import { getControl } from '../form-utils';
 
-export abstract class FormHandlerBase<ControlNames extends string = string> {
+export abstract class FormHandlerBase<
+  TControls extends Record<string, FormControl<unknown>>,
+> {
+  private _form!: FormGroup;
+
   abstract getReactiveLogic(form: FormGroup): Subscription;
 
-  private registeredControls: Partial<
-    Record<ControlNames, FormControl<unknown>>
-  > = {};
-
-  /**
-   * Registers form controls for later reactive access.
-   */
-  public registerControls(
-    form: FormGroup,
-    controlNames: readonly ControlNames[],
-  ): void {
-    controlNames.forEach((controlName) => {
-      const control = getControl(controlName.replace(/_/g, '.'), form);
-
-      if (!control) {
-        throw new Error(
-          `Failed to register control "${controlName}". Available controls: ${Object.keys(form.controls).join(', ')}`,
-        );
-      }
-
-      this.registeredControls[controlName] = control;
-    });
+  public initializeForm(form: FormGroup): void {
+    this._form = form;
   }
 
-  public getControl<T>(key: ControlNames): T {
-    const control = this.registeredControls[key];
+  public getControl<TKey extends keyof TControls>(key: TKey): TControls[TKey] {
+    const control = getControl(String(key), this._form);
 
     if (!control) {
-      throw new Error(
-        `Control with name: "${key}" not found. Ensure it is registered in registerControls(...) before usage.`,
-      );
+      throw new Error(`Control "${String(key)}" not found.`);
     }
 
-    return control as T;
+    return control as TControls[TKey];
   }
 
-  public valueChangesOf<T>(key: ControlNames): Observable<T> {
-    const control = this.registeredControls[key];
-
-    if (!control) {
-      throw new Error(
-        `Control with name: "${key}" not found. Ensure it is registered in registerControls(...) before usage.`,
-      );
-    }
-
-    return control.valueChanges as Observable<T>;
+  public valueChangesOf<TKey extends keyof TControls>(
+    key: TKey,
+  ): Observable<TControls[TKey]['value']> {
+    return this.getControl(key).valueChanges;
   }
 }

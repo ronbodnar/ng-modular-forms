@@ -1,26 +1,24 @@
 import { Injectable } from '@angular/core';
-import { FormGroup, Validators } from '@angular/forms';
-import { FormHandlerBase, getControl } from '@ng-modular-forms/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormHandlerBase } from '@ng-modular-forms/core';
 
-const CONTROL_NAMES = [
-  'personalInfo.email',
-  'preferences.agreeToTerms',
-] as const;
-
-type ControlNames = (typeof CONTROL_NAMES)[number];
+type Controls = {
+  'personalInfo.email': FormControl<string>;
+  'preferences.agreeToTerms': FormControl<boolean>;
+};
 
 @Injectable()
-export class MultiStepFormHandler extends FormHandlerBase<ControlNames> {
+export class MultiStepFormHandler extends FormHandlerBase<Controls> {
   override getReactiveLogic(form?: FormGroup) {
     if (!form) {
       throw new Error('RegistrationFormHandler requires a form instance');
     }
 
-    this.registerControls(form, CONTROL_NAMES);
+    this.initializeForm(form);
 
-    const emailControl = getControl('personalInfo.email', form);
+    const emailControl = this.getControl('personalInfo.email');
 
-    return this.valueChangesOf<boolean>('preferences.agreeToTerms').subscribe(
+    return this.valueChangesOf('preferences.agreeToTerms').subscribe(
       (acceptedTerms) => {
         // Cross-group compliance rule:
         // Email becomes required only when user opts into agreement flow
