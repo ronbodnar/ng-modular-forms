@@ -138,22 +138,23 @@ Encapsulates cross-field reactive behavior. Keeps UI logic out of the component.
 
 ```ts
 import { Subscription } from 'rxjs';
-import { FormHandlerBase, getControl } from '@ng-modular-forms/core';
+import { FormHandlerBase } from '@ng-modular-forms/core';
 
-const CONTROL_NAMES = ['fieldA', 'fieldB'] as const;
-
-type ControlNames = typeof CONTROL_NAMES[number];
+type Controls = {
+  'fieldA': FormControl<string>;
+  'fieldB': FormControl<string>;
+}
 
 @Injectable()
-export class SectionAHandler extends FormHandlerBase<ControlNames> {
+export class SectionAHandler extends FormHandlerBase<Controls> {
   override getReactiveLogic(form: FormGroup): Subscription {
-    this.registerControls(form, CONTROL_NAMES);
+    this.initializeForm(form);
 
     const subscription = new Subscription();
 
     subscription.add(
-      this.valueChangesOf<string>('fieldA').subscribe((val) => {
-        const fieldB = getControl<string>('fieldB', form);
+      this.valueChangesOf('fieldA').subscribe((val) => {
+        const fieldB = this.getControl('fieldB', form);
 
         val?.trim()
           ? fieldB.enable()
@@ -162,7 +163,7 @@ export class SectionAHandler extends FormHandlerBase<ControlNames> {
     );
 
     subscription.add(
-      this.valueChangesOf<string>('fieldB').subscribe((val) => {
+      this.valueChangesOf('fieldB').subscribe((val) => {
         console.log('Field B changed:', val);
       }),
     );
@@ -180,9 +181,9 @@ Handles transformations between API and form. `FormHydrator` and `FormSerializer
 import { FormMapperBase, getControlValue } from '@ng-modular-forms/core';
 
 export class SectionAMapper extends FormMapperBase<
-  ApiModel, RequestModel, FormModel
+  ApiModel, RequestModel, FormModel, FormMapperOptions
 > {
-  toRequest(form: FormGroup): RequestModel {
+  toRequest(form: FormGroup, _options?: FormMapperOptions): RequestModel {
     const fieldAValue = getControlValue<string>('fieldA', form);
     const fieldBValue = getControlValue<string>('fieldB', form);
     return {
@@ -209,6 +210,11 @@ type ApiModel = {
 
 type RequestModel = ApiModel;
 type FormModel = ApiModel;
+
+interface FormMapperOptions {
+  extraField1?: string;
+  extraField2?: string;
+}
 
 /**
  * These are intentionally separated even if identical.

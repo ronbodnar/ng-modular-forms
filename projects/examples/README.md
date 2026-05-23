@@ -179,17 +179,18 @@ export class SectionAComponent {
 #### Handler (Reactive Logic Layer)
 
 ```ts
-const CONTROL_NAMES = ["sectionA.fieldA", "sectionA.fieldB"] as const;
-
-type ControlNames = (typeof CONTROL_NAMES)[number];
+type Controls = {
+  'sectionA.fieldA': FormControl<string>;
+  'sectionA.fieldB': FormControl<string>;
+}
 
 @Injectable()
-export class SectionAHandler extends FormHandlerBase<ControlNames> {
+export class SectionAHandler extends FormHandlerBase<Controls> {
   override getReactiveLogic(form: FormGroup): Subscription {
-    this.registerControls(form, [...CONTROL_NAMES]);
+    this.initializeForm(form);
 
     return this.valueChangesOf("sectionA.fieldA").subscribe((value) => {
-      const fieldBControl = getControl("sectionA.fieldB", form);
+      const fieldBControl = this.getControl("sectionA.fieldB");
       if (!value) {
         fieldBControl.reset();
         fieldBControl.disable();
@@ -217,9 +218,14 @@ interface ApiRequestModel {
 
 type FormModel = ApiResponseModel;
 
-export class SectionAMapper extends FormMapperBase<ApiResponseModel, ApiRequestModel, FormModel> {
-  buildRequest(form: FormGroup): ApiRequestModel {
-    const fieldAValue = form.value.fieldA ?? "";
+interface FormMapperOptions {
+  extraField1?: string;
+  extraField2?: string;
+}
+
+export class SectionAMapper extends FormMapperBase<ApiResponseModel, ApiRequestModel, FormModel, FormMapperOptions> {
+  buildRequest(form: FormGroup, _options?: FormMapperOptions): ApiRequestModel {
+    const fieldAValue = form.value.fieldA ?? options.extraField1 ?? "";
     return {
       fieldA: fieldAValue.trim().replace(/\s+/g, "-").toLowerCase(),
       fieldB: form.value.fieldB,
