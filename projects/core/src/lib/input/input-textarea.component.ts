@@ -24,10 +24,12 @@ import { FormFieldComponent } from './form-field.component';
         [id]="id()"
         [rows]="rows()"
         [cols]="cols()"
+        [value]="value"
+        [disabled]="disabled()"
         [required]="isRequired()"
         [placeholder]="placeholder()"
-        [formControl]="formControl"
         (blur)="onTouched()"
+        (input)="onInput($event)"
       ></textarea>
     </nmf-form-field>
   `,
@@ -35,4 +37,11 @@ import { FormFieldComponent } from './form-field.component';
 export class InputTextareaComponent extends FormControlBase<string | null> {
   rows = input<number>(5);
   cols = input<number>(5);
+
+  onInput(event: Event): void {
+    if (this._disabledByInput()) return;
+
+    const input = event.target as HTMLTextAreaElement;
+    this.onChange(input.value);
+  }
 }

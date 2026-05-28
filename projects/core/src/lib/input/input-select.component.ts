@@ -28,25 +28,27 @@ export interface SelectOption {
           [ngClass]="classList()"
           [class.error]="hasErrors()"
           [class.disabled]="disabled()"
+          [value]="value ?? ''"
+          [disabled]="disabled()"
           [required]="isRequired()"
-          [formControl]="formControl"
           (blur)="onTouched()"
+          (change)="handleChange($event)"
         >
           <!-- Empty option -->
-          <option [ngValue]="null" disabled>
+          <option [value]="''">
             {{ emptyOptionLabel() }}
           </option>
 
           <!-- Options -->
           @for (option of options(); track option.key) {
-            <option [ngValue]="option.key" [disabled]="option.disabled">
+            <option [value]="option.key" [disabled]="option.disabled">
               {{ option.label }}
             </option>
           }
 
-          <!-- Clear option -->
+          <!-- Clear option / TODO: remove -->
           @if (clearOptionLabel()) {
-            <option [ngValue]="null">
+            <option [value]="''">
               {{ clearOptionLabel() }}
             </option>
           }
@@ -61,4 +63,11 @@ export class InputSelectComponent extends FormControlBase<
   options = input<SelectOption[]>([]);
   emptyOptionLabel = input<string>('Select an option');
   clearOptionLabel = input<string | null>('Clear selection');
+
+  handleChange(event: Event): void {
+    if (this._disabledByCva()) return;
+
+    const input = event.target as HTMLSelectElement;
+    this.onChange(input.value || null);
+  }
 }

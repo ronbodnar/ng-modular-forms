@@ -7,6 +7,7 @@ import {
 } from '@angular/forms';
 import {
   booleanAttribute,
+  ChangeDetectorRef,
   computed,
   DestroyRef,
   Directive,
@@ -22,6 +23,10 @@ type ControlValue<T> = T | null;
 @Directive()
 export abstract class FormControlBase<TValue> implements ControlValueAccessor {
   protected readonly destroyRef = inject(DestroyRef);
+
+  protected readonly ngControl = inject(NgControl, {
+    optional: true,
+  });
 
   static nextId = 0;
   readonly id = input<string>(`nmf-form-control-${FormControlBase.nextId++}`, {
@@ -40,10 +45,11 @@ export abstract class FormControlBase<TValue> implements ControlValueAccessor {
   });
   readonly _disabledByCva = signal(false);
 
-  readonly ngControl = inject(NgControl, {
-    self: true,
-    optional: true,
-  });
+  private _value: TValue | null = null;
+
+  get value(): TValue | null {
+    return this._value;
+  }
 
   get formControl(): FormControl<ControlValue<TValue>> {
     return this.ngControl?.control as FormControl<ControlValue<TValue>>;
@@ -88,13 +94,17 @@ export abstract class FormControlBase<TValue> implements ControlValueAccessor {
       });
   }
 
+  readonly cdr = inject(ChangeDetectorRef);
+
   writeValue(value: TValue | null): void {
-    const control = this.formControl;
+    /*     const control = this.formControl;
     if (!control) return;
 
     if (control.value !== value) {
       control.setValue(value, { emitEvent: false });
-    }
+    } */
+    this._value = value;
+    this.cdr.markForCheck();
   }
 
   registerOnChange(fn: (value: TValue | null) => void): void {

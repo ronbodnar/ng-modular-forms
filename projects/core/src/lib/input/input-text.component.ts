@@ -31,10 +31,12 @@ import { FormFieldComponent } from './form-field.component';
           [id]="id()"
           [name]="name()"
           [type]="computedType()"
+          [value]="value"
+          [disabled]="disabled()"
           [required]="isRequired()"
           [placeholder]="placeholder()"
-          [formControl]="formControl"
           (blur)="onTouched()"
+          (input)="onInput($event)"
         />
 
         @if (type() === 'password' && !loading() && !disabled()) {
@@ -104,4 +106,11 @@ export class InputTextComponent extends FormControlBase<
       ? 'text'
       : this.type(),
   );
+
+  onInput(event: Event): void {
+    if (this._disabledByInput()) return;
+
+    const input = event.target as HTMLInputElement;
+    this.onChange(input.value);
+  }
 }

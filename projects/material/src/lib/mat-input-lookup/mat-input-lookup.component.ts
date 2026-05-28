@@ -79,7 +79,6 @@ interface AutocompleteOption<TResult> {
           [name]="name()"
           [required]="isRequired()"
           [placeholder]="placeholder()"
-          [formControl]="formControl"
           [matAutocomplete]="auto"
           (blur)="onTouched()"
         />
@@ -145,21 +144,8 @@ export class MatInputLookupComponent<
 
   public readonly searchResults = this._searchResults.asReadonly();
   public readonly selectedEntity = this._selectedItem.asReadonly();
-  public readonly filteredOptions: Observable<AutocompleteOption<TResult>[]>;
 
-  constructor() {
-    super();
-    this.filteredOptions = this.formControl.valueChanges.pipe(
-      startWith(''),
-      tap((value) => {
-        console.log('filteredOptions', value);
-      }),
-      map((value) => {
-        const name = value ?? '';
-        return name ? this._filter(name) : this.options.slice();
-      }),
-    );
-  }
+  public filteredOptions!: Observable<AutocompleteOption<TResult>[]>;
 
   get selectedItem(): TResult | null {
     return null; //this.service.selectedEntity() as TResult | null;
@@ -210,6 +196,17 @@ export class MatInputLookupComponent<
 
   override ngOnInit(): void {
     super.ngOnInit();
+
+    this.filteredOptions = this.formControl.valueChanges.pipe(
+      startWith(''),
+      tap((value) => {
+        console.log('filteredOptions', value);
+      }),
+      map((value) => {
+        const name = value ?? '';
+        return name ? this._filter(name) : this.options.slice();
+      }),
+    );
 
     this.formControl.valueChanges
       .pipe(takeUntilDestroyed(this.destroyRef))
