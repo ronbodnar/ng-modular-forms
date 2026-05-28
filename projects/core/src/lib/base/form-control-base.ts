@@ -17,15 +17,16 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { merge, startWith } from 'rxjs';
 
+type ControlValue<T> = T | null;
+
 @Directive()
-export abstract class FormControlBase<T> implements ControlValueAccessor {
+export abstract class FormControlBase<TValue> implements ControlValueAccessor {
   protected readonly destroyRef = inject(DestroyRef);
 
   static nextId = 0;
-  readonly id = input<string | null>(
-    `nmf-form-control-${FormControlBase.nextId++}`,
-    { alias: 'id' },
-  );
+  readonly id = input<string>(`nmf-form-control-${FormControlBase.nextId++}`, {
+    alias: 'id',
+  });
 
   readonly label = input<string>('');
   readonly classList = input<string[]>([]);
@@ -44,13 +45,8 @@ export abstract class FormControlBase<T> implements ControlValueAccessor {
     optional: true,
   });
 
-  protected readonly standaloneControl = new FormControl<T | null>(null);
-
-  get formControl(): FormControl<T | null> {
-    return (
-      (this.ngControl?.control as FormControl<T | null> | null) ??
-      this.standaloneControl
-    );
+  get formControl(): FormControl<ControlValue<TValue>> {
+    return this.ngControl?.control as FormControl<ControlValue<TValue>>;
   }
 
   protected readonly disabled = computed(
@@ -63,7 +59,7 @@ export abstract class FormControlBase<T> implements ControlValueAccessor {
 
   protected readonly hasErrors = signal(false);
 
-  protected onChange: (value: T | null) => void = () => {};
+  protected onChange: (value: TValue | null) => void = () => {};
   protected onTouched: () => void = () => {};
 
   constructor() {
@@ -73,7 +69,7 @@ export abstract class FormControlBase<T> implements ControlValueAccessor {
   }
 
   ngOnInit() {
-    const control = this.ngControl?.control;
+    const control = this.formControl;
     if (!control) return;
 
     merge(control.statusChanges, control.valueChanges)
@@ -92,8 +88,8 @@ export abstract class FormControlBase<T> implements ControlValueAccessor {
       });
   }
 
-  writeValue(value: T | null): void {
-    const control = this.ngControl?.control;
+  writeValue(value: TValue | null): void {
+    const control = this.formControl;
     if (!control) return;
 
     if (control.value !== value) {
@@ -101,7 +97,7 @@ export abstract class FormControlBase<T> implements ControlValueAccessor {
     }
   }
 
-  registerOnChange(fn: (value: T | null) => void): void {
+  registerOnChange(fn: (value: TValue | null) => void): void {
     this.onChange = fn;
   }
 
@@ -114,7 +110,7 @@ export abstract class FormControlBase<T> implements ControlValueAccessor {
   }
 
   protected errorMessage(): string | null {
-    const control = this.ngControl?.control;
+    const control = this.formControl;
     if (control == null || !control.errors || !control.touched) return null;
 
     const firstKey = Object.keys(control.errors)[0];

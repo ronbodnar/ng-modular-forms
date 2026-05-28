@@ -14,6 +14,7 @@ import {
   MatInputTimepickerComponent,
   MatInputDatepickerComponent,
   MatInputNumberComponent,
+  MatInputLookupComponent,
 } from '@ng-modular-forms/material';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatButtonModule } from '@angular/material/button';
@@ -33,6 +34,7 @@ import type { SelectOption } from '@ng-modular-forms/core';
     MatInputSelectComponent,
     MatInputTextareaComponent,
     MatInputCurrencyComponent,
+    MatInputLookupComponent,
     DocsPageComponent,
     FormSectionComponent,
     FormStatusOutputComponent,
@@ -66,6 +68,7 @@ export class MaterialInputsExampleComponent implements OnInit {
     ]),
     date: new FormControl<Date | null>(null, Validators.required),
     time: new FormControl<Date | null>(null, Validators.required),
+    lookup: new FormControl<string | null>(null),
   });
 
   countries: SelectOption[] = [

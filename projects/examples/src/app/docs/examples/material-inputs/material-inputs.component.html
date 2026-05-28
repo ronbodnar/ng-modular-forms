@@ -114,6 +114,23 @@
             [shouldLabelFloat]="floatLabel()"
           />
 
+          <nmf-mat-lookup
+            formControlName="lookup"
+            label="Lookup Input"
+            placeholder="Type to look up an option..."
+            [options]="[
+              { value: 'us', label: 'United States' },
+              { value: 'ca', label: 'Canada' },
+              { value: 'uk', label: 'United Kingdom' },
+              { value: 'de', label: 'Germany' },
+              { value: 'fr', label: 'France' },
+              { value: 'jp', label: 'Japan' },
+            ]"
+            [loading]="loading()"
+            [appearance]="appearance()"
+            [shouldLabelFloat]="floatLabel()"
+          />
+
           <nmf-mat-textarea
             formControlName="textarea"
             label="Textarea Input"
