@@ -17,7 +17,6 @@ import { InputTextComponent } from './input-text.component';
       <nmf-text
         formControlName="text"
         label="Text"
-        placeholder="Enter"
         [type]="type"
         [loading]="loading"
       />
@@ -74,13 +73,25 @@ describe('InputTextComponent', () => {
   });
 
   it('writes value through CVA', () => {
+    fixture.componentInstance.form.get('text')!.setValue('hello');
+    fixture.detectChanges();
+
     const component: InputTextComponent = fixture.debugElement.query(
       By.directive(InputTextComponent),
     ).componentInstance;
 
-    component.writeValue('hello');
+    expect(component.value).toBe('hello');
+  });
 
-    const control = fixture.componentInstance.form.get('text')!;
-    expect(control.value).toBe('hello');
+  it('updates form control when user types', () => {
+    const input: HTMLInputElement = fixture.debugElement.query(
+      By.css('input'),
+    ).nativeElement;
+
+    input.value = 'hello';
+    input.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+
+    expect(fixture.componentInstance.form.get('text')!.value).toBe('hello');
   });
 });

@@ -15,7 +15,7 @@ import {
   selector: 'test-form-control-base',
   imports: [ReactiveFormsModule],
   template: `
-    <input [formControl]="formControl" (blur)="onTouched()" />
+    <input [formControl]="control" (blur)="onTouched()" />
 
     <div class="error">{{ errorMessage() }}</div>
   `,
@@ -95,15 +95,15 @@ describe('FormControlBase', () => {
     expect(input.disabled).toBe(true);
   });
 
-  it('writes value through CVA into form control', () => {
-    const component = fixture.debugElement.query(
+  it('writes value through CVA', () => {
+    fixture.componentInstance.form.get('field')!.setValue('hello');
+    fixture.detectChanges();
+
+    const component: TestControl = fixture.debugElement.query(
       By.directive(TestControl),
     ).componentInstance;
 
-    component.writeValue('hello');
-    fixture.detectChanges();
-
-    expect(control.value).toBe('hello');
+    expect(component.value).toBe('hello');
   });
 
   it('shows error only when touched + invalid', () => {

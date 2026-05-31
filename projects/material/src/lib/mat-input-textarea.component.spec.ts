@@ -55,9 +55,9 @@ describe('MatInputTextareaComponent', () => {
   });
 
   it('renders a required error message once the textarea is touched and invalid', () => {
-    component.formControl.setErrors({ required: true });
-    component.formControl.markAsTouched();
-    component.formControl.updateValueAndValidity();
+    component.control.setErrors({ required: true });
+    component.control.markAsTouched();
+    component.control.updateValueAndValidity();
     fixture.detectChanges();
 
     expect(

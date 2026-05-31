@@ -6,7 +6,11 @@ import { MatFormControlBase } from './mat-form-control-base';
 import { CommonModule } from '@angular/common';
 import { MatInputModule } from '@angular/material/input';
 import { MatTimepickerModule } from '@angular/material/timepicker';
-import type { MatTimepickerOption } from '@angular/material/timepicker';
+import type {
+  MatTimepickerOption,
+  MatTimepickerSelected,
+} from '@angular/material/timepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 
 @Component({
   selector: 'nmf-mat-timepicker',
@@ -16,6 +20,7 @@ import type { MatTimepickerOption } from '@angular/material/timepicker';
     MatFormFieldModule,
     ReactiveFormsModule,
     MatTimepickerModule,
+    MatNativeDateModule,
     MatProgressSpinnerModule,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -35,15 +40,15 @@ import type { MatTimepickerOption } from '@angular/material/timepicker';
 
       <input
         matInput
-        autocomplete="off"
         [name]="name()"
         [matTimepicker]="picker"
         [matTimepickerMin]="minDate()"
         [matTimepickerMax]="maxDate()"
         [required]="isRequired()"
         [placeholder]="placeholder()"
-        [formControl]="formControl"
+        [formControl]="displayControl"
         (blur)="onTouched()"
+        (input)="onInput($event)"
       />
 
       <mat-timepicker-toggle
@@ -57,6 +62,7 @@ import type { MatTimepickerOption } from '@angular/material/timepicker';
         [hidden]="loading()"
         [interval]="interval()"
         [options]="options()"
+        (selected)="onSelected($event)"
         #picker
       />
 
@@ -77,10 +83,24 @@ import type { MatTimepickerOption } from '@angular/material/timepicker';
     </mat-form-field>
   `,
 })
-export class MatInputTimepickerComponent extends MatFormControlBase<Date | null> {
+export class MatInputTimepickerComponent extends MatFormControlBase<
+  Date | null,
+  Date
+> {
   minDate = input<Date | null>(null);
   maxDate = input<Date | null>(null);
   interval = input<number | string | null>(null);
   options = input<MatTimepickerOption[] | null>(null);
   override placeholder = input<string>('Select a time');
+
+  onInput(event: Event): void {
+    const rawValue = (event.target as HTMLInputElement).value;
+    const value = rawValue ? new Date(rawValue) : null;
+
+    this.onChange(value);
+  }
+
+  onSelected(event: MatTimepickerSelected<unknown>): void {
+    this.onChange(event.value as Date);
+  }
 }

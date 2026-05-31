@@ -1,9 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  signal,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -15,6 +10,7 @@ import {
 } from '@ng-modular-forms/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatInputModule } from '@angular/material/input';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'nmf-mat-currency',
@@ -40,7 +36,7 @@ import { MatInputModule } from '@angular/material/input';
         <mat-label>{{ label() }}</mat-label>
       }
 
-      @if (displayValue()) {
+      @if (displayControl.value) {
         <span
           matTextPrefix
           [class.nmf-disabled]="disabled()"
@@ -57,10 +53,9 @@ import { MatInputModule } from '@angular/material/input';
         [style.color]="textColor()"
         [style.opacity]="disabled() ? 0.6 : 1"
         [name]="name()"
-        [value]="displayValue()"
         [required]="isRequired()"
         [placeholder]="placeholder()"
-        [formControl]="formControl"
+        [formControl]="displayControl"
         (blur)="onTouched()"
         (input)="onInput($event)"
         (keydown)="handleKeyDown($event)"
@@ -94,11 +89,13 @@ export class MatInputCurrencyComponent extends MatFormControlBase<
 > {
   behavior = new CurrencyBehavior();
 
-  displayValue = signal<string | null>(null);
+  private readonly displayValue = toSignal(this.displayControl.valueChanges, {
+    initialValue: this.displayControl.value,
+  });
 
   override writeValue(value: number | null): void {
     super.writeValue(value);
-    this.displayValue.set(value != null ? formatNumber(value) : null);
+    this.displayControl.setValue(value != null ? formatNumber(value) : null);
   }
 
   handleKeyDown(event: KeyboardEvent): void {
@@ -109,7 +106,7 @@ export class MatInputCurrencyComponent extends MatFormControlBase<
     const rawValue = (event.target as HTMLInputElement).value;
     const value = parseNumber(rawValue);
 
-    this.displayValue.set(value != null ? formatNumber(value) : null);
+    this.displayControl.setValue(value != null ? formatNumber(value) : null);
 
     this.onChange(value);
   }

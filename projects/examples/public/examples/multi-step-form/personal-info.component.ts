@@ -79,13 +79,13 @@ export class RegistrationPersonalInfoComponent {
   form = input.required<FormGroup>();
 
   countries: SelectOption[] = [
-    { key: 'us', label: 'United States' },
-    { key: 'ca', label: 'Canada' },
-    { key: 'mx', label: 'Mexico' },
-    { key: 'uk', label: 'United Kingdom' },
-    { key: 'de', label: 'Germany' },
-    { key: 'fr', label: 'France' },
-    { key: 'jp', label: 'Japan' },
-    { key: 'au', label: 'Australia' },
+    { value: 'us', label: 'United States' },
+    { value: 'ca', label: 'Canada' },
+    { value: 'mx', label: 'Mexico' },
+    { value: 'uk', label: 'United Kingdom' },
+    { value: 'de', label: 'Germany' },
+    { value: 'fr', label: 'France' },
+    { value: 'jp', label: 'Japan' },
+    { value: 'au', label: 'Australia' },
   ];
 }

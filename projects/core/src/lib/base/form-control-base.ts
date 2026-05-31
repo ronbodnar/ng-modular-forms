@@ -12,6 +12,7 @@ import {
   DestroyRef,
   Directive,
   inject,
+  Input,
   input,
   signal,
 } from '@angular/core';
@@ -22,16 +23,8 @@ type ControlValue<T> = T | null;
 
 @Directive()
 export abstract class FormControlBase<TValue> implements ControlValueAccessor {
-  protected readonly destroyRef = inject(DestroyRef);
-
-  protected readonly ngControl = inject(NgControl, {
-    optional: true,
-  });
-
   static nextId = 0;
-  readonly id = input<string>(`nmf-form-control-${FormControlBase.nextId++}`, {
-    alias: 'id',
-  });
+  @Input() id = `nmf-form-control-${FormControlBase.nextId++}`;
 
   readonly label = input<string>('');
   readonly classList = input<string[]>([]);
@@ -45,13 +38,19 @@ export abstract class FormControlBase<TValue> implements ControlValueAccessor {
   });
   readonly _disabledByCva = signal(false);
 
+  readonly cdr = inject(ChangeDetectorRef);
+  readonly destroyRef = inject(DestroyRef);
+  readonly ngControl = inject(NgControl, {
+    optional: true,
+  });
+
   private _value: TValue | null = null;
 
   get value(): TValue | null {
     return this._value;
   }
 
-  get formControl(): FormControl<ControlValue<TValue>> {
+  get control(): FormControl<ControlValue<TValue>> {
     return this.ngControl?.control as FormControl<ControlValue<TValue>>;
   }
 
@@ -75,34 +74,37 @@ export abstract class FormControlBase<TValue> implements ControlValueAccessor {
   }
 
   ngOnInit() {
-    const control = this.formControl;
+    const control = this.control;
     if (!control) return;
 
     merge(control.statusChanges, control.valueChanges)
       .pipe(startWith(null), takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
-        this.hasErrors.set(control.invalid && control.touched);
-        this.isRequired.set(control.hasValidator(Validators.required) ?? false);
+        this.onControlStateChange();
       });
 
     control.events
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((event) => {
         if (event instanceof TouchedChangeEvent) {
-          this.hasErrors.set(control.invalid && control.touched);
+          this.onControlStateChange();
         }
       });
   }
 
-  readonly cdr = inject(ChangeDetectorRef);
+  protected onControlStateChange(): void {
+    const control = this.control;
+    if (!control) {
+      return;
+    }
+
+    this.hasErrors.set(control.invalid && control.touched);
+    this.isRequired.set(control.hasValidator(Validators.required) ?? false);
+
+    this.cdr.markForCheck();
+  }
 
   writeValue(value: TValue | null): void {
-    /*     const control = this.formControl;
-    if (!control) return;
-
-    if (control.value !== value) {
-      control.setValue(value, { emitEvent: false });
-    } */
     this._value = value;
     this.cdr.markForCheck();
   }
@@ -120,7 +122,7 @@ export abstract class FormControlBase<TValue> implements ControlValueAccessor {
   }
 
   protected errorMessage(): string | null {
-    const control = this.formControl;
+    const control = this.control;
     if (control == null || !control.errors || !control.touched) return null;
 
     const firstKey = Object.keys(control.errors)[0];

@@ -46,7 +46,7 @@ describe('MatInputCurrencyComponent', () => {
     input.dispatchEvent(new Event('input'));
 
     expect(onChangeMock).toHaveBeenCalledWith(1234);
-    expect(component.displayValue()).toBe('1,234');
+    expect(component.displayControl.value).toBe('1,234');
   });
 
   it('sets the text color to red for negative values', () => {

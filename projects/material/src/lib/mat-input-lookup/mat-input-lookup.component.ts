@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   ChangeDetectionStrategy,
   Component,
@@ -32,11 +31,13 @@ import {
   Observable,
   startWith,
   map,
+  Subject,
+  merge,
 } from 'rxjs';
 
-type Statuses = 'default' | 'loading' | 'error' | 'empty';
+type AutocompleteStatus = 'default' | 'loading' | 'error' | 'empty';
 
-interface AutocompleteOption<TResult> {
+export interface AutocompleteOption<TResult> {
   value: TResult;
   label: string;
 }
@@ -75,19 +76,22 @@ interface AutocompleteOption<TResult> {
         <input
           matInput
           type="text"
+          [class.cursor-not-allowed]="selectedItem != null"
+          [class.opacity-60]="selectedItem != null"
           [ngClass]="classList"
           [name]="name()"
           [required]="isRequired()"
+          [readonly]="selectedItem != null"
           [placeholder]="placeholder()"
+          [formControl]="displayControl"
           [matAutocomplete]="auto"
           (blur)="onTouched()"
         />
 
         <mat-autocomplete
           #auto="matAutocomplete"
-          [requireSelection]="true"
           [displayWith]="displayWith ?? null"
-          (optionSelected)="selectResult($event)"
+          (optionSelected)="selectOption($event)"
         >
           @for (option of filteredOptions | async; track option) {
             <mat-option [value]="option.value">{{ option.label }}</mat-option>
@@ -95,99 +99,85 @@ interface AutocompleteOption<TResult> {
         </mat-autocomplete>
 
         @if (loading()) {
-          <mat-spinner
-            matSuffix
-            class="nmf-mat-loader"
-            diameter="22"
-            strokeWidth="3"
-          ></mat-spinner>
+          <mat-spinner matSuffix diameter="22" strokeWidth="3"></mat-spinner>
         }
 
-        @if (empty) {
-          <mat-hint>{{ 'searchEntity.noResults' }}</mat-hint>
+        @if (status() === 'empty') {
+          <mat-hint>{{ emptyOptionsLabel }}</mat-hint>
         } @else if (hint()) {
           <mat-hint [ngClass]="hintClassList()">{{ hint() }}</mat-hint>
         }
 
-        <ng-content></ng-content>
-
         <mat-error>{{ errorMessage() }}</mat-error>
 
-        <div class="absolute top-2 right-2 z-10">
-          @if (loadingResults) {
-            <mat-spinner diameter="24" strokeWidth="3" />
-          }
-          @if (selectedItem) {
-            <button mat-icon-button (clicked)="clearSelectedEntity()">
-              <mat-icon>close</mat-icon>
-            </button>
-          }
-        </div>
+        @if (status() === 'loading') {
+          <mat-spinner matSuffix diameter="24" strokeWidth="3" />
+        }
+
+        @if (selectedItem) {
+          <button matSuffix mat-icon-button (click)="clearSelectedOption()">
+            <mat-icon>close</mat-icon>
+          </button>
+        }
       </mat-form-field>
     </div>
   `,
 })
-export class MatInputLookupComponent<
-  TResult,
-> extends MatFormControlBase<string> {
-  @Input() displayWith?: (value: AutocompleteOption<TResult> | null) => string;
+export class MatInputLookupComponent<TOption> extends MatFormControlBase<
+  TOption,
+  string
+> {
+  @Input() displayWith?: (value: TOption | null) => string;
   @Input() optionsProvider?: (
     query: string | null,
-  ) => Observable<AutocompleteOption<TResult>[]>;
+  ) => Observable<AutocompleteOption<TOption>[]>;
 
-  @Input() options: AutocompleteOption<TResult>[] = [];
+  @Input() options: AutocompleteOption<TOption>[] = [];
+  @Input() emptyOptionsLabel = 'No results found';
 
   override readonly destroyRef = inject(DestroyRef);
 
-  private _selectedItem = signal<TResult | null>(null);
-  private _searchResults = signal<AutocompleteOption<TResult>[]>(this.options);
+  private _status = signal<AutocompleteStatus>('default');
+  private _selectedOption = signal<TOption | null>(null);
+  private _optionResults = signal<AutocompleteOption<TOption>[]>([]);
 
-  public readonly searchResults = this._searchResults.asReadonly();
-  public readonly selectedEntity = this._selectedItem.asReadonly();
+  public readonly status = this._status.asReadonly();
+  public readonly optionResults = this._optionResults.asReadonly();
+  public readonly selectedOption = this._selectedOption.asReadonly();
 
-  public filteredOptions!: Observable<AutocompleteOption<TResult>[]>;
+  private readonly _optionsUpdated$ = new Subject<void>();
 
-  get selectedItem(): TResult | null {
-    return null; //this.service.selectedEntity() as TResult | null;
+  public filteredOptions!: Observable<AutocompleteOption<TOption>[]>;
+
+  get selectedItem(): TOption | null {
+    return this.selectedOption();
   }
 
-  clearSelectedEntity(): void {
-    //this.entitySelected.emit(undefined);
-
-    //this.service.setSelectedEntity(undefined);
-    this.formControl.enable();
+  override writeValue(value: TOption | null): void {
+    super.writeValue(value);
+    const display =
+      value != null && this.displayWith ? this.displayWith(value) : null;
+    this.displayControl.setValue(display, { emitEvent: false });
   }
 
-  private status = signal<Statuses>('default');
-
-  get loadingResults(): boolean {
-    return this.status() === 'loading';
+  setStatus(status: AutocompleteStatus): void {
+    this._status.set(status);
   }
 
-  get error(): boolean {
-    return this.status() === 'error';
-  }
-
-  get empty(): boolean {
-    return this.status() === 'empty';
-  }
-
-  setStatus(status: Statuses): void {
-    this.status.set(status);
-
-    if (status === 'loading') {
-      this.formControl.disable();
-    } else {
-      this.formControl.enable();
+  clearSelectedOption(): void {
+    this.displayControl.setValue(null);
+    this._selectedOption.set(null);
+    this.onChange(null);
+    if (this.optionsProvider) {
+      this.updateOptions([]);
     }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log('Autocomplete changes', changes);
     if (changes['options']) {
-      this._searchResults.set(changes['options'].currentValue);
+      this.updateOptions(changes['options'].currentValue ?? []);
     }
-    if (changes['defaultSelectedEntity']) {
+    if (changes['selectedOption']) {
       /*       this.service.setSelectedEntity(
         changes['defaultSelectedEntity'].currentValue,
       ); */
@@ -197,40 +187,29 @@ export class MatInputLookupComponent<
   override ngOnInit(): void {
     super.ngOnInit();
 
-    this.filteredOptions = this.formControl.valueChanges.pipe(
+    this.filteredOptions = merge(
+      this.displayControl.valueChanges,
+      this._optionsUpdated$,
+    ).pipe(
       startWith(''),
-      tap((value) => {
-        console.log('filteredOptions', value);
-      }),
-      map((value) => {
-        const name = value ?? '';
-        return name ? this._filter(name) : this.options.slice();
+      map(() => {
+        const name = this.displayControl.value ?? '';
+        const results = this.optionResults();
+        return name ? this.filterOptions(name, results) : results.slice();
       }),
     );
 
-    this.formControl.valueChanges
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((value) => {
-        console.log('value', value);
-      });
-
-    this.ngControl?.valueChanges
-      ?.pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((value) => {
-        console.log('ngControl', value);
-      });
-
     if (this.optionsProvider) {
-      const valueChanges$ = this.formControl?.valueChanges;
-
-      valueChanges$
+      /*       valueChanges$
         ?.pipe(
           distinctUntilChanged(),
-          takeUntilDestroyed(),
+          takeUntilDestroyed(this.destroyRef),
           debounceTime(1000),
-          //tap(() => this._searchResults.set([])),
           filter((query) => typeof query === 'string' && query.length > 1),
-          tap(() => this.setStatus('loading')),
+          tap(() => {
+            this._searchResults.set([]);
+            this.setStatus('loading');
+          }),
           switchMap((query) => this.optionsProvider?.(query) ?? of([])),
           catchError(() => {
             this.setStatus('error');
@@ -239,36 +218,67 @@ export class MatInputLookupComponent<
         )
         .subscribe((response) => {
           if (!response) return;
-
+          console.log('Response length', response.length);
           this._searchResults.set(response);
-          //this.setStatus(response.content.length > 0 ? 'default' : 'empty');
+          this.setStatus(response.length > 0 ? 'default' : 'empty');
+          this._resultsUpdated$.next();
+        }); */
+      this.displayControl.valueChanges
+        .pipe(
+          debounceTime(1000),
+          distinctUntilChanged(),
+          filter(() => this.selectedItem == null),
+          filter((q): q is string => typeof q === 'string' && q.length > 1),
+          tap(() => {
+            this.setStatus('loading');
+          }),
+          switchMap(
+            (query) =>
+              this.optionsProvider?.(query).pipe(
+                catchError(() => {
+                  this.setStatus('error');
+                  return of(null);
+                }),
+              ) ?? of([]),
+          ),
+          catchError(() => {
+            this.setStatus('error');
+            return of(null);
+          }),
+          takeUntilDestroyed(this.destroyRef),
+        )
+        .subscribe((response) => {
+          if (!response) return;
+          this.setStatus(response.length ? 'default' : 'empty');
+          this.updateOptions(response);
         });
     }
   }
 
-  selectResult(result: MatAutocompleteSelectedEvent): void {
-    /*     const selectedEntity = this.service
-      .searchResultsAsUser()
-      .find((r) => r.id === result.option.value.id); */
-    const selectedEntity = null;
-    if (!selectedEntity) {
-      console.warn('Selected entity not found', result);
+  selectOption(result: MatAutocompleteSelectedEvent): void {
+    const selected = this._optionResults().find(
+      (option) => option.value === result.option.value,
+    );
+    if (!selected) {
+      console.warn('Selected item not found', result, this.options);
       return;
     }
-    //this.service.setSelectedEntity(selectedEntity);
-    this.formControl.disable();
 
-    this.clearSearchResults();
+    this._selectedOption.set(selected.value);
+    this.onChange(selected.value);
   }
 
-  clearSearchResults(): void {
-    //this.service.setSearchResults([]);
+  private updateOptions(results: AutocompleteOption<TOption>[]): void {
+    this._optionResults.set(results);
+    this._optionsUpdated$.next();
   }
 
-  private _filter(name: string): AutocompleteOption<TResult>[] {
+  private filterOptions(
+    name: string,
+    results: AutocompleteOption<TOption>[],
+  ): AutocompleteOption<TOption>[] {
     const filterValue = name.toLowerCase();
-
-    return this.options.filter((option) =>
+    return results.filter((option) =>
       option.label.toLowerCase().includes(filterValue),
     );
   }

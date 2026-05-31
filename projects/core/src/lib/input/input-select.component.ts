@@ -5,7 +5,7 @@ import { FormControlBase } from '../base/form-control-base';
 import { FormFieldComponent } from './form-field.component';
 
 export interface SelectOption {
-  key: string | number;
+  value: string | number;
   label: string | number;
   disabled?: boolean;
 }
@@ -25,6 +25,7 @@ export interface SelectOption {
       <div class="select-wrapper" [class.disabled]="disabled()">
         <select
           class="nmf-input"
+          [id]="id"
           [ngClass]="classList()"
           [class.error]="hasErrors()"
           [class.disabled]="disabled()"
@@ -35,21 +36,14 @@ export interface SelectOption {
           (change)="handleChange($event)"
         >
           <!-- Empty option -->
-          <option [value]="''">
+          <option [value]="''" [disabled]="!allowEmptyOptionSelection()">
             {{ emptyOptionLabel() }}
           </option>
 
           <!-- Options -->
-          @for (option of options(); track option.key) {
-            <option [value]="option.key" [disabled]="option.disabled">
+          @for (option of options(); track option.value) {
+            <option [value]="option.value" [disabled]="option.disabled">
               {{ option.label }}
-            </option>
-          }
-
-          <!-- Clear option / TODO: remove -->
-          @if (clearOptionLabel()) {
-            <option [value]="''">
-              {{ clearOptionLabel() }}
             </option>
           }
         </select>
@@ -62,7 +56,7 @@ export class InputSelectComponent extends FormControlBase<
 > {
   options = input<SelectOption[]>([]);
   emptyOptionLabel = input<string>('Select an option');
-  clearOptionLabel = input<string | null>('Clear selection');
+  allowEmptyOptionSelection = input<boolean>(false);
 
   handleChange(event: Event): void {
     if (this._disabledByCva()) return;

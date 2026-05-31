@@ -50,8 +50,9 @@ type TextInputType = 'text' | 'email' | 'tel' | 'url' | 'password' | 'search';
         [type]="computedType()"
         [required]="isRequired()"
         [placeholder]="placeholder()"
-        [formControl]="formControl"
+        [formControl]="displayControl"
         (blur)="onTouched()"
+        (input)="onInput($event)"
       />
 
       @if (loading()) {
@@ -98,4 +99,11 @@ export class MatInputTextComponent extends MatFormControlBase<string | null> {
       ? 'text'
       : this.type(),
   );
+
+  onInput(event: Event): void {
+    const rawValue = (event.target as HTMLInputElement).value;
+    const value = rawValue ? rawValue : null;
+
+    this.onChange(value);
+  }
 }

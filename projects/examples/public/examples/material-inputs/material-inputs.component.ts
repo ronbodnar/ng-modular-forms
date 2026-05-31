@@ -15,6 +15,8 @@ import {
   MatInputTimepickerComponent,
   MatInputDatepickerComponent,
   MatInputNumberComponent,
+  AutocompleteOption,
+  MatInputLookupComponent,
 } from '@ng-modular-forms/material';
 import type { SelectOption } from '@ng-modular-forms/core';
 
@@ -31,6 +33,7 @@ import type { SelectOption } from '@ng-modular-forms/core';
     MatInputTimepickerComponent,
     MatInputDatepickerComponent,
     MatInputNumberComponent,
+    MatInputLookupComponent,
   ],
   templateUrl: './material-inputs.component.html',
 })
@@ -61,11 +64,27 @@ export class MaterialInputsExampleComponent {
   });
 
   countries: SelectOption[] = [
-    { key: 'us', label: 'United States' },
-    { key: 'ca', label: 'Canada' },
-    { key: 'uk', label: 'United Kingdom', disabled: true },
-    { key: 'de', label: 'Germany', disabled: true },
-    { key: 'fr', label: 'France' },
-    { key: 'jp', label: 'Japan' },
+    { value: 'us', label: 'United States' },
+    { value: 'ca', label: 'Canada' },
+    { value: 'uk', label: 'United Kingdom', disabled: true },
+    { value: 'de', label: 'Germany', disabled: true },
+    { value: 'fr', label: 'France' },
+    { value: 'jp', label: 'Japan' },
   ];
+
+  countryOptions: AutocompleteOption<string>[] = [
+    { value: 'us', label: 'United States' },
+    { value: 'ca', label: 'Canada' },
+    { value: 'uk', label: 'United Kingdom' },
+    { value: 'de', label: 'Germany' },
+    { value: 'fr', label: 'France' },
+    { value: 'jp', label: 'Japan' },
+  ];
+
+  displayCountry = (value: string | null): string => {
+    if (value == null) {
+      return '';
+    }
+    return this.countryOptions.find((c) => c.value === value)?.label ?? '';
+  };
 }

@@ -6,6 +6,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { Observable, of } from 'rxjs';
 import {
   MatInputTextComponent,
   MatInputSelectComponent,
@@ -15,6 +16,7 @@ import {
   MatInputDatepickerComponent,
   MatInputNumberComponent,
   MatInputLookupComponent,
+  AutocompleteOption,
 } from '@ng-modular-forms/material';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatButtonModule } from '@angular/material/button';
@@ -72,13 +74,43 @@ export class MaterialInputsExampleComponent implements OnInit {
   });
 
   countries: SelectOption[] = [
-    { key: 'us', label: 'United States' },
-    { key: 'ca', label: 'Canada' },
-    { key: 'uk', label: 'United Kingdom', disabled: true },
-    { key: 'de', label: 'Germany', disabled: true },
-    { key: 'fr', label: 'France' },
-    { key: 'jp', label: 'Japan' },
+    { value: 'us', label: 'United States' },
+    { value: 'ca', label: 'Canada' },
+    { value: 'uk', label: 'United Kingdom', disabled: true },
+    { value: 'de', label: 'Germany', disabled: true },
+    { value: 'fr', label: 'France' },
+    { value: 'jp', label: 'Japan' },
   ];
+
+  countryOptions: AutocompleteOption<string>[] = [
+    { value: 'us', label: 'United States' },
+    { value: 'ca', label: 'Canada' },
+    { value: 'uk', label: 'United Kingdom' },
+    { value: 'de', label: 'Germany' },
+    { value: 'fr', label: 'France' },
+    { value: 'jp', label: 'Japan' },
+  ];
+
+  countryOptionsProvider = (
+    query: string | null,
+  ): Observable<AutocompleteOption<string>[]> => {
+    if (query == null) {
+      return of(this.countryOptions);
+    }
+
+    return of(
+      this.countryOptions.filter((o) =>
+        o.label.toLowerCase().includes(query.toLowerCase()),
+      ),
+    );
+  };
+
+  displayCountry = (value: string | null): string => {
+    if (value == null) {
+      return '';
+    }
+    return this.countryOptions.find((c) => c.value === value)?.label ?? '';
+  };
 
   // Example-specific -- not part of forms
   files = [
@@ -128,6 +160,7 @@ export class MaterialInputsExampleComponent implements OnInit {
       textarea: 'Hello\n\nWorld',
       date: new Date(),
       time: new Date(),
+      lookup: 'us',
     });
   }
 

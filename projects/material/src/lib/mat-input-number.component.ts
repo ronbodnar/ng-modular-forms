@@ -1,9 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  input,
-  signal,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -50,10 +45,9 @@ import { MatButtonModule } from '@angular/material/button';
         [ngClass]="classList"
         [name]="name()"
         [type]="formatValue() ? 'text' : 'number'"
-        [value]="displayValue()"
         [required]="isRequired()"
         [placeholder]="placeholder()"
-        [formControl]="formControl"
+        [formControl]="displayControl"
         (blur)="onTouched()"
         (input)="onInput($event)"
         (keydown)="handleKeyDown($event)"
@@ -78,10 +72,10 @@ import { MatButtonModule } from '@angular/material/button';
     </mat-form-field>
   `,
 })
-export class MatInputNumberComponent extends MatFormControlBase<number | null> {
+export class MatInputNumberComponent extends MatFormControlBase<
+  string | number | null
+> {
   formatValue = input<boolean>(false);
-  displayValue = signal<string>('');
-
   behavior = new TextBehavior();
   currencyBehavior = new CurrencyBehavior();
 
@@ -99,15 +93,19 @@ export class MatInputNumberComponent extends MatFormControlBase<number | null> {
     const parsed = parseNumber(raw);
 
     this.updateDisplayValue(parsed);
-
     this.onChange(parsed);
   }
 
   updateDisplayValue(value: number | null) {
-    if (this.formatValue() && value != null) {
-      this.displayValue.set(formatNumber(value) ?? '');
-    } else {
-      this.displayValue.set(value != null ? String(value) : '');
-    }
+    const shouldFormat = this.formatValue() && value != null;
+    const displayValue = shouldFormat
+      ? (formatNumber(value) ?? '')
+      : value != null
+        ? String(value)
+        : '';
+
+    this.displayControl.setValue(displayValue, {
+      emitEvent: false,
+    });
   }
 }

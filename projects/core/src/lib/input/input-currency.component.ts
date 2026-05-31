@@ -44,7 +44,7 @@ import { FormFieldComponent } from './form-field.component';
           [class.disabled]="disabled()"
           [class.nmf-input-with-prefix]="displayValue() != null"
           [style.color]="textColor()"
-          [id]="id()"
+          [id]="id"
           [name]="name()"
           [value]="displayValue()"
           [disabled]="disabled()"

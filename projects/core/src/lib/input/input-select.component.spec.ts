@@ -13,18 +13,16 @@ import { InputSelectComponent, SelectOption } from './input-select.component';
         formControlName="choice"
         [options]="options"
         [emptyOptionLabel]="emptyOptionLabel"
-        [clearOptionLabel]="clearOptionLabel"
       />
     </form>
   `,
 })
 class HostComponent {
   emptyOptionLabel = 'Pick one';
-  clearOptionLabel = 'Reset';
 
   options: SelectOption[] = [
-    { key: 'one', label: 'One' },
-    { key: 'two', label: 'Two', disabled: true },
+    { value: 'one', label: 'One' },
+    { value: 'two', label: 'Two', disabled: true },
   ];
 
   form = new FormGroup({
@@ -53,7 +51,6 @@ describe('InputSelectComponent', () => {
     expect(labels).toContain('Pick one');
     expect(labels).toContain('One');
     expect(labels).toContain('Two');
-    expect(labels).toContain('Reset');
   });
 
   it('updates form control on selection', () => {

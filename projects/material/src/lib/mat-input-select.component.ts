@@ -7,15 +7,10 @@ import {
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatSelectModule } from '@angular/material/select';
+import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { CommonModule } from '@angular/common';
 import { MatFormControlBase } from './mat-form-control-base';
-
-export interface SelectOption {
-  key: string | number;
-  label: string | number;
-  disabled?: boolean;
-}
+import { SelectOption } from '@ng-modular-forms/core';
 
 @Component({
   selector: 'nmf-mat-select',
@@ -47,23 +42,19 @@ export interface SelectOption {
         [panelWidth]="panelWidth()"
         [required]="isRequired()"
         [placeholder]="emptyOptionLabel()"
-        [formControl]="formControl"
+        [formControl]="displayControl"
         (blur)="onTouched()"
+        (selectionChange)="onSelectionChange($event)"
       >
-        <mat-option [value]="null" disabled>
+        <mat-option [value]="''" [disabled]="!allowEmptyOptionSelection()">
           {{ emptyOptionLabel() }}
         </mat-option>
 
         <!-- All Options -->
-        @for (option of options(); track option.label) {
-          <mat-option [value]="option.key" [disabled]="option.disabled">
+        @for (option of options(); track option.value) {
+          <mat-option [value]="option.value" [disabled]="option.disabled">
             {{ option.label }}
           </mat-option>
-        }
-
-        <!-- Clear Selection Option -->
-        @if (clearOptionLabel()) {
-          <mat-option [value]="null">{{ clearOptionLabel() }}</mat-option>
         }
       </mat-select>
 
@@ -90,6 +81,14 @@ export class MatInputSelectComponent
 {
   options = input<SelectOption[]>([]);
   emptyOptionLabel = input<string>('Select an option');
-  clearOptionLabel = input<string | null>('Clear selection');
+  allowEmptyOptionSelection = input<boolean>(false);
   panelWidth = input<string | number | null>('auto');
+
+  onSelectionChange(event: MatSelectChange): void {
+    if (this.disabled()) {
+      return;
+    }
+    const value = event.value;
+    this.onChange(value);
+  }
 }

@@ -62,12 +62,12 @@ export class NativeInputsExampleComponent implements OnInit {
   });
 
   countries: SelectOption[] = [
-    { key: 'us', label: 'United States' },
-    { key: 'ca', label: 'Canada' },
-    { key: 'uk', label: 'United Kingdom', disabled: true },
-    { key: 'de', label: 'Germany', disabled: true },
-    { key: 'fr', label: 'France' },
-    { key: 'jp', label: 'Japan' },
+    { value: 'us', label: 'United States' },
+    { value: 'ca', label: 'Canada' },
+    { value: 'uk', label: 'United Kingdom', disabled: true },
+    { value: 'de', label: 'Germany', disabled: true },
+    { value: 'fr', label: 'France' },
+    { value: 'jp', label: 'Japan' },
   ];
 
   // Example-specific -- not part of forms

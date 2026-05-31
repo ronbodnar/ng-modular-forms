@@ -27,7 +27,7 @@ import { FormFieldComponent } from './form-field.component';
         [ngClass]="classList()"
         [class.error]="hasErrors()"
         [class.disabled]="disabled()"
-        [id]="id()"
+        [id]="id"
         [min]="formatDate(minDate())"
         [max]="formatDate(maxDate())"
         [name]="name()"

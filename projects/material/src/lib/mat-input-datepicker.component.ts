@@ -7,6 +7,7 @@ import type {
   DateFilterFn,
   MatCalendarCellClassFunction,
   MatCalendarView,
+  MatDatepickerInputEvent,
 } from '@angular/material/datepicker';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatFormControlBase } from './mat-form-control-base';
@@ -49,8 +50,10 @@ import { MatInputModule } from '@angular/material/input';
         [matDatepickerFilter]="dateFilter()"
         [required]="isRequired()"
         [placeholder]="placeholder()"
-        [formControl]="formControl"
+        [formControl]="displayControl"
         (blur)="onTouched()"
+        (dateInput)="onInput($event)"
+        (dateChange)="onInput($event)"
       />
 
       <mat-datepicker-toggle
@@ -97,4 +100,11 @@ export class MatInputDatepickerComponent extends MatFormControlBase<Date | null>
   panelClass = input<string>('');
   touchUi = input<boolean>(false);
   override placeholder = input<string>('Select a date');
+
+  onInput(event: MatDatepickerInputEvent<Date>): void {
+    const rawValue = (event.targetElement as HTMLInputElement).value;
+    const value = rawValue ? new Date(rawValue) : null;
+
+    this.onChange(value);
+  }
 }

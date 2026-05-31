@@ -21,7 +21,7 @@ import { FormFieldComponent } from './form-field.component';
         [ngClass]="classList()"
         [class.error]="hasErrors()"
         [class.disabled]="disabled()"
-        [id]="id()"
+        [id]="id"
         [rows]="rows()"
         [cols]="cols()"
         [value]="value"
