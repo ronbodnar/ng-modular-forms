@@ -6,7 +6,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { Observable, of } from 'rxjs';
+import { delay, Observable, of } from 'rxjs';
 import {
   MatInputTextComponent,
   MatInputSelectComponent,
@@ -70,7 +70,8 @@ export class MaterialInputsExampleComponent implements OnInit {
     ]),
     date: new FormControl<Date | null>(null, Validators.required),
     time: new FormControl<Date | null>(null, Validators.required),
-    lookup: new FormControl<string | null>(null),
+    lookupSync: new FormControl<string | null>(null),
+    lookupAsync: new FormControl<string | null>(null),
   });
 
   countries: SelectOption[] = [
@@ -102,7 +103,7 @@ export class MaterialInputsExampleComponent implements OnInit {
       this.countryOptions.filter((o) =>
         o.label.toLowerCase().includes(query.toLowerCase()),
       ),
-    );
+    ).pipe(delay(1000));
   };
 
   displayCountry = (value: string | null): string => {
@@ -160,7 +161,8 @@ export class MaterialInputsExampleComponent implements OnInit {
       textarea: 'Hello\n\nWorld',
       date: new Date(),
       time: new Date(),
-      lookup: 'us',
+      lookupSync: 'us',
+      lookupAsync: 'us',
     });
   }
 

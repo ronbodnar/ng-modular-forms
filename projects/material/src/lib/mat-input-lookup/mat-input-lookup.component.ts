@@ -76,12 +76,12 @@ export interface AutocompleteOption<TResult> {
         <input
           matInput
           type="text"
-          [class.cursor-not-allowed]="selectedItem != null"
-          [class.opacity-60]="selectedItem != null"
+          [class.cursor-not-allowed]="selectedOption() != null"
+          [class.opacity-60]="selectedOption() != null"
           [ngClass]="classList"
           [name]="name()"
           [required]="isRequired()"
-          [readonly]="selectedItem != null"
+          [readonly]="selectedOption() != null"
           [placeholder]="placeholder()"
           [formControl]="displayControl"
           [matAutocomplete]="auto"
@@ -98,10 +98,6 @@ export interface AutocompleteOption<TResult> {
           }
         </mat-autocomplete>
 
-        @if (loading()) {
-          <mat-spinner matSuffix diameter="22" strokeWidth="3"></mat-spinner>
-        }
-
         @if (status() === 'empty') {
           <mat-hint>{{ emptyOptionsLabel }}</mat-hint>
         } @else if (hint()) {
@@ -110,11 +106,16 @@ export interface AutocompleteOption<TResult> {
 
         <mat-error>{{ errorMessage() }}</mat-error>
 
-        @if (status() === 'loading') {
-          <mat-spinner matSuffix diameter="24" strokeWidth="3" />
+        @if (status() === 'loading' || loading()) {
+          <mat-spinner
+            matSuffix
+            class="nmf-mat-loader"
+            diameter="24"
+            strokeWidth="3"
+          />
         }
 
-        @if (selectedItem) {
+        @if (selectedOption()) {
           <button matSuffix mat-icon-button (click)="clearSelectedOption()">
             <mat-icon>close</mat-icon>
           </button>
@@ -127,6 +128,7 @@ export class MatInputLookupComponent<TOption> extends MatFormControlBase<
   TOption,
   string
 > {
+  @Input() defaultSelectedOption?: TOption | null;
   @Input() displayWith?: (value: TOption | null) => string;
   @Input() optionsProvider?: (
     query: string | null,
@@ -134,6 +136,8 @@ export class MatInputLookupComponent<TOption> extends MatFormControlBase<
 
   @Input() options: AutocompleteOption<TOption>[] = [];
   @Input() emptyOptionsLabel = 'No results found';
+  @Input() debounceTime = 500;
+  @Input() searchThreshold = 2;
 
   override readonly destroyRef = inject(DestroyRef);
 
@@ -148,41 +152,6 @@ export class MatInputLookupComponent<TOption> extends MatFormControlBase<
   private readonly _optionsUpdated$ = new Subject<void>();
 
   public filteredOptions!: Observable<AutocompleteOption<TOption>[]>;
-
-  get selectedItem(): TOption | null {
-    return this.selectedOption();
-  }
-
-  override writeValue(value: TOption | null): void {
-    super.writeValue(value);
-    const display =
-      value != null && this.displayWith ? this.displayWith(value) : null;
-    this.displayControl.setValue(display, { emitEvent: false });
-  }
-
-  setStatus(status: AutocompleteStatus): void {
-    this._status.set(status);
-  }
-
-  clearSelectedOption(): void {
-    this.displayControl.setValue(null);
-    this._selectedOption.set(null);
-    this.onChange(null);
-    if (this.optionsProvider) {
-      this.updateOptions([]);
-    }
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['options']) {
-      this.updateOptions(changes['options'].currentValue ?? []);
-    }
-    if (changes['selectedOption']) {
-      /*       this.service.setSelectedEntity(
-        changes['defaultSelectedEntity'].currentValue,
-      ); */
-    }
-  }
 
   override ngOnInit(): void {
     super.ngOnInit();
@@ -200,58 +169,61 @@ export class MatInputLookupComponent<TOption> extends MatFormControlBase<
     );
 
     if (this.optionsProvider) {
-      /*       valueChanges$
-        ?.pipe(
-          distinctUntilChanged(),
-          takeUntilDestroyed(this.destroyRef),
-          debounceTime(1000),
-          filter((query) => typeof query === 'string' && query.length > 1),
-          tap(() => {
-            this._searchResults.set([]);
-            this.setStatus('loading');
-          }),
-          switchMap((query) => this.optionsProvider?.(query) ?? of([])),
-          catchError(() => {
-            this.setStatus('error');
-            return of(undefined);
-          }),
-        )
-        .subscribe((response) => {
-          if (!response) return;
-          console.log('Response length', response.length);
-          this._searchResults.set(response);
-          this.setStatus(response.length > 0 ? 'default' : 'empty');
-          this._resultsUpdated$.next();
-        }); */
+      this.displayControl.valueChanges
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe((value) => {
+          if (!value?.length) {
+            this.updateOptions([], 'default');
+          }
+        });
+
       this.displayControl.valueChanges
         .pipe(
-          debounceTime(1000),
-          distinctUntilChanged(),
-          filter(() => this.selectedItem == null),
-          filter((q): q is string => typeof q === 'string' && q.length > 1),
+          debounceTime(this.debounceTime),
+          distinctUntilChanged((a, b) => a === b),
+          filter(() => this.selectedOption() == null),
+          filter(
+            (q): q is string =>
+              typeof q === 'string' && q.length >= this.searchThreshold,
+          ),
           tap(() => {
-            this.setStatus('loading');
+            this.updateOptions([], 'loading');
           }),
-          switchMap(
-            (query) =>
+          switchMap((query) => {
+            return (
               this.optionsProvider?.(query).pipe(
                 catchError(() => {
-                  this.setStatus('error');
+                  this._status.set('error');
                   return of(null);
                 }),
-              ) ?? of([]),
-          ),
+              ) ?? of([])
+            );
+          }),
           catchError(() => {
-            this.setStatus('error');
+            this._status.set('error');
             return of(null);
           }),
           takeUntilDestroyed(this.destroyRef),
         )
         .subscribe((response) => {
           if (!response) return;
-          this.setStatus(response.length ? 'default' : 'empty');
-          this.updateOptions(response);
+          const status = response.length ? 'default' : 'empty';
+          this.updateOptions(response, status);
         });
+    }
+  }
+
+  override writeValue(value: TOption | null): void {
+    super.writeValue(value);
+    this._selectedOption.set(value);
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['options']) {
+      this.updateOptions(changes['options'].currentValue ?? []);
+    }
+    if (changes['defaultSelectedOption']) {
+      this.writeValue(changes['defaultSelectedOption'].currentValue);
     }
   }
 
@@ -260,7 +232,6 @@ export class MatInputLookupComponent<TOption> extends MatFormControlBase<
       (option) => option.value === result.option.value,
     );
     if (!selected) {
-      console.warn('Selected item not found', result, this.options);
       return;
     }
 
@@ -268,9 +239,22 @@ export class MatInputLookupComponent<TOption> extends MatFormControlBase<
     this.onChange(selected.value);
   }
 
-  private updateOptions(results: AutocompleteOption<TOption>[]): void {
+  clearSelectedOption(): void {
+    this.displayControl.setValue(null);
+    this._selectedOption.set(null);
+    this.onChange(null);
+    if (this.optionsProvider) {
+      this.updateOptions([]);
+    }
+  }
+
+  private updateOptions(
+    results: AutocompleteOption<TOption>[],
+    status?: AutocompleteStatus,
+  ): void {
     this._optionResults.set(results);
     this._optionsUpdated$.next();
+    this._status.set(status ?? 'default');
   }
 
   private filterOptions(
