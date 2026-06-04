@@ -35,7 +35,7 @@
     <nmf-mat-select
       formControlName="select"
       label="Select/Dropdown Input"
-      [options]="countries"
+      [options]="countrySelectOptions"
       placeholder="Select an option"
     />
 
@@ -44,11 +44,19 @@
     <nmf-mat-timepicker formControlName="time" label="Time Input" />
 
     <nmf-mat-lookup
-      formControlName="lookup"
+      formControlName="lookupSync"
       label="Lookup Input"
       placeholder="Type to look up an option..."
-      [options]="countryOptions"
+      [optionsSource]="countryLookupOptions"
       [displayWith]="displayCountry"
+    />
+
+    <nmf-mat-lookup
+      formControlName="lookupAsync"
+      label="Lookup Input"
+      placeholder="Type to look up an option..."
+      [optionsProvider]="countryProvider"
+      [displayWith]="displayCountryAsync"
     />
 
     <nmf-mat-textarea

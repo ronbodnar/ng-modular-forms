@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import {
-  AutocompleteOption,
+  LookupOption,
   MatInputLookupComponent,
 } from './mat-input-lookup.component';
 import { By } from '@angular/platform-browser';
@@ -14,7 +14,7 @@ interface TestResult {
   name: string;
 }
 
-const TEST_OPTIONS: AutocompleteOption<TestResult>[] = [
+const TEST_OPTIONS: LookupOption<TestResult>[] = [
   { value: { id: 1, name: 'Alice' }, label: 'Alice' },
   { value: { id: 2, name: 'Bob' }, label: 'Bob' },
   { value: { id: 3, name: 'John' }, label: 'John' },
@@ -31,7 +31,7 @@ describe('MatInputLookupComponent', () => {
 
     fixture = TestBed.createComponent(MatInputLookupComponent<TestResult>);
     component = fixture.componentInstance;
-    component.options = TEST_OPTIONS;
+    component.optionsSource = TEST_OPTIONS;
     fixture.detectChanges();
   });
 
@@ -127,7 +127,7 @@ describe('MatInputLookupComponent', () => {
     vi.useRealTimers();
 
     expect(component.optionsProvider).toHaveBeenCalledWith('da');
-    expect(component.optionResults()).toEqual(providerOptions);
+    expect(component.options()).toEqual(providerOptions);
   });
 
   it('does not call optionsProvider for single-character queries', async () => {
@@ -154,6 +154,6 @@ describe('MatInputLookupComponent', () => {
       },
     });
 
-    expect(component.optionResults()).toEqual(newOptions);
+    expect(component.options()).toEqual(newOptions);
   });
 });

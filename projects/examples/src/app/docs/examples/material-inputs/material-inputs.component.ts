@@ -1,4 +1,11 @@
-import { Component, OnInit, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+  signal,
+} from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -16,7 +23,7 @@ import {
   MatInputDatepickerComponent,
   MatInputNumberComponent,
   MatInputLookupComponent,
-  AutocompleteOption,
+  LookupOption,
 } from '@ng-modular-forms/material';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatButtonModule } from '@angular/material/button';
@@ -24,6 +31,7 @@ import { FormSectionComponent } from '../../ui/form-section/form-section.compone
 import { DocsPageComponent } from '../../ui/docs-page/docs-page.component';
 import { FormStatusOutputComponent } from '../../ui/form-status-output/form-status-output.component';
 import type { SelectOption } from '@ng-modular-forms/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-material-inputs-example',
@@ -45,6 +53,7 @@ import type { SelectOption } from '@ng-modular-forms/core';
     MatInputNumberComponent,
   ],
   templateUrl: './material-inputs.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MaterialInputsExampleComponent implements OnInit {
   form = new FormGroup({
@@ -71,46 +80,61 @@ export class MaterialInputsExampleComponent implements OnInit {
     date: new FormControl<Date | null>(null, Validators.required),
     time: new FormControl<Date | null>(null, Validators.required),
     lookupSync: new FormControl<string | null>(null),
-    lookupAsync: new FormControl<string | null>(null),
+    lookupAsync: new FormControl<Country | null>(null),
   });
 
-  countries: SelectOption[] = [
-    { value: 'us', label: 'United States' },
-    { value: 'ca', label: 'Canada' },
-    { value: 'uk', label: 'United Kingdom', disabled: true },
-    { value: 'de', label: 'Germany', disabled: true },
-    { value: 'fr', label: 'France' },
-    { value: 'jp', label: 'Japan' },
+  rawCountries: Country[] = [
+    { code: 'us', name: 'United States' },
+    { code: 'ca', name: 'Canada' },
+    { code: 'uk', name: 'United Kingdom' },
+    { code: 'de', name: 'Germany' },
+    { code: 'fr', name: 'France' },
+    { code: 'jp', name: 'Japan' },
   ];
 
-  countryOptions: AutocompleteOption<string>[] = [
-    { value: 'us', label: 'United States' },
-    { value: 'ca', label: 'Canada' },
-    { value: 'uk', label: 'United Kingdom' },
-    { value: 'de', label: 'Germany' },
-    { value: 'fr', label: 'France' },
-    { value: 'jp', label: 'Japan' },
-  ];
+  countrySelectOptions: SelectOption[] = this.rawCountries.map((c) => ({
+    value: c.code,
+    label: c.name,
+  }));
 
-  countryOptionsProvider = (
-    query: string | null,
-  ): Observable<AutocompleteOption<string>[]> => {
-    if (query == null) {
-      return of(this.countryOptions);
-    }
-
-    return of(
-      this.countryOptions.filter((o) =>
-        o.label.toLowerCase().includes(query.toLowerCase()),
-      ),
-    ).pipe(delay(1000));
-  };
+  countryLookupOptions: LookupOption<string>[] = this.rawCountries.map((c) => ({
+    value: c.code,
+    label: c.name,
+  }));
 
   displayCountry = (value: string | null): string => {
     if (value == null) {
       return '';
     }
-    return this.countryOptions.find((c) => c.value === value)?.label ?? '';
+    return (
+      this.countryLookupOptions.find((c) => c.value === value)?.label ?? ''
+    );
+  };
+
+  countryProvider = (
+    query: string | null,
+  ): Observable<LookupOption<Country>[]> => {
+    if (query == null) {
+      return of([]).pipe(delay(1000));
+    }
+
+    const countries = this.rawCountries.map((c) => ({
+      value: c,
+      label: c.name,
+    }));
+
+    return of(
+      countries.filter((o) =>
+        o.label.toLowerCase().includes(query.toLowerCase()),
+      ),
+    ).pipe(delay(1000));
+  };
+
+  displayCountryAsync = (value: Country | null): string => {
+    if (value == null) {
+      return '';
+    }
+    return value.name;
   };
 
   // Example-specific -- not part of forms
@@ -136,18 +160,22 @@ export class MaterialInputsExampleComponent implements OnInit {
   loading = signal(false);
   floatLabel = signal<'auto' | 'always'>('auto');
 
-  ngOnInit(): void {
-    this.options.valueChanges.subscribe((v) => {
-      this.appearance.set(v.appearance ?? 'outline');
-      this.loading.set(v.loading ?? false);
-      this.floatLabel.set(v.floatLabel ?? 'auto');
+  private destroyRef = inject(DestroyRef);
 
-      if (v.disabled) {
-        this.form.disable({ emitEvent: false });
-      } else {
-        this.form.enable({ emitEvent: false });
-      }
-    });
+  ngOnInit(): void {
+    this.options.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((v) => {
+        this.appearance.set(v.appearance ?? 'outline');
+        this.loading.set(v.loading ?? false);
+        this.floatLabel.set(v.floatLabel ?? 'auto');
+
+        if (v.disabled) {
+          this.form.disable({ emitEvent: false });
+        } else {
+          this.form.enable({ emitEvent: false });
+        }
+      });
   }
 
   populateForm(): void {
@@ -162,7 +190,7 @@ export class MaterialInputsExampleComponent implements OnInit {
       date: new Date(),
       time: new Date(),
       lookupSync: 'us',
-      lookupAsync: 'us',
+      lookupAsync: this.rawCountries[0],
     });
   }
 
@@ -170,4 +198,9 @@ export class MaterialInputsExampleComponent implements OnInit {
     this.form.markAllAsTouched();
     this.form.updateValueAndValidity();
   }
+}
+
+interface Country {
+  code: string;
+  name: string;
 }

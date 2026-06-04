@@ -15,10 +15,11 @@ import {
   MatInputTimepickerComponent,
   MatInputDatepickerComponent,
   MatInputNumberComponent,
-  AutocompleteOption,
+  LookupOption,
   MatInputLookupComponent,
 } from '@ng-modular-forms/material';
 import type { SelectOption } from '@ng-modular-forms/core';
+import { Observable, of, delay } from 'rxjs';
 
 @Component({
   selector: 'app-material-inputs-example',
@@ -63,28 +64,62 @@ export class MaterialInputsExampleComponent {
     time: new FormControl<Date | null>(null, Validators.required),
   });
 
-  countries: SelectOption[] = [
-    { value: 'us', label: 'United States' },
-    { value: 'ca', label: 'Canada' },
-    { value: 'uk', label: 'United Kingdom', disabled: true },
-    { value: 'de', label: 'Germany', disabled: true },
-    { value: 'fr', label: 'France' },
-    { value: 'jp', label: 'Japan' },
+  rawCountries: Country[] = [
+    { code: 'us', name: 'United States' },
+    { code: 'ca', name: 'Canada' },
+    { code: 'uk', name: 'United Kingdom' },
+    { code: 'de', name: 'Germany' },
+    { code: 'fr', name: 'France' },
+    { code: 'jp', name: 'Japan' },
   ];
 
-  countryOptions: AutocompleteOption<string>[] = [
-    { value: 'us', label: 'United States' },
-    { value: 'ca', label: 'Canada' },
-    { value: 'uk', label: 'United Kingdom' },
-    { value: 'de', label: 'Germany' },
-    { value: 'fr', label: 'France' },
-    { value: 'jp', label: 'Japan' },
-  ];
+  countrySelectOptions: SelectOption[] = this.rawCountries.map((c) => ({
+    value: c.code,
+    label: c.name,
+  }));
+
+  countryLookupOptions: LookupOption<string>[] = this.rawCountries.map((c) => ({
+    value: c.code,
+    label: c.name,
+  }));
 
   displayCountry = (value: string | null): string => {
     if (value == null) {
       return '';
     }
-    return this.countryOptions.find((c) => c.value === value)?.label ?? '';
+    return (
+      this.countryLookupOptions.find((c) => c.value === value)?.label ?? ''
+    );
   };
+
+  countryProvider = (
+    query: string | null,
+  ): Observable<LookupOption<Country>[]> => {
+    if (query == null) {
+      return of([]).pipe(delay(1000));
+    }
+
+    const countries = this.rawCountries.map((c) => ({
+      value: c,
+      label: c.name,
+    }));
+
+    return of(
+      countries.filter((o) =>
+        o.label.toLowerCase().includes(query.toLowerCase()),
+      ),
+    ).pipe(delay(1000));
+  };
+
+  displayCountryAsync = (value: Country | null): string => {
+    if (value == null) {
+      return '';
+    }
+    return value.name;
+  };
+}
+
+interface Country {
+  code: string;
+  name: string;
 }
