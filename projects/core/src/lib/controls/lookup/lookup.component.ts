@@ -2,7 +2,6 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
-  DestroyRef,
   effect,
   ElementRef,
   inject,
@@ -174,7 +173,7 @@ export class InputLookupComponent<TOption>
     super();
 
     this.behavior = new LookupBehavior<TOption>({
-      destroyRef: inject(DestroyRef),
+      destroyRef: this.destroyRef,
       resolvers: {
         compare: this.compareWith,
         label: this.displayWith,

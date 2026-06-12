@@ -1,13 +1,10 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  DestroyRef,
-  inject,
+  computed,
+  effect,
   input,
-  OnChanges,
   OnDestroy,
-  signal,
-  SimpleChanges,
 } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AsyncPipe, CommonModule } from '@angular/common';
@@ -21,23 +18,8 @@ import {
   MatAutocompleteModule,
   MatAutocompleteSelectedEvent,
 } from '@angular/material/autocomplete';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import {
-  distinctUntilChanged,
-  debounceTime,
-  tap,
-  filter,
-  switchMap,
-  catchError,
-  of,
-  Observable,
-  startWith,
-  map,
-  Subject,
-  merge,
-  take,
-  EMPTY,
-} from 'rxjs';
+import { Observable, Subject } from 'rxjs';
+import { LookupBehavior } from '@ng-modular-forms/core';
 
 type LookupStatus = 'default' | 'loading' | 'error' | 'empty';
 
@@ -80,13 +62,13 @@ export interface LookupOption<TResult> {
           #focusable
           matInput
           type="text"
-          [class.cursor-not-allowed]="selectedOption() != null"
+          [class.cursor-not-allowed]="behavior.selectedOption() != null"
           [attr.aria-label]="detachLabel() ? label() : null"
           [ngClass]="classList"
           [id]="id()"
           [name]="name()"
           [required]="isRequired()"
-          [readonly]="selectedOption() != null"
+          [readonly]="behavior.selectedOption() != null"
           [placeholder]="placeholder()"
           [formControl]="displayControl"
           [matAutocomplete]="auto"
@@ -98,12 +80,12 @@ export interface LookupOption<TResult> {
           [displayWith]="displayWith() ?? null"
           (optionSelected)="selectOption($event)"
         >
-          @for (option of filteredOptions | async; track option) {
+          @for (option of behavior.filteredOptions | async; track option) {
             <mat-option [value]="option.value">{{ option.label }}</mat-option>
           }
         </mat-autocomplete>
 
-        @if (status() === 'empty') {
+        @if (behavior.status() === 'empty') {
           <mat-hint>{{ emptyOptionsLabel() }}</mat-hint>
         } @else if (hint()) {
           <mat-hint [ngClass]="hintClassList()">{{ hint() }}</mat-hint>
@@ -112,7 +94,7 @@ export interface LookupOption<TResult> {
         <mat-error>{{ errorMessage() }}</mat-error>
 
         <!-- Loading status is for lookups and async options, and loading() is for the form control itself -->
-        @if (status() === 'loading' || loading()) {
+        @if (behavior.status() === 'loading' || loading()) {
           <mat-spinner
             matSuffix
             class="nmf-mat-loader"
@@ -121,7 +103,7 @@ export interface LookupOption<TResult> {
           />
         }
 
-        @if (selectedOption()) {
+        @if (behavior.selectedOption()) {
           <button
             matSuffix
             mat-icon-button
@@ -137,7 +119,7 @@ export interface LookupOption<TResult> {
 })
 export class MatInputLookupComponent<TOption>
   extends MatFormControlBase<TOption, string>
-  implements OnChanges, OnDestroy
+  implements OnDestroy
 {
   override readonly autocompleteAttr = input<string | null>('off');
 
@@ -183,36 +165,55 @@ export class MatInputLookupComponent<TOption>
    */
   searchThreshold = input<number>(2);
 
-  override readonly destroyRef = inject(DestroyRef);
-
-  private _status = signal<LookupStatus>('default');
-  private _options = signal<LookupOption<TOption>[]>([]);
-  private _selectedOption = signal<LookupOption<TOption> | null>(null);
-
-  public readonly status = this._status.asReadonly();
-  public readonly options = this._options.asReadonly();
-  public readonly selectedOption = this._selectedOption.asReadonly();
-
   private readonly _optionsUpdated$ = new Subject<void>();
 
-  public filteredOptions!: Observable<LookupOption<TOption>[]>;
+  public readonly searchQuery = computed(() => {
+    return this.displayControl.value ?? '';
+  });
+
+  behavior: LookupBehavior<TOption>;
+
+  constructor() {
+    super();
+
+    this.behavior = new LookupBehavior<TOption>({
+      destroyRef: this.destroyRef,
+      resolvers: {
+        compare: this.compareWith,
+        label: this.displayWith,
+        labelAsync: this.displayProvider,
+        search: this.optionsProvider,
+      },
+    });
+
+    effect(() => {
+      const currentOptions = this.optionsSource() ?? [];
+      this.updateOptions(currentOptions);
+    });
+
+    effect(() => {
+      const selectedOption = this.behavior.selectedOption();
+      this.onChange(selectedOption?.value ?? null);
+    });
+  }
 
   override ngOnInit(): void {
     super.ngOnInit();
 
-    this.setupFilteredOptions();
-    this.setupOptionsProvider();
+    this.behavior.setupFilteredOptions(
+      this.displayControl.valueChanges,
+      this.searchQuery,
+    );
+    this.behavior.setupOptionsProvider(
+      this.displayControl.valueChanges,
+      500,
+      2,
+    );
   }
 
   override writeValue(value: TOption | null): void {
     super.writeValue(value);
-    this.selectedMatchedOption(value);
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['optionsSource']) {
-      this.updateOptions(changes['optionsSource'].currentValue ?? []);
-    }
+    this.behavior.selectedMatchedOption(value);
   }
 
   ngOnDestroy(): void {
@@ -220,165 +221,23 @@ export class MatInputLookupComponent<TOption>
   }
 
   selectOption(result: MatAutocompleteSelectedEvent): void {
-    const compareWith = this.compareWith();
-    const selected = this._options().find((option) =>
-      compareWith
-        ? compareWith(option.value, result.option.value)
-        : option.value === result.option.value,
-    );
-    if (!selected) {
-      return;
-    }
-
-    this._selectedOption.set(selected);
-    this.onChange(selected.value);
+    const lookupOption = {
+      value: result.option.value,
+      label: result.option.viewValue,
+    };
+    this.behavior.selectOption(undefined, lookupOption);
   }
 
   clearSelectedOption(): void {
     this.displayControl.setValue(null);
-    this._selectedOption.set(null);
-    this.onChange(null);
-    if (this.optionsProvider()) {
-      this.updateOptions([]);
-    }
-  }
-
-  private selectedMatchedOption(value: TOption | null): void {
-    const compareWith = this.compareWith();
-    const match =
-      this._options().find((o) =>
-        compareWith
-          ? compareWith(o.value, value as TOption)
-          : o.value === value,
-      ) ?? null;
-
-    if (match) {
-      this._selectedOption.set(match);
-      return;
-    }
-
-    if (value === null) {
-      this._selectedOption.set(null);
-      return;
-    }
-
-    const displayProvider = this.displayProvider();
-    if (displayProvider) {
-      this._status.set('loading');
-
-      displayProvider(value)
-        .pipe(
-          take(1),
-          catchError(() => {
-            this._status.set('error');
-            return EMPTY;
-          }),
-          takeUntilDestroyed(this.destroyRef),
-        )
-        .subscribe((label) => {
-          this._selectedOption.set({
-            value,
-            label,
-          });
-          this._status.set('default');
-        });
-      return;
-    }
-
-    const displayWith = this.displayWith();
-    if (displayWith) {
-      this._selectedOption.set({
-        value: value as TOption,
-        label: displayWith(value),
-      });
-      return;
-    }
+    this.behavior.clearSelectedOption();
   }
 
   private updateOptions(
     results: LookupOption<TOption>[],
     status?: LookupStatus,
   ): void {
-    this._status.set(status ?? 'default');
-    this._options.set(results);
+    this.behavior.updateOptions(results, status);
     this._optionsUpdated$.next();
-  }
-
-  private filterOptions(
-    name: string,
-    results: LookupOption<TOption>[],
-  ): LookupOption<TOption>[] {
-    const filterValue = name.toLowerCase();
-    return results.filter((option) =>
-      option.label.toLowerCase().includes(filterValue),
-    );
-  }
-
-  private setupFilteredOptions(): void {
-    this.filteredOptions = merge(
-      this.displayControl.valueChanges,
-      this._optionsUpdated$,
-    ).pipe(
-      startWith(''),
-      map(() => {
-        const value = this.displayControl.value;
-        const options = this.options();
-
-        if (typeof value !== 'string') {
-          return this.options().slice();
-        }
-
-        return value ? this.filterOptions(value, options) : options.slice();
-      }),
-    );
-  }
-
-  private setupOptionsProvider(): void {
-    if (!this.optionsProvider) {
-      return;
-    }
-
-    this.displayControl.valueChanges
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((value) => {
-        if (
-          typeof value !== 'object' &&
-          (!value || value.length < this.searchThreshold())
-        ) {
-          this.updateOptions([]);
-        }
-      });
-
-    this.displayControl.valueChanges
-      .pipe(
-        debounceTime(this.debounceTime()),
-        distinctUntilChanged((a, b) => a === b),
-        filter(() => this.selectedOption() == null),
-        filter(
-          (q): q is string =>
-            typeof q === 'string' && q.length >= this.searchThreshold(),
-        ),
-        tap(() => this.updateOptions([], 'loading')),
-        switchMap((query) => {
-          const optionsProvider = this.optionsProvider();
-          if (!optionsProvider) {
-            return of([]);
-          }
-          return optionsProvider(query).pipe(
-            catchError(() => {
-              this._status.set('error');
-              return of(null);
-            }),
-          );
-        }),
-        takeUntilDestroyed(this.destroyRef),
-      )
-      .subscribe((response) => {
-        if (!response) {
-          return;
-        }
-        const status = response.length ? 'default' : 'empty';
-        this.updateOptions(response, status);
-      });
   }
 }

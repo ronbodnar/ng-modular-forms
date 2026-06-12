@@ -47,8 +47,8 @@ export class LookupBehavior<TOption> {
     this._selectedOption.set(value);
   }
 
-  selectOption(event: Event, option: LookupOption<TOption>): void {
-    event.stopPropagation();
+  selectOption(event: Event | undefined, option: LookupOption<TOption>): void {
+    event?.stopPropagation();
 
     const compare = this.bOptions.resolvers.compare() ?? undefined;
 

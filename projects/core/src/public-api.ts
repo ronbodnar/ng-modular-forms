@@ -7,6 +7,7 @@ export * from './lib/base/form-handler-base';
 export * from './lib/base/form-mapper-base';
 
 export * from './lib/behavior/currency/currency.behavior';
+export * from './lib/behavior/lookup/lookup.behavior';
 export * from './lib/behavior/text/text.behavior';
 
 export * from './lib/controls/currency/currency.component';
