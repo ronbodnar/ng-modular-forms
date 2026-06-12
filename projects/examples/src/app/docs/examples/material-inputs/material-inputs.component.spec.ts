@@ -33,7 +33,11 @@ describe('MaterialInputsFormComponent', () => {
       select: 'us',
       currency: 1230,
       textarea: expect.stringContaining('Hello'),
-      lookup: 'us',
+      lookupSync: 'us',
+      lookupAsync: {
+        code: 'us',
+        name: 'United States',
+      },
     });
   });
 });

@@ -1,0 +1,300 @@
+:root {
+  --nmf-input-accent-color: #10b981;
+  --nmf-input-border-color: #d1d5db;
+  --nmf-input-background-color: #f4f3f2;
+  --nmf-input-color: #111827;
+  --nmf-input-error-color: #dc2626;
+  --nmf-select-caret-color: var(--nmf-input-color);
+}
+
+html.dark {
+  --nmf-input-accent-color: #1fb86b;
+  --nmf-input-border-color: #3c3c3c;
+  --nmf-input-background-color: #1a1a1a;
+  --nmf-lookup-hover-background-color: #242424;
+  --nmf-input-color: #f4f3f2;
+  --nmf-input-error-color: #dc2626;
+  --nmf-select-caret-color: var(--nmf-input-color);
+}
+
+.nmf-field {
+  position: relative;
+  display: block;
+  font-family:
+    system-ui,
+    -apple-system,
+    Segoe UI,
+    Roboto,
+    sans-serif;
+}
+
+.nmf-label {
+  display: block;
+  font-weight: 500;
+  font-size: 0.875rem;
+  margin-bottom: 0.25rem;
+}
+
+.nmf-required {
+  color: var(--nmf-input-error-color);
+  font-size: 0.8rem;
+}
+
+.nmf-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.nmf-input {
+  width: 100%;
+  box-sizing: border-box;
+
+  padding: 0.5rem 0.75rem;
+
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+
+  border: 1px solid var(--nmf-input-border-color);
+  border-radius: 0.275rem;
+
+  background-color: var(--nmf-input-background-color);
+  color: var(--nmf-input-color);
+
+  outline: none;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.nmf-field.loading select {
+  background-image: none !important;
+}
+
+.nmf-field.loading input[type="date"]::-webkit-calendar-picker-indicator,
+.nmf-field.loading input[type="time"]::-webkit-calendar-picker-indicator {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.select-wrapper {
+  width: 100%;
+  position: relative;
+  display: inline-block;
+}
+
+.select-wrapper::after {
+  content: "";
+
+  position: absolute;
+  top: 50%;
+  right: 0.75rem;
+
+  width: 1rem;
+  height: 1rem;
+
+  transform: translateY(-50%);
+  pointer-events: none;
+
+  background-color: var(--nmf-select-caret-color);
+
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='black' d='M5 7l5 5 5-5z'/%3E%3C/svg%3E");
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mask-size: contain;
+
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='black' d='M5 7l5 5 5-5z'/%3E%3C/svg%3E");
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  -webkit-mask-size: contain;
+}
+
+.select-wrapper.disabled::after {
+  --nmf-select-caret-color: transparent;
+}
+
+select.nmf-input {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  padding-right: 2rem;
+}
+
+select.nmf-input:disabled {
+  background-image: none;
+}
+
+.nmf-input:focus {
+  border-color: var(--nmf-input-accent-color);
+  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+}
+
+.nmf-input:disabled {
+  opacity: 0.6;
+  background-color: #f3f4f6;
+  background-color: var(--nmf-input-background-color);
+  cursor: not-allowed;
+}
+
+.nmf-input.error {
+  border-color: #dc2626;
+}
+
+.nmf-input.error:focus {
+  box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.2);
+}
+
+.nmf-prefix {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+
+  line-height: 1;
+  font-size: 0.875rem;
+  pointer-events: none;
+}
+
+.nmf-prefix.error {
+  color: var(--nmf-input-error-color);
+}
+
+.nmf-prefix-disabled {
+  opacity: 0.6;
+}
+
+.nmf-input-with-prefix {
+  padding-left: 1.25rem;
+}
+
+.nmf-icon {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+}
+
+.nmf-password-toggle {
+  position: absolute;
+  right: 0.25rem;
+
+  background: none;
+  border: none;
+  padding: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+
+  font-size: 0.875rem;
+  line-height: 1;
+}
+
+.nmf-password-toggle:disabled {
+  cursor: not-allowed;
+}
+
+.nmf-options-list {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  background-color: var(--nmf-input-background-color);
+  border: 1px solid var(--nmf-input-border-color);
+  border-radius: 0.25rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 225px;
+  overflow-y: auto;
+}
+
+.nmf-options-list.upward {
+  top: auto;
+  bottom: 100%;
+}
+
+.nmf-options-list li {
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+}
+
+.nmf-options-list li:hover,
+.nmf-options-list li.active {
+  background-color: var(--nmf-lookup-hover-background-color);
+}
+
+.nmf-hint {
+  font-size: 0.75rem;
+
+  height: 16px;
+
+  margin-top: 0.25rem;
+  margin-bottom: 0;
+
+  min-height: 16px;
+}
+
+.nmf-hint.error {
+  color: var(--nmf-input-error-color);
+}
+
+.nmf-loading {
+  position: absolute;
+  width: 1rem;
+  height: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 0.75rem;
+}
+
+.nmf-spinner {
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+
+  border: 2px solid var(--nmf-input-border-color);
+  border-top-color: var(--nmf-input-accent-color);
+  border-radius: 50%;
+
+  animation: nmf-spin 0.8s linear infinite;
+}
+
+.nmf-clear-button {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+
+  background: none;
+  border: none;
+  padding: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+
+  font-size: 0.875rem;
+  line-height: 1;
+}
+
+@keyframes nmf-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/** Remove arrows from number fields **/
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
