@@ -84,7 +84,7 @@ import { LookupBehavior } from '../../behavior/lookup/lookup.behavior';
               class="nmf-clear-button"
               type="button"
               aria-label="Clear selection"
-              (click)="behavior.clearSelectedOption()"
+              (click)="clearSelectedOption()"
             >
               X
             </button>
@@ -251,6 +251,12 @@ export class InputLookupComponent<TOption>
     this.resetActiveIndex();
   }
 
+  clearSelectedOption(): void {
+    this._searchQuery.set('');
+    this.behavior.clearSelectedOption();
+    this.focus();
+  }
+
   onKeyDown(
     event: KeyboardEvent,
     currentOptions: LookupOption<TOption>[] | null,
@@ -299,7 +305,7 @@ export class InputLookupComponent<TOption>
       case 'Delete':
         if (this.behavior.selectedOption() !== null) {
           event.preventDefault();
-          this.behavior.clearSelectedOption();
+          this.clearSelectedOption();
         }
         break;
     }

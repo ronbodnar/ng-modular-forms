@@ -75,6 +75,8 @@ describe('InputLookupComponent', () => {
 
     component.selectOption(event, targetOption);
 
+    fixture.detectChanges();
+
     expect(onChangeMock).toHaveBeenCalledWith(targetOption.value);
     expect(component.behavior.selectedOption()).toEqual(targetOption);
   });
@@ -149,7 +151,7 @@ describe('InputLookupComponent', () => {
     await vi.advanceTimersByTimeAsync(500);
     vi.useRealTimers();
 
-    expect(component.optionsProvider).toHaveBeenCalledWith('dav');
+    expect(component.optionsProvider()).toHaveBeenCalledWith('dav');
     expect(component.behavior.options()).toEqual(providerOptions);
   });
 

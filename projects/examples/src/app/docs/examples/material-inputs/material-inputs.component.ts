@@ -23,14 +23,13 @@ import {
   MatInputDatepickerComponent,
   MatInputNumberComponent,
   MatInputLookupComponent,
-  LookupOption,
 } from '@ng-modular-forms/material';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatButtonModule } from '@angular/material/button';
 import { FormSectionComponent } from '../../ui/form-section/form-section.component';
 import { DocsPageComponent } from '../../ui/docs-page/docs-page.component';
 import { FormStatusOutputComponent } from '../../ui/form-status-output/form-status-output.component';
-import type { SelectOption } from '@ng-modular-forms/core';
+import type { LookupOption, SelectOption } from '@ng-modular-forms/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({

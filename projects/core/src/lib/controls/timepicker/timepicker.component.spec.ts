@@ -4,7 +4,7 @@ import { By } from '@angular/platform-browser';
 import { ReactiveFormsModule, FormControl, FormGroup } from '@angular/forms';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 
-import { InputTimepickerComponent } from './input-timepicker.component';
+import { InputTimepickerComponent } from './timepicker.component';
 
 @Component({
   standalone: true,

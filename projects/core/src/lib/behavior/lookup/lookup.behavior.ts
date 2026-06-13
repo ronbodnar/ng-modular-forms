@@ -1,4 +1,4 @@
-import { computed, signal } from '@angular/core';
+import { signal } from '@angular/core';
 import {
   LookupBehaviorOptions,
   LookupOption,
@@ -31,13 +31,14 @@ export class LookupBehavior<TOption> {
   public readonly options = this._options.asReadonly();
   public readonly selectedOption = this._selectedOption.asReadonly();
 
+  /*
+   * Emits when the options have been updated. Ensures Material autocomplete updates its
+   */
   public readonly optionsUpdated$ = new Subject<void>();
 
   public filteredOptions!: Observable<LookupOption<TOption>[]>;
 
-  public readonly filteredOptionss = computed(() => {});
-
-  bOptions!: LookupBehaviorOptions<TOption>;
+  private bOptions!: LookupBehaviorOptions<TOption>;
 
   constructor(bOptions: LookupBehaviorOptions<TOption>) {
     this.bOptions = bOptions;
@@ -64,6 +65,7 @@ export class LookupBehavior<TOption> {
 
   clearSelectedOption(): void {
     this.setSelectedOption(null);
+    this.optionsUpdated$.next();
   }
 
   selectedMatchedOption(value: TOption | null): void {
@@ -155,9 +157,7 @@ export class LookupBehavior<TOption> {
           return this.options().slice();
         }
 
-        return searchQuery
-          ? this.filterOptions(value, options)
-          : options.slice();
+        return value ? this.filterOptions(value, options) : options.slice();
       }),
     );
   }

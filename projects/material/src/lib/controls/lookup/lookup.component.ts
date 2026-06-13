@@ -1,7 +1,6 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  computed,
   effect,
   input,
   OnDestroy,
@@ -18,15 +17,9 @@ import {
   MatAutocompleteModule,
   MatAutocompleteSelectedEvent,
 } from '@angular/material/autocomplete';
-import { Observable, Subject } from 'rxjs';
-import { LookupBehavior } from '@ng-modular-forms/core';
-
-type LookupStatus = 'default' | 'loading' | 'error' | 'empty';
-
-export interface LookupOption<TResult> {
-  value: TResult;
-  label: string;
-}
+import { Observable, startWith } from 'rxjs';
+import { LookupBehavior, LookupOption } from '@ng-modular-forms/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'nmf-mat-lookup',
@@ -165,11 +158,9 @@ export class MatInputLookupComponent<TOption>
    */
   searchThreshold = input<number>(2);
 
-  private readonly _optionsUpdated$ = new Subject<void>();
-
-  public readonly searchQuery = computed(() => {
-    return this.displayControl.value ?? '';
-  });
+  private readonly searchQuery = toSignal(
+    this.displayControl.valueChanges.pipe(startWith(this.displayControl.value)),
+  );
 
   behavior: LookupBehavior<TOption>;
 
@@ -188,7 +179,7 @@ export class MatInputLookupComponent<TOption>
 
     effect(() => {
       const currentOptions = this.optionsSource() ?? [];
-      this.updateOptions(currentOptions);
+      this.behavior.updateOptions(currentOptions);
     });
 
     effect(() => {
@@ -216,10 +207,6 @@ export class MatInputLookupComponent<TOption>
     this.behavior.selectedMatchedOption(value);
   }
 
-  ngOnDestroy(): void {
-    this._optionsUpdated$.complete();
-  }
-
   selectOption(result: MatAutocompleteSelectedEvent): void {
     const lookupOption = {
       value: result.option.value,
@@ -233,11 +220,7 @@ export class MatInputLookupComponent<TOption>
     this.behavior.clearSelectedOption();
   }
 
-  private updateOptions(
-    results: LookupOption<TOption>[],
-    status?: LookupStatus,
-  ): void {
-    this.behavior.updateOptions(results, status);
-    this._optionsUpdated$.next();
+  ngOnDestroy(): void {
+    this.behavior.optionsUpdated$.complete();
   }
 }

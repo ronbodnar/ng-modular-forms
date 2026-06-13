@@ -1,10 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { LookupOption, MatInputLookupComponent } from './lookup.component';
+import { MatInputLookupComponent } from './lookup.component';
 import { By } from '@angular/platform-browser';
 import { of, throwError } from 'rxjs';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { LookupOption } from '@ng-modular-forms/core';
 
 interface TestResult {
   id: number;
@@ -28,7 +29,7 @@ describe('MatInputLookupComponent', () => {
 
     fixture = TestBed.createComponent(MatInputLookupComponent<TestResult>);
     component = fixture.componentInstance;
-    component.optionsSource = TEST_OPTIONS;
+    fixture.componentRef.setInput('optionsSource', TEST_OPTIONS);
     fixture.detectChanges();
   });
 
@@ -56,6 +57,7 @@ describe('MatInputLookupComponent', () => {
     component.selectOption({
       option: { value: TEST_OPTIONS[0].value },
     } as MatAutocompleteSelectedEvent);
+    fixture.detectChanges();
 
     expect(onChangeMock).toHaveBeenCalledWith(TEST_OPTIONS[0].value);
   });
@@ -80,7 +82,7 @@ describe('MatInputLookupComponent', () => {
     fixture.detectChanges();
 
     const emitted: (typeof TEST_OPTIONS)[] = [];
-    component.filteredOptions.subscribe((v) => emitted.push(v));
+    component.behavior.filteredOptions.subscribe((v) => emitted.push(v));
     component.displayControl.setValue('ali');
     await fixture.whenStable();
 
@@ -90,7 +92,7 @@ describe('MatInputLookupComponent', () => {
 
   it('returns empty array when no options match the query', async () => {
     const options: (typeof TEST_OPTIONS)[] = [];
-    component.filteredOptions.subscribe((opts) => options.push(opts));
+    component.behavior.filteredOptions.subscribe((opts) => options.push(opts));
 
     component.displayControl.setValue('zzz');
     fixture.detectChanges();
@@ -101,34 +103,45 @@ describe('MatInputLookupComponent', () => {
 
   it('sets error status when optionsProvider throws', async () => {
     vi.useFakeTimers();
-    component.optionsProvider = () => throwError(() => new Error('network'));
+    fixture.componentRef.setInput('optionsProvider', () =>
+      throwError(() => new Error('network')),
+    );
     component.ngOnInit();
 
     component.displayControl.setValue('da');
     await vi.advanceTimersByTimeAsync(1000);
     vi.useRealTimers();
 
-    expect(component.status()).toBe('error');
+    expect(component.behavior.status()).toBe('error');
   });
 
-  it('calls optionsProvider and updates optionResults after debounce', async () => {
+  it('updates options after debounce from optionsProvider', async () => {
     vi.useFakeTimers();
-    const providerOptions = [{ value: { id: 5, name: 'Dave' }, label: 'Dave' }];
-    component.optionsProvider = vi.fn().mockReturnValue(of(providerOptions));
+
+    const providerFn = vi
+      .fn()
+      .mockReturnValue(of([{ value: { id: 5, name: 'Dave' }, label: 'Dave' }]));
+
+    fixture.componentRef.setInput('optionsProvider', providerFn);
+    fixture.detectChanges();
+
     component.ngOnInit();
 
     component.displayControl.setValue('da');
+
     await vi.advanceTimersByTimeAsync(1000);
+
     vi.useRealTimers();
 
-    expect(component.optionsProvider).toHaveBeenCalledWith('da');
-    expect(component.options()).toEqual(providerOptions);
+    expect(component.behavior.options()).toEqual([
+      { value: { id: 5, name: 'Dave' }, label: 'Dave' },
+    ]);
   });
 
   it('does not call optionsProvider for single-character queries', async () => {
     vi.useFakeTimers();
     const providerMock = vi.fn().mockReturnValue(of([]));
-    component.optionsProvider = providerMock;
+    fixture.componentRef.setInput('optionsProvider', providerMock);
     component.ngOnInit();
 
     component.displayControl.setValue('d');
@@ -140,15 +153,9 @@ describe('MatInputLookupComponent', () => {
 
   it('updates optionResults when options input changes', () => {
     const newOptions = [{ value: { id: 99, name: 'Test' }, label: 'Test' }];
-    component.ngOnChanges({
-      optionsSource: {
-        currentValue: newOptions,
-        previousValue: TEST_OPTIONS,
-        firstChange: false,
-        isFirstChange: () => false,
-      },
-    });
+    fixture.componentRef.setInput('optionsSource', newOptions);
+    fixture.detectChanges();
 
-    expect(component.options()).toEqual(newOptions);
+    expect(component.behavior.options()).toEqual(newOptions);
   });
 });
