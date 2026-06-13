@@ -15,8 +15,11 @@ import {
   MatInputTimepickerComponent,
   MatInputDatepickerComponent,
   MatInputNumberComponent,
+  LookupOption,
+  MatInputLookupComponent,
 } from '@ng-modular-forms/material';
 import type { SelectOption } from '@ng-modular-forms/core';
+import { Observable, of, delay } from 'rxjs';
 
 @Component({
   selector: 'app-material-inputs-example',
@@ -31,6 +34,7 @@ import type { SelectOption } from '@ng-modular-forms/core';
     MatInputTimepickerComponent,
     MatInputDatepickerComponent,
     MatInputNumberComponent,
+    MatInputLookupComponent,
   ],
   templateUrl: './material-inputs.component.html',
 })
@@ -60,12 +64,62 @@ export class MaterialInputsExampleComponent {
     time: new FormControl<Date | null>(null, Validators.required),
   });
 
-  countries: SelectOption[] = [
-    { key: 'us', label: 'United States' },
-    { key: 'ca', label: 'Canada' },
-    { key: 'uk', label: 'United Kingdom', disabled: true },
-    { key: 'de', label: 'Germany', disabled: true },
-    { key: 'fr', label: 'France' },
-    { key: 'jp', label: 'Japan' },
+  rawCountries: Country[] = [
+    { code: 'us', name: 'United States' },
+    { code: 'ca', name: 'Canada' },
+    { code: 'uk', name: 'United Kingdom' },
+    { code: 'de', name: 'Germany' },
+    { code: 'fr', name: 'France' },
+    { code: 'jp', name: 'Japan' },
   ];
+
+  countrySelectOptions: SelectOption[] = this.rawCountries.map((c) => ({
+    value: c.code,
+    label: c.name,
+  }));
+
+  countryLookupOptions: LookupOption<string>[] = this.rawCountries.map((c) => ({
+    value: c.code,
+    label: c.name,
+  }));
+
+  displayCountry = (value: string | null): string => {
+    if (value == null) {
+      return '';
+    }
+    return (
+      this.countryLookupOptions.find((c) => c.value === value)?.label ?? ''
+    );
+  };
+
+  countryProvider = (
+    query: string | null,
+  ): Observable<LookupOption<Country>[]> => {
+    if (query == null) {
+      return of([]).pipe(delay(1000));
+    }
+
+    const countries = this.rawCountries.map((c) => ({
+      value: c,
+      label: c.name,
+    }));
+
+    return of(
+      countries.filter((o) =>
+        o.label.toLowerCase().includes(query.toLowerCase()),
+      ),
+    ).pipe(delay(1000));
+  };
+
+  displayCountryAsync = (value: Country | null): string => {
+    if (value == null) {
+      return '';
+    }
+    return value.name;
+  };
+}
+
+interface Country {
+  code: string;
+  name: string;
 }

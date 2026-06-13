@@ -69,10 +69,10 @@ export class RegistrationPreferencesComponent {
   form = input.required<FormGroup>();
 
   referralOptions: SelectOption[] = [
-    { key: 'friend', label: 'Friend or colleague' },
-    { key: 'search', label: 'Search engine' },
-    { key: 'ad', label: 'Online ad' },
-    { key: 'social', label: 'Social media' },
-    { key: 'other', label: 'Other' },
+    { value: 'friend', label: 'Friend or colleague' },
+    { value: 'search', label: 'Search engine' },
+    { value: 'ad', label: 'Online ad' },
+    { value: 'social', label: 'Social media' },
+    { value: 'other', label: 'Other' },
   ];
 }

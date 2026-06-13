@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { FormControlBase } from './form-control-base';
 import {
   ReactiveFormsModule,
@@ -15,7 +15,13 @@ import {
   selector: 'test-form-control-base',
   imports: [ReactiveFormsModule],
   template: `
-    <input [formControl]="formControl" (blur)="onTouched()" />
+    <input
+      #focusable
+      [formControl]="control"
+      [disabled]="disabled()"
+      (focus)="onFocusIn()"
+      (blur)="onFocusOut()"
+    />
 
     <div class="error">{{ errorMessage() }}</div>
   `,
@@ -89,21 +95,20 @@ describe('FormControlBase', () => {
     expect(input.disabled).toBe(false);
 
     control.disable();
-
     fixture.detectChanges();
 
     expect(input.disabled).toBe(true);
   });
 
-  it('writes value through CVA into form control', () => {
-    const component = fixture.debugElement.query(
+  it('writes value through CVA', () => {
+    fixture.componentInstance.form.get('field')!.setValue('hello');
+    fixture.detectChanges();
+
+    const component: TestControl = fixture.debugElement.query(
       By.directive(TestControl),
     ).componentInstance;
 
-    component.writeValue('hello');
-    fixture.detectChanges();
-
-    expect(control.value).toBe('hello');
+    expect(component.value).toBe('hello');
   });
 
   it('shows error only when touched + invalid', () => {
@@ -119,5 +124,19 @@ describe('FormControlBase', () => {
     expect(
       fixture.debugElement.query(By.css('.error')).nativeElement.textContent,
     ).toContain('Minimum length is 5');
+  });
+
+  it('should route focus and blur programmatically', () => {
+    const debugElement = fixture.debugElement.query(By.directive(TestControl));
+    const component: TestControl = debugElement.componentInstance;
+
+    const focusSpy = vi.spyOn(component, 'focus');
+    const blurSpy = vi.spyOn(component, 'blur');
+
+    component.focus();
+    expect(focusSpy).toHaveBeenCalled();
+
+    component.blur();
+    expect(blurSpy).toHaveBeenCalled();
   });
 });

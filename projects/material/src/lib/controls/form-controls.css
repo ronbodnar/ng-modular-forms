@@ -1,0 +1,41 @@
+/** Overrides **/
+.mat-mdc-select-placeholder {
+  transition: none !important;
+}
+
+/** Custom Classes **/
+.hide-select-arrow .mat-mdc-select-arrow-wrapper {
+  display: none !important;
+}
+
+.nmf-mat-loader {
+  margin-right: 0.5rem !important;
+}
+
+.nmf-disabled {
+  color: color-mix(in srgb, var(--mat-sys-on-surface) 38%, transparent);
+}
+
+.nmf-password-toggle {
+  color: var(--mat-sys-on-surface-variant);
+  padding-right: 0.5rem;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+
+  &:disabled {
+    color: color-mix(in srgb, var(--mat-sys-on-surface) 38%, transparent);
+    cursor: default;
+  }
+}
+
+/** Remove arrows from number fields **/
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  appearance: textfield;
+  -moz-appearance: textfield;
+}

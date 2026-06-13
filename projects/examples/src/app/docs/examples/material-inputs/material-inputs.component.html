@@ -10,8 +10,8 @@
     <nmf-mat-select
       formControlName="appearance"
       [options]="[
-        { key: 'outline', label: 'Outline' },
-        { key: 'fill', label: 'Fill' },
+        { value: 'outline', label: 'Outline' },
+        { value: 'fill', label: 'Fill' },
       ]"
       [appearance]="appearance()"
       [shouldLabelFloat]="'always'"
@@ -21,8 +21,8 @@
     <nmf-mat-select
       formControlName="floatLabel"
       [options]="[
-        { key: 'auto', label: 'Auto' },
-        { key: 'always', label: 'Always' },
+        { value: 'auto', label: 'Auto' },
+        { value: 'always', label: 'Always' },
       ]"
       [appearance]="appearance()"
       [shouldLabelFloat]="'always'"
@@ -88,6 +88,16 @@
             [shouldLabelFloat]="floatLabel()"
           />
 
+          <nmf-mat-select
+            formControlName="select"
+            label="Select/Dropdown Input"
+            [options]="countrySelectOptions"
+            placeholder="Select an option"
+            [loading]="loading()"
+            [appearance]="appearance()"
+            [shouldLabelFloat]="floatLabel()"
+          />
+
           <nmf-mat-datepicker
             formControlName="date"
             label="Date Input"
@@ -104,28 +114,23 @@
             [shouldLabelFloat]="floatLabel()"
           />
 
-          <nmf-mat-select
-            formControlName="select"
-            label="Select/Dropdown Input"
-            [options]="countries"
-            placeholder="Select an option"
+          <nmf-mat-lookup
+            formControlName="lookupSync"
+            label="Lookup Input"
+            placeholder="Type to look up an option..."
+            [optionsSource]="countryLookupOptions"
+            [displayWith]="displayCountry"
             [loading]="loading()"
             [appearance]="appearance()"
             [shouldLabelFloat]="floatLabel()"
           />
 
           <nmf-mat-lookup
-            formControlName="lookup"
-            label="Lookup Input"
+            formControlName="lookupAsync"
+            label="Lookup Input (Async)"
             placeholder="Type to look up an option..."
-            [options]="[
-              { value: 'us', label: 'United States' },
-              { value: 'ca', label: 'Canada' },
-              { value: 'uk', label: 'United Kingdom' },
-              { value: 'de', label: 'Germany' },
-              { value: 'fr', label: 'France' },
-              { value: 'jp', label: 'Japan' },
-            ]"
+            [optionsProvider]="countryProvider"
+            [displayWith]="displayCountryAsync"
             [loading]="loading()"
             [appearance]="appearance()"
             [shouldLabelFloat]="floatLabel()"

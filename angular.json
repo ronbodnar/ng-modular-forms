@@ -88,8 +88,8 @@
             "styles": [
               "projects/examples/src/material-theme.scss",
               "projects/examples/src/styles.css",
-              "projects/core/src/lib/input/input-styles.css",
-              "projects/material/src/lib/mat-input-styles.css"
+              "projects/core/src/lib/controls/form-controls.css",
+              "projects/material/src/lib/controls/form-controls.css"
             ],
             "scripts": []
           },
@@ -152,8 +152,8 @@
             "styles": [
               "projects/examples/src/material-theme.scss",
               "projects/examples/src/styles.css",
-              "projects/core/src/lib/input/input-styles.css",
-              "projects/material/src/lib/mat-input-styles.css"
+              "projects/core/src/lib/controls/form-controls.css",
+              "projects/material/src/lib/controls/form-controls.css"
             ],
             "scripts": []
           }

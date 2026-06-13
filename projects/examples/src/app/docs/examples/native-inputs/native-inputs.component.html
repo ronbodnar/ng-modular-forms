@@ -55,6 +55,14 @@
             [loading]="loading()"
           />
 
+          <nmf-select
+            formControlName="select"
+            label="Select/Dropdown Input"
+            placeholder="Select an option"
+            [loading]="loading()"
+            [options]="countrySelectOptions"
+          />
+
           <nmf-datepicker
             formControlName="date"
             label="Date Input"
@@ -69,13 +77,24 @@
             [loading]="loading()"
           />
 
-          <nmf-select
-            formControlName="select"
-            label="Select/Dropdown Input"
-            placeholder="Select an option"
+          <nmf-lookup
+            formControlName="lookupSync"
+            label="Lookup Input"
+            placeholder="Type to look up an option..."
+            [optionsSource]="countryLookupOptions"
+            [displayWith]="displayCountry"
             [loading]="loading()"
-            [options]="countries"
           />
+
+          <nmf-lookup
+            formControlName="lookupAsync"
+            label="Lookup Input (Async)"
+            placeholder="Type to look up an option..."
+            [optionsProvider]="countryProvider"
+            [displayWith]="displayCountryAsync"
+            [loading]="loading()"
+          />
+
           <nmf-textarea
             formControlName="textarea"
             label="Textarea Input"

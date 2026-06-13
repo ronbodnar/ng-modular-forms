@@ -2,12 +2,13 @@
  * Public API Surface of material
  */
 
-export * from './lib/mat-form-control-base';
-export * from './lib/mat-input-currency.component';
-export * from './lib/mat-input-datepicker.component';
-export * from './lib/mat-input-number.component';
-export * from './lib/mat-input-lookup/mat-input-lookup.component';
-export * from './lib/mat-input-select.component';
-export * from './lib/mat-input-text.component';
-export * from './lib/mat-input-textarea.component';
-export * from './lib/mat-input-timepicker.component';
+export * from './lib/base/mat-form-control-base';
+
+export * from './lib/controls/currency/currency.component';
+export * from './lib/controls/datepicker/datepicker.component';
+export * from './lib/controls/number/number.component';
+export * from './lib/controls/lookup/lookup.component';
+export * from './lib/controls/select/select.component';
+export * from './lib/controls/text/text.component';
+export * from './lib/controls/textarea/textarea.component';
+export * from './lib/controls/timepicker/timepicker.component';

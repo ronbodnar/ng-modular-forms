@@ -32,15 +32,31 @@
       placeholder="Enter your budget"
     />
 
+    <nmf-mat-select
+      formControlName="select"
+      label="Select/Dropdown Input"
+      [options]="countrySelectOptions"
+      placeholder="Select an option"
+    />
+
     <nmf-mat-datepicker formControlName="date" label="Date Input" />
 
     <nmf-mat-timepicker formControlName="time" label="Time Input" />
 
-    <nmf-mat-select
-      formControlName="select"
-      label="Select/Dropdown Input"
-      [options]="countries"
-      placeholder="Select an option"
+    <nmf-mat-lookup
+      formControlName="lookupSync"
+      label="Lookup Input"
+      placeholder="Type to look up an option..."
+      [optionsSource]="countryLookupOptions"
+      [displayWith]="displayCountry"
+    />
+
+    <nmf-mat-lookup
+      formControlName="lookupAsync"
+      label="Lookup Input"
+      placeholder="Type to look up an option..."
+      [optionsProvider]="countryProvider"
+      [displayWith]="displayCountryAsync"
     />
 
     <nmf-mat-textarea
