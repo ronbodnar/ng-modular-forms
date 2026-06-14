@@ -2,7 +2,7 @@
 
 ### Without ng-modular-forms
 
-```ts
+```typescript
 @Component({
   template: `
     <form [formGroup]="form" (ngSubmit)="submit()">
@@ -88,7 +88,7 @@ Issues:
 
 #### Parent Form (Orchestrator)
 
-```ts
+```typescript
 @Component({
   selector: "app-example",
   imports: [ReactiveFormsModule, SectionAComponent],
@@ -160,7 +160,7 @@ export class ExampleComponent extends FormOrchestrator {
 
 #### Subform Component
 
-```ts
+```typescript
 @Component({
   selector: "app-section-a",
   imports: [ReactiveFormsModule, InputTextComponent],
@@ -178,7 +178,7 @@ export class SectionAComponent {
 
 #### Handler (Reactive Logic Layer)
 
-```ts
+```typescript
 type Controls = {
   'sectionA.fieldA': FormControl<string>;
   'sectionA.fieldB': FormControl<string>;
@@ -204,7 +204,7 @@ export class SectionAHandler extends FormHandlerBase<Controls> {
 
 #### Mapper (Data Transformation Layer)
 
-```ts
+```typescript
 interface ApiResponseModel {
   fieldA: unknown;
   fieldB: unknown;

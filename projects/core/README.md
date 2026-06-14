@@ -52,13 +52,28 @@ npm install @ng-modular-forms/core
 npm install @ng-modular-forms/material
 ```
 
+## Styles Setup
+Add the corresponding styles to your application's angular.json file under the styles array. Only include the files for the packages you are actively using:
+
+```json
+"styles": [
+  "src/styles.css",
+  
+  // Required ONLY if using @ng-modular-forms/core native controls
+  "node_modules/@ng-modular-forms/core/styles/form-controls.css",
+  
+  // Required ONLY if using @ng-modular-forms/material
+  "node_modules/@ng-modular-forms/material/styles/form-controls.css"
+]
+```
+
 ## Core Primitives
 
 ### FormOrchestrator
 
 Coordinates form structure and lifecycle.
 
-```ts
+```typescript
 import {
   FormOrchestrator, FormHydrator, FormSerializer
 } from '@ng-modular-forms/core';
@@ -114,7 +129,7 @@ export class ExampleComponent extends FormOrchestrator {
 ```
 
 Optional component for Section A to house the form controls.
-```ts
+```typescript
 import { InputTextComponent } from '@ng-modular-forms/core';
 
 @Component({
@@ -136,7 +151,7 @@ export class SectionAComponent {
 
 Encapsulates cross-field reactive behavior. Keeps UI logic out of the component.
 
-```ts
+```typescript
 import { Subscription } from 'rxjs';
 import { FormHandlerBase } from '@ng-modular-forms/core';
 
@@ -177,7 +192,7 @@ export class SectionAHandler extends FormHandlerBase<Controls> {
 
 Handles transformations between API and form. `FormHydrator` and `FormSerializer` will call these automatically.
 
-```ts
+```typescript
 import { FormMapperBase, getControlValue } from '@ng-modular-forms/core';
 
 export class SectionAMapper extends FormMapperBase<
@@ -240,7 +255,7 @@ This helps centralize API ↔ form transformations and reduces repetitive patchi
 Patches form controls from a model.
 
 Standalone usage:
-```ts
+```typescript
 import { FormHydrator } from '@ng-modular-forms/core';
 
 @Component({...})
@@ -258,7 +273,7 @@ export class ExampleComponent {
 ```
 
 FormOrchestrator usage:
-```ts
+```typescript
 import {
   FormOrchestrator, FormHydrator, FormSerializer
 } from '@ng-modular-forms/core';
@@ -288,7 +303,7 @@ export class ExampleComponent extends FormOrchestrator {
 Serializes form controls to a model.
 
 Standalone usage:
-```ts
+```typescript
 import { FormSerializer } from '@ng-modular-forms/core';
 
 @Component({...})
@@ -311,7 +326,7 @@ export class ExampleComponent {
 ```
 
 FormOrchestrator usage:
-```ts
+```typescript
 import {
   FormOrchestrator, FormHydrator, FormSerializer
 } from '@ng-modular-forms/core';
@@ -341,7 +356,7 @@ export class ExampleComponent extends FormOrchestrator {
 
 ##  Input Component Example (No Orchestration)
 
-```ts
+```typescript
 import {
   InputTextComponent, InputCurrencyComponent
 } from '@ng-modular-forms/core';

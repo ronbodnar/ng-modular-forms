@@ -30,9 +30,19 @@ npm install @ng-modular-forms/material
 ```
 Note: This will also install <a href="https://www.npmjs.com/package/@ng-modular-forms/core">@ng-modular-forms/core</a>.
 
+## Styles Setup
+Add the global styles to your application's angular.json file under the styles array:
+
+```json
+"styles": [
+  "src/styles.css",
+  "node_modules/@ng-modular-forms/material/styles/form-controls.css"
+]
+```
+
 ## Example
 
-```ts
+```typescript
 import { MatInputTextComponent } from "@ng-modular-forms/material";
 
 @Component({

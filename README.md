@@ -88,6 +88,21 @@ Add Material UI support if needed:
 npm install @ng-modular-forms/material
 ```
 
+## Styles Setup
+Add the corresponding styles to your application's angular.json file under the styles array. Only include the files for the packages you are actively using:
+
+```json
+"styles": [
+  "src/styles.css",
+  
+  // Required ONLY if using @ng-modular-forms/core native controls
+  "node_modules/@ng-modular-forms/core/styles/form-controls.css",
+  
+  // Required ONLY if using @ng-modular-forms/material
+  "node_modules/@ng-modular-forms/material/styles/form-controls.css"
+]
+```
+
 ### Peer Dependencies
 
 For the Material package, you'll also need:
@@ -111,7 +126,7 @@ Navigate to `http://localhost:4200/docs/examples` to see the interactive example
 
 ##  Simple Example
 
-```ts
+```typescript
 @Component({
   template: `
     <form [formGroup]="form">
@@ -132,15 +147,16 @@ export class ExampleComponent {
 
 All inputs share a consistent API and are interchangeable between Native and Material implementations without changing form logic.
 
-| Input Type      | Native Selector                | Material Selector                  | Description                                 |
-|-----------------|--------------------------------|------------------------------------|---------------------------------------------|
-| Text / Password | `nmf-text`                     | `nmf-mat-text`                     | Text / password input with toggle support   |
-| Number          | `nmf-number`                   | `nmf-mat-number`                   | Type-safe numeric input                     |
-| Currency        | `nmf-currency`                 | `nmf-mat-currency`                 | Formatting + parsing support                |
-| Date            | `nmf-datepicker`               | `nmf-mat-datepicker`               | Native or Material datepicker               |
-| Time            | `nmf-timepicker`               | `nmf-mat-timepicker`               | Structured time input                       |
-| Select          | `nmf-select`                   | `nmf-mat-select`                   | Dropdown with option support                |
-| Textarea        | `nmf-textarea`                 | `nmf-mat-textarea`                 | Multi-line input                            |
+| Input Type      | Native Selector                | Material Selector                  | Description                                     |
+|-----------------|--------------------------------|------------------------------------|-------------------------------------------------|
+| Text / Password | `nmf-text`                     | `nmf-mat-text`                     | Text / password input with toggle support       |
+| Lookup          | `nmf-lookup`                   | `nmf-mat-lookup`                   | Synchronous or asynchronous lookup/autocomplete |
+| Number          | `nmf-number`                   | `nmf-mat-number`                   | Type-safe numeric input                         |
+| Currency        | `nmf-currency`                 | `nmf-mat-currency`                 | Formatting + parsing support                    |
+| Date            | `nmf-datepicker`               | `nmf-mat-datepicker`               | Native or Material datepicker                   |
+| Time            | `nmf-timepicker`               | `nmf-mat-timepicker`               | Structured time input                           |
+| Select          | `nmf-select`                   | `nmf-mat-select`                   | Dropdown with option support                    |
+| Textarea        | `nmf-textarea`                 | `nmf-mat-textarea`                 | Multi-line input                                |
 
 ###  Shared Features
 
