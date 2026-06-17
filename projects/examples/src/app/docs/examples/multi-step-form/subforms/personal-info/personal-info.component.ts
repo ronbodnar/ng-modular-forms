@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormGroup } from '@angular/forms';
+import { ReactiveFormsModule, FormGroup, FormArray } from '@angular/forms';
 import {
   MatInputTextComponent,
   MatInputSelectComponent,
@@ -64,9 +64,18 @@ import type { SelectOption } from '@ng-modular-forms/core';
           placeholder="(555) 123-4567"
         />
 
-        <div
-          class="mt-4 flex flex-col items-start gap-3 text-sm text-slate-700"
-        >
+        <div formArrayName="array">
+          @for (control of array.controls; track control; let i = $index) {
+            <ng-template [formGroupName]="i">
+              <nmf-mat-text
+                formControlName="text"
+                [label]="'Form array ' + (i + 1)"
+              />
+            </ng-template>
+          }
+        </div>
+
+        <div class="flex flex-col items-start gap-3 text-sm">
           <mat-checkbox formControlName="newsletter">
             Sign up for our newsletter
           </mat-checkbox>
@@ -86,6 +95,10 @@ import type { SelectOption } from '@ng-modular-forms/core';
 })
 export class RegistrationPersonalInfoComponent {
   form = input.required<FormGroup>();
+
+  get array(): FormArray {
+    return this.form().get('array') as FormArray;
+  }
 
   countries: SelectOption[] = [
     { value: 'us', label: 'United States' },

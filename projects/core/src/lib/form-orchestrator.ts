@@ -1,4 +1,9 @@
-import { FormControl, FormGroup } from '@angular/forms';
+import {
+  AbstractControl,
+  FormArray,
+  FormControl,
+  FormGroup,
+} from '@angular/forms';
 import { Directive, OnDestroy, signal } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { FormHandlerBase } from './base/form-handler-base';
@@ -58,14 +63,17 @@ export abstract class FormOrchestrator
     this._form.set(form);
   }
 
-  public getSubForm(key: string): FormGroup {
-    return this.form().get(key) as FormGroup;
+  public getSubForm<T extends AbstractControl = AbstractControl>(
+    key: string,
+  ): T {
+    return this.form().get(key) as T;
   }
 
   public addHandlerToRegistry<TControls extends Record<string, FormControl>>(
     handler: FormHandlerBase<TControls>,
   ) {
     this._handlerRegistry.set([...this._handlerRegistry(), handler]);
+    this.addReactiveLogic(handler.getReactiveLogic(this.form()));
   }
 
   public addReactiveLogic(subscription: Subscription) {
@@ -84,17 +92,31 @@ export abstract class FormOrchestrator
     const form = this.form();
     const registry = this.mapperRegistry();
 
+    console.log('Hydrating from model:', model, Object.entries(form.controls));
+
     Object.entries(form.controls).forEach(([key, control]) => {
       if (!(key in model)) return;
 
       const mapper = registry[key];
       const value = (model as Record<string, unknown>)[key];
 
+      if (control instanceof FormControl) {
+        const mapped = mapper ? mapper.fromModel(value) : value;
+        console.log('Form Control branch');
+        control.setValue(mapped, { emitEvent: false });
+        return;
+      }
+
+      if (control instanceof FormArray) {
+        console.log('Form Array branch');
+        return;
+      }
+
       if (control instanceof FormGroup) {
         const mapped = mapper ? mapper.fromModel(value) : value;
-
+        console.log('Form Group branch', control);
         if (isRecord(mapped)) {
-          this.hydrator.hydrate(control, mapped);
+          this.hydrator.hydrate(control, mapped, registry);
         }
       }
     });

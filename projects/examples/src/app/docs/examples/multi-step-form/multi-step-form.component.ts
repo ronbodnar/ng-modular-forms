@@ -6,6 +6,7 @@ import {
   signal,
 } from '@angular/core';
 import {
+  FormArray,
   FormControl,
   FormGroup,
   ReactiveFormsModule,
@@ -85,6 +86,15 @@ export class MultiStepFormComponent extends FormOrchestrator {
           country: new FormControl(null),
           dateOfBirth: new FormControl(null),
           newsletter: new FormControl(false),
+          array: new FormArray<
+            FormGroup<{
+              text: FormControl<string | null>;
+            }>
+          >([
+            new FormGroup({
+              text: new FormControl(''),
+            }),
+          ]),
         }),
 
         accountDetails: new FormGroup({
@@ -124,6 +134,11 @@ export class MultiStepFormComponent extends FormOrchestrator {
     };
 
     this.orchestrate(options);
+    this.hydrateFromModel({
+      personalInfo: {
+        array: [{ text: 'hey' }, { text: 'okay' }],
+      },
+    });
   }
 
   submit() {
@@ -145,15 +160,15 @@ export class MultiStepFormComponent extends FormOrchestrator {
     return [
       {
         label: 'Personal Information',
-        form: this.getSubForm('personalInfo'),
+        form: this.getSubForm<FormGroup>('personalInfo'),
       },
       {
         label: 'Account Details',
-        form: this.getSubForm('accountDetails'),
+        form: this.getSubForm<FormGroup>('accountDetails'),
       },
       {
         label: 'Preferences & Consent',
-        form: this.getSubForm('preferences'),
+        form: this.getSubForm<FormGroup>('preferences'),
       },
     ];
   });

@@ -1,5 +1,6 @@
 import { Component, OnInit, signal } from '@angular/core';
 import {
+  FormArray,
   FormControl,
   FormGroup,
   ReactiveFormsModule,
@@ -64,6 +65,11 @@ export class NativeInputsExampleComponent implements OnInit {
     textarea: new FormControl('', [Validators.maxLength(500)]),
     lookupSync: new FormControl<string | null>(null),
     lookupAsync: new FormControl<Country | null>(null),
+    array: new FormArray<
+      FormGroup<{
+        text: FormControl<string | null>;
+      }>
+    >([]),
   });
 
   rawCountries: Country[] = [
@@ -84,6 +90,16 @@ export class NativeInputsExampleComponent implements OnInit {
     value: c.code,
     label: c.name,
   }));
+
+  get arrayGroup(): FormGroup {
+    return new FormGroup({
+      text: new FormControl(''),
+    });
+  }
+
+  get arrayControl(): FormArray {
+    return this.form.get('array') as FormArray;
+  }
 
   displayCountry = (value: string | null): string => {
     if (value == null) {
@@ -162,10 +178,16 @@ export class NativeInputsExampleComponent implements OnInit {
       date: new Date(),
       time: new Date(),
       lookupSync: 'us',
-      lookupAsync: {
-        code: 'us',
-        name: 'United States',
-      },
+      lookupAsync: this.rawCountries[0],
+    });
+
+    this.arrayControl.clear();
+    ['Array value 1', 'Array value 2'].forEach((text) => {
+      this.arrayControl.push(
+        new FormGroup({
+          text: new FormControl(text),
+        }),
+      );
     });
   }
 

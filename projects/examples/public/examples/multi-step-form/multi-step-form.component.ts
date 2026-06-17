@@ -130,15 +130,15 @@ export class MultiStepFormComponent extends FormOrchestrator {
     return [
       {
         label: 'Personal Information',
-        form: this.getSubForm('personalInfo'),
+        form: this.getSubForm<FormGroup>('personalInfo'),
       },
       {
         label: 'Account Details',
-        form: this.getSubForm('accountDetails'),
+        form: this.getSubForm<FormGroup>('accountDetails'),
       },
       {
         label: 'Preferences & Consent',
-        form: this.getSubForm('preferences'),
+        form: this.getSubForm<FormGroup>('preferences'),
       },
     ];
   });

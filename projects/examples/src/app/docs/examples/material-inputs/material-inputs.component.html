@@ -37,117 +37,168 @@
   </form>
 
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-    <!-- Main form -->
-    <app-form-section title="Input Types">
-      <form [formGroup]="form">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-2">
-          <nmf-mat-text
-            formControlName="text"
-            label="Text Input"
-            placeholder="Input some text..."
-            [loading]="loading()"
-            [appearance]="appearance()"
-            [shouldLabelFloat]="floatLabel()"
-          />
+    <div class="flex flex-col gap-4">
+      <app-form-section title="Input Types">
+        <form [formGroup]="form">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-2">
+            <nmf-mat-text
+              formControlName="text"
+              label="Text Input"
+              placeholder="Input some text..."
+              autocomplete="off"
+              [loading]="loading()"
+              [appearance]="appearance()"
+              [shouldLabelFloat]="floatLabel()"
+            />
 
-          <nmf-mat-number
-            formControlName="number"
-            label="Number Input"
-            placeholder="Enter a number"
-            [loading]="loading()"
-            [appearance]="appearance()"
-            [shouldLabelFloat]="floatLabel()"
-          />
+            <nmf-mat-number
+              formControlName="number"
+              label="Number Input"
+              placeholder="Enter a number"
+              autocomplete="off"
+              [loading]="loading()"
+              [appearance]="appearance()"
+              [shouldLabelFloat]="floatLabel()"
+            />
 
-          <nmf-mat-number
-            formControlName="numberFormatted"
-            label="Number Input (formatted)"
-            placeholder="Enter a number"
-            [formatValue]="true"
-            [loading]="loading()"
-            [appearance]="appearance()"
-            [shouldLabelFloat]="floatLabel()"
-          />
+            <nmf-mat-number
+              formControlName="numberFormatted"
+              label="Number Input (formatted)"
+              placeholder="Enter a number"
+              autocomplete="off"
+              [formatValue]="true"
+              [loading]="loading()"
+              [appearance]="appearance()"
+              [shouldLabelFloat]="floatLabel()"
+            />
 
-          <nmf-mat-text
-            formControlName="password"
-            label="Password Input"
-            type="password"
-            placeholder="Enter a strong password"
-            [loading]="loading()"
-            [appearance]="appearance()"
-            [shouldLabelFloat]="floatLabel()"
-          />
+            <nmf-mat-text
+              formControlName="password"
+              label="Password Input"
+              type="password"
+              placeholder="Enter a strong password"
+              autocomplete="off"
+              [loading]="loading()"
+              [appearance]="appearance()"
+              [shouldLabelFloat]="floatLabel()"
+            />
 
-          <nmf-mat-currency
-            formControlName="currency"
-            label="Currency Input"
-            placeholder="Enter your budget"
-            [loading]="loading()"
-            [appearance]="appearance()"
-            [shouldLabelFloat]="floatLabel()"
-          />
+            <nmf-mat-currency
+              formControlName="currency"
+              label="Currency Input"
+              placeholder="Enter your budget"
+              autocomplete="off"
+              [loading]="loading()"
+              [appearance]="appearance()"
+              [shouldLabelFloat]="floatLabel()"
+            />
 
-          <nmf-mat-select
-            formControlName="select"
-            label="Select/Dropdown Input"
-            [options]="countrySelectOptions"
-            placeholder="Select an option"
-            [loading]="loading()"
-            [appearance]="appearance()"
-            [shouldLabelFloat]="floatLabel()"
-          />
+            <nmf-mat-select
+              formControlName="select"
+              label="Select/Dropdown Input"
+              placeholder="Select an option"
+              autocomplete="off"
+              [options]="countrySelectOptions"
+              [loading]="loading()"
+              [appearance]="appearance()"
+              [shouldLabelFloat]="floatLabel()"
+            />
 
-          <nmf-mat-datepicker
-            formControlName="date"
-            label="Date Input"
-            [loading]="loading()"
-            [appearance]="appearance()"
-            [shouldLabelFloat]="floatLabel()"
-          />
+            <nmf-mat-datepicker
+              formControlName="date"
+              label="Date Input"
+              autocomplete="off"
+              [loading]="loading()"
+              [appearance]="appearance()"
+              [shouldLabelFloat]="floatLabel()"
+            />
 
-          <nmf-mat-timepicker
-            formControlName="time"
-            label="Time Input"
-            [loading]="loading()"
-            [appearance]="appearance()"
-            [shouldLabelFloat]="floatLabel()"
-          />
+            <nmf-mat-timepicker
+              formControlName="time"
+              label="Time Input"
+              autocomplete="off"
+              [loading]="loading()"
+              [appearance]="appearance()"
+              [shouldLabelFloat]="floatLabel()"
+            />
 
-          <nmf-mat-lookup
-            formControlName="lookupSync"
-            label="Lookup Input"
-            placeholder="Type to look up an option..."
-            [optionsSource]="countryLookupOptions"
-            [displayWith]="displayCountry"
-            [loading]="loading()"
-            [appearance]="appearance()"
-            [shouldLabelFloat]="floatLabel()"
-          />
+            <nmf-mat-lookup
+              formControlName="lookupSync"
+              label="Lookup Input"
+              placeholder="Type to look up an option..."
+              autocomplete="off"
+              [optionsSource]="countryLookupOptions"
+              [displayWith]="displayCountry"
+              [loading]="loading()"
+              [appearance]="appearance()"
+              [shouldLabelFloat]="floatLabel()"
+            />
 
-          <nmf-mat-lookup
-            formControlName="lookupAsync"
-            label="Lookup Input (Async)"
-            placeholder="Type to look up an option..."
-            [optionsProvider]="countryProvider"
-            [displayWith]="displayCountryAsync"
-            [loading]="loading()"
-            [appearance]="appearance()"
-            [shouldLabelFloat]="floatLabel()"
-          />
+            <nmf-mat-lookup
+              formControlName="lookupAsync"
+              label="Lookup Input (Async)"
+              placeholder="Type to look up an option..."
+              autocomplete="off"
+              [optionsProvider]="countryProvider"
+              [displayWith]="displayCountryAsync"
+              [loading]="loading()"
+              [appearance]="appearance()"
+              [shouldLabelFloat]="floatLabel()"
+            />
 
-          <nmf-mat-textarea
-            formControlName="textarea"
-            label="Textarea Input"
-            placeholder="Tell us about yourself..."
-            [rows]="4"
-            [loading]="loading()"
-            [appearance]="appearance()"
-            [shouldLabelFloat]="floatLabel()"
-          />
+            <nmf-mat-textarea
+              formControlName="textarea"
+              label="Textarea Input"
+              placeholder="Tell us about yourself..."
+              autocomplete="off"
+              [rows]="4"
+              [loading]="loading()"
+              [appearance]="appearance()"
+              [shouldLabelFloat]="floatLabel()"
+            />
+          </div>
+        </form>
+      </app-form-section>
+
+      <app-form-section title="Arrays" [formGroup]="form">
+        <div class="col-start-1" formArrayName="array">
+          @for (
+            substitute of arrayControl.controls;
+            track substitute;
+            let i = $index
+          ) {
+            <div class="flex items-center gap-4" [formGroupName]="i">
+              <nmf-mat-text
+                class="grow"
+                formControlName="text"
+                placeholder="Enter some text"
+                autocompelete="off"
+                [label]="'Text ' + (i + 1)"
+                [loading]="loading()"
+                [appearance]="appearance()"
+                [shouldLabelFloat]="floatLabel()"
+              />
+
+              <button
+                class="self-start mt-3"
+                type="button"
+                (click)="arrayControl.removeAt(i)"
+              >
+                Remove
+              </button>
+            </div>
+          }
+
+          <button
+            type="button"
+            (click)="arrayControl.push(arrayGroup)"
+            [disabled]="arrayControl.length >= 5"
+          >
+            Add Item
+          </button>
         </div>
-      </form>
-    </app-form-section>
+      </app-form-section>
+    </div>
 
     <app-form-status-output [output]="form.value" [files]="files" />
   </div>

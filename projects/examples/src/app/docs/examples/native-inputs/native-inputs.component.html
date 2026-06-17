@@ -14,97 +14,143 @@
   </form>
 
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-    <app-form-section title="Input Types">
-      <form [formGroup]="form">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-2">
-          <nmf-text
-            formControlName="text"
-            label="Text Input"
-            placeholder="Input some text..."
-            [loading]="loading()"
-          />
+    <div class="flex flex-col gap-4">
+      <app-form-section title="Input Types">
+        <form [formGroup]="form">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-2">
+            <nmf-text
+              formControlName="text"
+              label="Text Input"
+              placeholder="Input some text..."
+              autocomplete="off"
+              [loading]="loading()"
+            />
 
-          <nmf-number
-            formControlName="number"
-            label="Number Input"
-            type="number"
-            placeholder="Enter a number"
-            [loading]="loading()"
-          />
+            <nmf-number
+              formControlName="number"
+              label="Number Input"
+              type="number"
+              placeholder="Enter a number"
+              autocomplete="off"
+              [loading]="loading()"
+            />
 
-          <nmf-number
-            formControlName="numberFormatted"
-            label="Number Input (formatted)"
-            type="number"
-            placeholder="Enter a number"
-            [loading]="loading()"
-            [formatValue]="true"
-          />
+            <nmf-number
+              formControlName="numberFormatted"
+              label="Number Input (formatted)"
+              type="number"
+              placeholder="Enter a number"
+              autocomplete="off"
+              [loading]="loading()"
+              [formatValue]="true"
+            />
 
-          <nmf-text
-            formControlName="password"
-            label="Password Input"
-            type="password"
-            placeholder="Enter a strong password"
-            [loading]="loading()"
-          />
-          <nmf-currency
-            formControlName="currency"
-            label="Currency Input"
-            placeholder="Enter your budget"
-            [loading]="loading()"
-          />
+            <nmf-text
+              formControlName="password"
+              label="Password Input"
+              type="password"
+              placeholder="Enter a strong password"
+              autocomplete="off"
+              [loading]="loading()"
+            />
+            <nmf-currency
+              formControlName="currency"
+              label="Currency Input"
+              placeholder="Enter your budget"
+              autocomplete="off"
+              [loading]="loading()"
+            />
 
-          <nmf-select
-            formControlName="select"
-            label="Select/Dropdown Input"
-            placeholder="Select an option"
-            [loading]="loading()"
-            [options]="countrySelectOptions"
-          />
+            <nmf-select
+              formControlName="select"
+              label="Select/Dropdown Input"
+              placeholder="Select an option"
+              autocomplete="off"
+              [loading]="loading()"
+              [options]="countrySelectOptions"
+            />
 
-          <nmf-datepicker
-            formControlName="date"
-            label="Date Input"
-            placeholder="Select a date"
-            [loading]="loading()"
-          />
+            <nmf-datepicker
+              formControlName="date"
+              label="Date Input"
+              placeholder="Select a date"
+              autocomplete="off"
+              [loading]="loading()"
+            />
 
-          <nmf-timepicker
-            formControlName="time"
-            label="Time Input"
-            placeholder="Select a time"
-            [loading]="loading()"
-          />
+            <nmf-timepicker
+              formControlName="time"
+              label="Time Input"
+              placeholder="Select a time"
+              autocomplete="off"
+              [loading]="loading()"
+            />
 
-          <nmf-lookup
-            formControlName="lookupSync"
-            label="Lookup Input"
-            placeholder="Type to look up an option..."
-            [optionsSource]="countryLookupOptions"
-            [displayWith]="displayCountry"
-            [loading]="loading()"
-          />
+            <nmf-lookup
+              formControlName="lookupSync"
+              label="Lookup Input"
+              placeholder="Type to look up an option..."
+              autocomplete="off"
+              [optionsSource]="countryLookupOptions"
+              [displayWith]="displayCountry"
+              [loading]="loading()"
+            />
 
-          <nmf-lookup
-            formControlName="lookupAsync"
-            label="Lookup Input (Async)"
-            placeholder="Type to look up an option..."
-            [optionsProvider]="countryProvider"
-            [displayWith]="displayCountryAsync"
-            [loading]="loading()"
-          />
+            <nmf-lookup
+              formControlName="lookupAsync"
+              label="Lookup Input (Async)"
+              placeholder="Type to look up an option..."
+              autocomplete="off"
+              [optionsProvider]="countryProvider"
+              [displayWith]="displayCountryAsync"
+              [loading]="loading()"
+            />
 
-          <nmf-textarea
-            formControlName="textarea"
-            label="Textarea Input"
-            placeholder="Tell us about yourself..."
-            [loading]="loading()"
-            [rows]="4"
-          />
+            <nmf-textarea
+              formControlName="textarea"
+              label="Textarea Input"
+              placeholder="Tell us about yourself..."
+              autocomplete="off"
+              [loading]="loading()"
+              [rows]="4"
+            />
+          </div>
+        </form>
+      </app-form-section>
+
+      <app-form-section title="Arrays" [formGroup]="form">
+        <div class="col-start-1" formArrayName="array">
+          @for (
+            substitute of arrayControl.controls;
+            track substitute;
+            let i = $index
+          ) {
+            <div class="flex items-center gap-4" [formGroupName]="i">
+              <nmf-text
+                class="grow"
+                formControlName="text"
+                placeholder="Enter some text"
+                autocompelete="off"
+                [label]="'Text ' + (i + 1)"
+                [loading]="loading()"
+              />
+
+              <button type="button" (click)="arrayControl.removeAt(i)">
+                Remove
+              </button>
+            </div>
+          }
+
+          <button
+            type="button"
+            (click)="arrayControl.push(arrayGroup)"
+            [disabled]="arrayControl.length >= 5"
+          >
+            Add Item
+          </button>
         </div>
-      </form>
-    </app-form-section>
+      </app-form-section>
+    </div>
 
     <app-form-status-output [output]="form.value" [files]="files" />
   </div>

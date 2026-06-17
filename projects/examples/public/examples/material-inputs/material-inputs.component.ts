@@ -15,10 +15,9 @@ import {
   MatInputTimepickerComponent,
   MatInputDatepickerComponent,
   MatInputNumberComponent,
-  LookupOption,
   MatInputLookupComponent,
 } from '@ng-modular-forms/material';
-import type { SelectOption } from '@ng-modular-forms/core';
+import type { LookupOption, SelectOption } from '@ng-modular-forms/core';
 import { Observable, of, delay } from 'rxjs';
 
 @Component({
