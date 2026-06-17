@@ -90,11 +90,7 @@ export class MultiStepFormComponent extends FormOrchestrator {
             FormGroup<{
               text: FormControl<string | null>;
             }>
-          >([
-            new FormGroup({
-              text: new FormControl(''),
-            }),
-          ]),
+          >([]),
         }),
 
         accountDetails: new FormGroup({

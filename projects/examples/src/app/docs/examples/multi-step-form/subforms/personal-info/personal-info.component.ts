@@ -66,12 +66,12 @@ import type { SelectOption } from '@ng-modular-forms/core';
 
         <div formArrayName="array">
           @for (control of array.controls; track control; let i = $index) {
-            <ng-template [formGroupName]="i">
+            <div [formGroupName]="i">
               <nmf-mat-text
                 formControlName="text"
                 [label]="'Form array ' + (i + 1)"
               />
-            </ng-template>
+            </div>
           }
         </div>
 
