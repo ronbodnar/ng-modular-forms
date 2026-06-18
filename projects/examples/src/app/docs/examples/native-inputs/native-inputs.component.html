@@ -61,15 +61,6 @@
               [loading]="loading()"
             />
 
-            <nmf-select
-              formControlName="select"
-              label="Select/Dropdown Input"
-              placeholder="Select an option"
-              autocomplete="off"
-              [loading]="loading()"
-              [options]="countrySelectOptions"
-            />
-
             <nmf-datepicker
               formControlName="date"
               label="Date Input"
@@ -84,6 +75,15 @@
               placeholder="Select a time"
               autocomplete="off"
               [loading]="loading()"
+            />
+
+            <nmf-select
+              formControlName="select"
+              label="Select/Dropdown Input"
+              placeholder="Select an option"
+              autocomplete="off"
+              [loading]="loading()"
+              [options]="countrySelectOptions"
             />
 
             <nmf-lookup

@@ -5,10 +5,40 @@ import type { MapperRegistry } from './types';
 @Injectable({ providedIn: 'root' })
 export class FormSerializer {
   toRequest<TOptions extends object = object>(
+    form: FormGroup,
+    registry?: MapperRegistry,
+    options?: TOptions,
+  ): Record<string, unknown>;
+
+  toRequest<TOptions extends object = object>(
+    form: FormArray,
+    registry?: MapperRegistry,
+    options?: TOptions,
+  ): unknown[];
+
+  toRequest<TOptions extends object = object>(
     form: FormGroup | FormArray,
     registry: MapperRegistry = {},
     options?: TOptions,
-  ): Record<string, unknown> {
+  ): Record<string, unknown> | unknown[] {
+    if (form instanceof FormArray) {
+      return form.controls.map((control) => {
+        if (control instanceof FormControl) {
+          return control.value;
+        }
+
+        if (control instanceof FormGroup) {
+          return this.toRequest(control, registry, options);
+        }
+
+        if (control instanceof FormArray) {
+          return this.toRequest(control, registry, options);
+        }
+
+        return null;
+      });
+    }
+
     const result: Record<string, unknown> = {};
 
     Object.entries(form.controls).forEach(([key, control]) => {
@@ -19,7 +49,14 @@ export class FormSerializer {
         return;
       }
 
-      if (control instanceof FormGroup || control instanceof FormArray) {
+      if (control instanceof FormGroup) {
+        result[key] = mapFn
+          ? mapFn(control.value, options)
+          : this.toRequest(control, registry, options);
+        return;
+      }
+
+      if (control instanceof FormArray) {
         result[key] = mapFn
           ? mapFn(control.value, options)
           : this.toRequest(control, registry, options);

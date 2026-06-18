@@ -1,5 +1,6 @@
 import { Component, signal } from '@angular/core';
 import {
+  FormArray,
   FormControl,
   FormGroup,
   ReactiveFormsModule,
@@ -8,13 +9,20 @@ import {
 import {
   InputCurrencyComponent,
   InputDatepickerComponent,
+  InputLookupComponent,
   InputNumberComponent,
   InputSelectComponent,
   InputTextareaComponent,
   InputTextComponent,
   InputTimepickerComponent,
 } from '@ng-modular-forms/core';
-import type { SelectOption } from '@ng-modular-forms/core';
+import type { LookupOption, SelectOption } from '@ng-modular-forms/core';
+import { Observable, of, delay } from 'rxjs';
+
+interface Country {
+  code: string;
+  name: string;
+}
 
 @Component({
   selector: 'app-native-inputs-example',
@@ -23,6 +31,7 @@ import type { SelectOption } from '@ng-modular-forms/core';
     InputTextComponent,
     InputSelectComponent,
     InputTextareaComponent,
+    InputLookupComponent,
     InputNumberComponent,
     InputCurrencyComponent,
     InputDatepickerComponent,
@@ -53,14 +62,76 @@ export class NativeInputsExampleComponent {
     select: new FormControl<string | null>(null, Validators.required),
     currency: new FormControl<number | null>(null, [Validators.min(0)]),
     textarea: new FormControl('', [Validators.maxLength(500)]),
+    lookupSync: new FormControl<string | null>(null),
+    lookupAsync: new FormControl<Country | null>(null),
+    array: new FormArray<
+      FormGroup<{
+        text: FormControl<string | null>;
+      }>
+    >([]),
   });
 
-  countries: SelectOption[] = [
-    { value: 'us', label: 'United States' },
-    { value: 'ca', label: 'Canada' },
-    { value: 'uk', label: 'United Kingdom', disabled: true },
-    { value: 'de', label: 'Germany', disabled: true },
-    { value: 'fr', label: 'France' },
-    { value: 'jp', label: 'Japan' },
+  get arrayGroup(): FormGroup {
+    return new FormGroup({
+      text: new FormControl(''),
+    });
+  }
+
+  get arrayControl(): FormArray {
+    return this.form.get('array') as FormArray;
+  }
+
+  rawCountries: Country[] = [
+    { code: 'us', name: 'United States' },
+    { code: 'ca', name: 'Canada' },
+    { code: 'uk', name: 'United Kingdom' },
+    { code: 'de', name: 'Germany' },
+    { code: 'fr', name: 'France' },
+    { code: 'jp', name: 'Japan' },
   ];
+
+  countrySelectOptions: SelectOption[] = this.rawCountries.map((c) => ({
+    value: c.code,
+    label: c.name,
+  }));
+
+  countryLookupOptions: LookupOption<string>[] = this.rawCountries.map((c) => ({
+    value: c.code,
+    label: c.name,
+  }));
+
+  displayCountry = (value: string | null): string => {
+    if (value == null) {
+      return '';
+    }
+    return (
+      this.countryLookupOptions.find((c) => c.value === value)?.label ?? ''
+    );
+  };
+
+  countryProvider = (
+    query: string | null,
+  ): Observable<LookupOption<Country>[]> => {
+    if (query == null) {
+      return of([]).pipe(delay(1000));
+    }
+
+    const countries = this.rawCountries.map((c) => ({
+      value: c,
+      label: c.name,
+    }));
+
+    return of(
+      countries.filter((o) =>
+        o.label.toLowerCase().includes(query.toLowerCase()),
+      ),
+    ).pipe(delay(1000));
+  };
+
+  displayCountryAsync = (value: Country | null): string => {
+    if (value == null) {
+      return '';
+    }
+    return value.name;
+  };
 }

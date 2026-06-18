@@ -4,10 +4,7 @@ import type { FormHandlerBase } from './base/form-handler-base';
 
 export type FormStatus = 'idle' | 'submitting' | 'error' | 'success';
 
-export type MapperRegistry = Record<
-  string,
-  FormMapperBase<unknown, unknown, unknown>
->;
+export type MapperRegistry = Record<string, FormMapperBase<unknown>>;
 
 export type FormHandlerRegistry = FormHandlerBase<
   Record<string, FormControl<unknown>>

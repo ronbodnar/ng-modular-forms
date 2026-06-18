@@ -6,7 +6,6 @@ import {
   signal,
 } from '@angular/core';
 import {
-  FormArray,
   FormControl,
   FormGroup,
   ReactiveFormsModule,
@@ -86,15 +85,6 @@ export class MultiStepFormComponent extends FormOrchestrator {
           country: new FormControl(null),
           dateOfBirth: new FormControl(null),
           newsletter: new FormControl(false),
-          array: new FormArray<
-            FormGroup<{
-              text: FormControl<string | null>;
-            }>
-          >([
-            new FormGroup({
-              text: new FormControl(''),
-            }),
-          ]),
         }),
 
         accountDetails: new FormGroup({

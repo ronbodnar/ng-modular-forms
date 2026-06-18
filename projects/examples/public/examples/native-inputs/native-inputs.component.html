@@ -57,8 +57,29 @@
       label="Select/Dropdown Input"
       placeholder="Select an option"
       [loading]="loading()"
-      [options]="countries"
+      [options]="countrySelectOptions"
     />
+
+    <nmf-lookup
+      formControlName="lookupSync"
+      label="Lookup Input"
+      placeholder="Type to look up an option..."
+      autocomplete="off"
+      [optionsSource]="countryLookupOptions"
+      [displayWith]="displayCountry"
+      [loading]="loading()"
+    />
+
+    <nmf-lookup
+      formControlName="lookupAsync"
+      label="Lookup Input (Async)"
+      placeholder="Type to look up an option..."
+      autocomplete="off"
+      [optionsProvider]="countryProvider"
+      [displayWith]="displayCountryAsync"
+      [loading]="loading()"
+    />
+
     <nmf-textarea
       formControlName="textarea"
       label="Textarea Input"

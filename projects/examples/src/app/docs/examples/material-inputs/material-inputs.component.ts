@@ -88,6 +88,16 @@ export class MaterialInputsExampleComponent implements OnInit {
     >([]),
   });
 
+  get arrayGroup(): FormGroup {
+    return new FormGroup({
+      text: new FormControl(''),
+    });
+  }
+
+  get arrayControl(): FormArray {
+    return this.form.get('array') as FormArray;
+  }
+
   rawCountries: Country[] = [
     { code: 'us', name: 'United States' },
     { code: 'ca', name: 'Canada' },
@@ -106,16 +116,6 @@ export class MaterialInputsExampleComponent implements OnInit {
     value: c.code,
     label: c.name,
   }));
-
-  get arrayGroup(): FormGroup {
-    return new FormGroup({
-      text: new FormControl(''),
-    });
-  }
-
-  get arrayControl(): FormArray {
-    return this.form.get('array') as FormArray;
-  }
 
   displayCountry = (value: string | null): string => {
     if (value == null) {

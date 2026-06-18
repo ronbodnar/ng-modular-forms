@@ -66,4 +66,38 @@
       [rows]="4"
     />
   </div>
+
+  <div class="col-start-1" formArrayName="array">
+    @for (
+      substitute of arrayControl.controls;
+      track substitute;
+      let i = $index
+    ) {
+      <div class="flex items-center gap-4" [formGroupName]="i">
+        <nmf-mat-text
+          class="grow"
+          formControlName="text"
+          placeholder="Enter some text"
+          autocompelete="off"
+          [label]="'Text ' + (i + 1)"
+        />
+
+        <button
+          class="self-start mt-3"
+          type="button"
+          (click)="arrayControl.removeAt(i)"
+        >
+          Remove
+        </button>
+      </div>
+    }
+
+    <button
+      type="button"
+      (click)="arrayControl.push(arrayGroup)"
+      [disabled]="arrayControl.length >= 5"
+    >
+      Add Item
+    </button>
+  </div>
 </form>

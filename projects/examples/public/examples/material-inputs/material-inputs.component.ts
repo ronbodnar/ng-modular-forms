@@ -4,6 +4,7 @@ import {
   FormGroup,
   FormControl,
   Validators,
+  FormArray,
 } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -61,7 +62,24 @@ export class MaterialInputsExampleComponent {
     ]),
     date: new FormControl<Date | null>(null, Validators.required),
     time: new FormControl<Date | null>(null, Validators.required),
+    lookupSync: new FormControl<string | null>(null),
+    lookupAsync: new FormControl<Country | null>(null),
+    array: new FormArray<
+      FormGroup<{
+        text: FormControl<string | null>;
+      }>
+    >([]),
   });
+
+  get arrayGroup(): FormGroup {
+    return new FormGroup({
+      text: new FormControl(''),
+    });
+  }
+
+  get arrayControl(): FormArray {
+    return this.form.get('array') as FormArray;
+  }
 
   rawCountries: Country[] = [
     { code: 'us', name: 'United States' },
