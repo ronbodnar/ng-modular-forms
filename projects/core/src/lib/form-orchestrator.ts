@@ -1,9 +1,4 @@
-import {
-  AbstractControl,
-  FormArray,
-  FormControl,
-  FormGroup,
-} from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { Directive, OnDestroy, signal } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { FormHandlerBase } from './base/form-handler-base';
@@ -92,8 +87,6 @@ export abstract class FormOrchestrator
     const form = this.form();
     const registry = this.mapperRegistry();
 
-    console.log('Hydrating from model:', model, Object.entries(form.controls));
-
     Object.entries(form.controls).forEach(([key, control]) => {
       if (!(key in model)) return;
 
@@ -102,19 +95,12 @@ export abstract class FormOrchestrator
 
       if (control instanceof FormControl) {
         const mapped = mapper ? mapper.fromModel(value) : value;
-        console.log('Form Control branch');
         control.setValue(mapped, { emitEvent: false });
-        return;
-      }
-
-      if (control instanceof FormArray) {
-        console.log('Form Array branch');
         return;
       }
 
       if (control instanceof FormGroup) {
         const mapped = mapper ? mapper.fromModel(value) : value;
-        console.log('Form Group branch', control);
         if (isRecord(mapped)) {
           this.hydrator.hydrate(control, mapped, registry);
         }

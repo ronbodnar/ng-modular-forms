@@ -38,6 +38,7 @@ describe('MaterialInputsFormComponent', () => {
         code: 'us',
         name: 'United States',
       },
+      array: [{ text: 'Array value 1' }, { text: 'Array value 2' }],
     });
   });
 });

@@ -74,12 +74,13 @@ describe('FormOrchestrator', () => {
     expect(mockHydrator.hydrate).toHaveBeenCalledWith(
       expect.any(FormGroup),
       expect.objectContaining({ foo: 'mapped' }),
+      expect.any(Object),
     );
   });
 
   it('hydrates directly when no mapper exists', () => {
     const form = new FormGroup({
-      sub: new FormGroup({ foo: new FormControl(null) }),
+      sub: new FormGroup({ foo: new FormControl('') }),
     });
 
     orchestrator.orchestrate({
@@ -95,6 +96,7 @@ describe('FormOrchestrator', () => {
     expect(mockHydrator.hydrate).toHaveBeenCalledWith(
       expect.any(FormGroup),
       expect.objectContaining({ foo: 'raw' }),
+      expect.any(Object),
     );
   });
 
