@@ -21,24 +21,28 @@ import { FormControlBase } from '../../base/form-control-base';
       [loading]="loading()"
       [errorMessage]="errorMessage()"
     >
-      <input
-        #focusable
-        type="time"
-        class="nmf-input"
-        [ngClass]="classList()"
+      <div
+        class="nmf-control-wrapper"
         [class.error]="hasErrors()"
         [class.disabled]="disabled()"
-        [id]="id()"
-        [name]="name()"
-        [step]="step()"
-        [value]="displayValue()"
-        [disabled]="disabled()"
-        [required]="isRequired()"
-        [placeholder]="placeholder()"
-        [autocomplete]="autocompleteAttr()"
-        (blur)="onTouched()"
-        (input)="onInput($event)"
-      />
+      >
+        <input
+          #focusable
+          type="time"
+          class="nmf-control"
+          [ngClass]="classList()"
+          [id]="id()"
+          [name]="name()"
+          [step]="step()"
+          [value]="displayValue()"
+          [disabled]="disabled()"
+          [required]="isRequired()"
+          [placeholder]="placeholder()"
+          [autocomplete]="autocompleteAttr()"
+          (blur)="onTouched()"
+          (input)="onInput($event)"
+        />
+      </div>
     </nmf-form-field>
   `,
 })

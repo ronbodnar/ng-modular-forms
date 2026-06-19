@@ -1,10 +1,10 @@
-import { TextBehavior } from './text.behavior';
+import { PasswordBehavior } from './password.behavior';
 
 describe('TextBehavior', () => {
-  let behavior: TextBehavior;
+  let behavior: PasswordBehavior;
 
   beforeEach(() => {
-    behavior = new TextBehavior();
+    behavior = new PasswordBehavior();
   });
 
   it('should not show password by default', () => {

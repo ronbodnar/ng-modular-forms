@@ -8,7 +8,6 @@ import {
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import {
-  InputCurrencyComponent,
   InputDatepickerComponent,
   InputLookupComponent,
   InputNumberComponent,
@@ -33,7 +32,6 @@ import { Observable, of, delay } from 'rxjs';
     InputTextareaComponent,
     InputLookupComponent,
     InputNumberComponent,
-    InputCurrencyComponent,
     InputDatepickerComponent,
     InputTimepickerComponent,
     DocsPageComponent,
@@ -61,7 +59,10 @@ export class NativeInputsExampleComponent implements OnInit {
     date: new FormControl<Date | null>(null, Validators.required),
     time: new FormControl<Date | null>(null, Validators.required),
     select: new FormControl<string | null>(null, Validators.required),
-    currency: new FormControl<number | null>(null, [Validators.min(0)]),
+    currency: new FormControl<number | null>(null, [
+      Validators.required,
+      Validators.min(0),
+    ]),
     textarea: new FormControl('', [Validators.maxLength(500)]),
     lookupSync: new FormControl<string | null>(null),
     lookupAsync: new FormControl<Country | null>(null),

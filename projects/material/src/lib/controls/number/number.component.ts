@@ -9,8 +9,8 @@ import { MatFormControlBase } from '../../base/mat-form-control-base';
 import {
   formatNumber,
   parseNumber,
-  CurrencyBehavior,
-  TextBehavior,
+  NumberBehavior,
+  PasswordBehavior,
 } from '@ng-modular-forms/core';
 import { MatButtonModule } from '@angular/material/button';
 
@@ -79,8 +79,8 @@ export class MatInputNumberComponent extends MatFormControlBase<
   string | number | null
 > {
   formatValue = input<boolean>(false);
-  behavior = new TextBehavior();
-  currencyBehavior = new CurrencyBehavior();
+  behavior = new PasswordBehavior();
+  currencyBehavior = new NumberBehavior();
 
   override writeValue(value: number | null): void {
     super.writeValue(value);

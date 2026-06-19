@@ -14,6 +14,8 @@ import { Mock } from 'vitest';
         formControlName="number"
         [formatValue]="formatValue"
         [disabledOverride]="disabled"
+        [negativeColor]="negativeColor"
+        [allowNegative]="allowNegative"
       />
     </form>
   `,
@@ -21,6 +23,8 @@ import { Mock } from 'vitest';
 class HostComponent {
   formatValue = false;
   disabled = false;
+  negativeColor: string | null = null;
+  allowNegative = true;
 
   form = new FormGroup({
     number: new FormControl<number | null>(null),
@@ -59,6 +63,40 @@ describe('InputNumberComponent', () => {
     input.dispatchEvent(new Event('input'));
 
     expect(onChange).toHaveBeenCalledWith(1234);
+  });
+
+  it('does not allow negative values when allowNegative is false', () => {
+    fixture.componentInstance.allowNegative = false;
+    fixture.detectChanges();
+
+    input.value = '-123';
+    input.dispatchEvent(new Event('input'));
+
+    fixture.detectChanges();
+
+    expect(component.displayValue()).toContain('123');
+  });
+
+  it('allows negative values when allowNegative is true', () => {
+    fixture.componentInstance.allowNegative = true;
+    fixture.detectChanges();
+
+    component.writeValue(-1234);
+
+    fixture.detectChanges();
+
+    expect(component.displayValue()).toContain('-1234');
+  });
+
+  it('applies negativeColor when value is negative', () => {
+    fixture.componentInstance.negativeColor = 'red';
+    fixture.detectChanges();
+
+    component.writeValue(-123);
+
+    fixture.detectChanges();
+
+    expect(component.textColor()).toBe('red');
   });
 
   it('does not emit when disabled', () => {

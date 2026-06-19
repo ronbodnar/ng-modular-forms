@@ -1,10 +1,10 @@
-import { CurrencyBehavior } from './currency.behavior';
+import { NumberBehavior } from './number.behavior';
 
-describe('CurrencyBehavior', () => {
-  let behavior: CurrencyBehavior;
+describe('NumberBehavior', () => {
+  let behavior: NumberBehavior;
 
   beforeEach(() => {
-    behavior = new CurrencyBehavior();
+    behavior = new NumberBehavior();
   });
 
   function createEvent(

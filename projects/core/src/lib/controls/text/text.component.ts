@@ -2,13 +2,17 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  contentChild,
   input,
+  signal,
 } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { FormControlBase } from '../../base/form-control-base';
-import { TextBehavior } from '../../behavior/text/text.behavior';
+import { PasswordBehavior } from '../../behavior/password/password.behavior';
 import { FormFieldComponent } from '../form-field/form-field.component';
+import { NmfPrefixDirective } from '../../directives/nmf-prefix.directive';
+import { NmfSuffixDirective } from '../../directives/nmf-suffix.directive';
 
 @Component({
   selector: 'nmf-text',
@@ -22,13 +26,24 @@ import { FormFieldComponent } from '../form-field/form-field.component';
       [loading]="loading()"
       [errorMessage]="errorMessage()"
     >
-      <div class="nmf-input-wrapper">
+      <div
+        class="nmf-control-wrapper"
+        [class.error]="hasErrors()"
+        [class.disabled]="disabled()"
+        [class.has-prefix]="hasPrefix()"
+        [class.has-suffix]="hasSuffix()"
+      >
+        @if (prefix() != null) {
+          <span class="nmf-prefix">
+            {{ prefix() }}
+          </span>
+        }
+        <ng-content select="[nmfPrefix]" />
+
         <input
           #focusable
-          class="nmf-input"
+          class="nmf-control"
           [ngClass]="classList()"
-          [class.error]="hasErrors()"
-          [class.disabled]="disabled()"
           [id]="id()"
           [name]="name()"
           [type]="computedType()"
@@ -46,14 +61,21 @@ import { FormFieldComponent } from '../form-field/form-field.component';
             type="button"
             class="nmf-password-toggle"
             aria-label="Toggle password visibility"
-            (click)="behavior.toggleShowPassword($event)"
+            (click)="passwordBehavior.toggleShowPassword($event)"
           >
-            @if (behavior.showPassword()) {
+            @if (passwordBehavior.showPassword()) {
               <ng-container [ngTemplateOutlet]="eyeOffIcon"></ng-container>
             } @else {
               <ng-container [ngTemplateOutlet]="eyeIcon"></ng-container>
             }
           </button>
+        } @else if (type() !== 'password') {
+          @if (suffix() != null) {
+            <span class="nmf-suffix">
+              {{ suffix() }}
+            </span>
+          }
+          <ng-content select="[nmfSuffix]" />
         }
       </div>
     </nmf-form-field>
@@ -97,22 +119,32 @@ import { FormFieldComponent } from '../form-field/form-field.component';
 export class InputTextComponent extends FormControlBase<
   string | number | null
 > {
-  type = input<
-    'text' | 'number' | 'email' | 'tel' | 'url' | 'password' | 'search'
-  >('text');
+  type = input<'text' | 'email' | 'tel' | 'url' | 'password' | 'search'>(
+    'text',
+  );
+  prefix = input<string | null>(null);
+  suffix = input<string | null>(null);
 
-  behavior = new TextBehavior();
+  displayValue = signal<string | number | null>(null);
 
-  computedType = computed(() =>
-    this.behavior.showPassword() && this.type() === 'password'
+  passwordBehavior = new PasswordBehavior();
+
+  prefixContent = contentChild(NmfPrefixDirective);
+  suffixContent = contentChild(NmfSuffixDirective);
+
+  hasPrefix = computed(() => !!this.prefix() || !!this.prefixContent());
+  hasSuffix = computed(() => !!this.suffix() || !!this.suffixContent());
+
+  readonly computedType = computed(() =>
+    this.passwordBehavior.showPassword() && this.type() === 'password'
       ? 'text'
       : this.type(),
   );
 
-  onInput(event: Event): void {
+  onInput(event: Event) {
     if (this._disabledByInput()) return;
 
-    const input = event.target as HTMLInputElement;
-    this.onChange(input.value);
+    const value = (event.target as HTMLInputElement).value ?? null;
+    this.onChange(value);
   }
 }

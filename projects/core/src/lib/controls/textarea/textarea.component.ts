@@ -16,23 +16,29 @@ import { FormFieldComponent } from '../form-field/form-field.component';
       [loading]="loading()"
       [errorMessage]="errorMessage()"
     >
-      <textarea
-        #focusable
-        class="nmf-input"
-        [ngClass]="classList()"
+      <div
+        class="nmf-control-wrapper nmf-textarea"
         [class.error]="hasErrors()"
         [class.disabled]="disabled()"
-        [id]="id()"
-        [rows]="rows()"
-        [cols]="cols()"
-        [value]="value"
-        [disabled]="disabled()"
-        [required]="isRequired()"
-        [placeholder]="placeholder()"
-        [autocomplete]="autocompleteAttr()"
-        (blur)="onTouched()"
-        (input)="onInput($event)"
-      ></textarea>
+      >
+        <textarea
+          #focusable
+          class="nmf-control"
+          [ngClass]="classList()"
+          [class.error]="hasErrors()"
+          [class.disabled]="disabled()"
+          [id]="id()"
+          [rows]="rows()"
+          [cols]="cols()"
+          [value]="value"
+          [disabled]="disabled()"
+          [required]="isRequired()"
+          [placeholder]="placeholder()"
+          [autocomplete]="autocompleteAttr()"
+          (blur)="onTouched()"
+          (input)="onInput($event)"
+        ></textarea>
+      </div>
     </nmf-form-field>
   `,
 })

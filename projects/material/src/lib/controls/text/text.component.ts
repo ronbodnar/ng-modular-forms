@@ -12,7 +12,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatFormControlBase } from '../../base/mat-form-control-base';
 import { MatButtonModule } from '@angular/material/button';
-import { TextBehavior } from '@ng-modular-forms/core';
+import { PasswordBehavior } from '@ng-modular-forms/core';
 
 type TextInputType = 'text' | 'email' | 'tel' | 'url' | 'password' | 'search';
 
@@ -94,7 +94,7 @@ type TextInputType = 'text' | 'email' | 'tel' | 'url' | 'password' | 'search';
 export class MatInputTextComponent extends MatFormControlBase<string | null> {
   type = input<TextInputType>('text');
 
-  behavior = new TextBehavior();
+  behavior = new PasswordBehavior();
 
   computedType = computed(() =>
     this.behavior.showPassword() && this.type() === 'password'

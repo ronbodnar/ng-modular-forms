@@ -22,13 +22,15 @@ export interface SelectOption {
       [loading]="loading()"
       [errorMessage]="errorMessage()"
     >
-      <div class="select-wrapper" [class.disabled]="disabled()">
+      <div
+        class="nmf-control-wrapper nmf-select"
+        [class.disabled]="disabled()"
+        [class.error]="hasErrors()"
+      >
         <select
           #focusable
-          class="nmf-input"
+          class="nmf-control"
           [ngClass]="classList()"
-          [class.error]="hasErrors()"
-          [class.disabled]="disabled()"
           [id]="id()"
           [value]="value ?? ''"
           [disabled]="disabled()"

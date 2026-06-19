@@ -31,12 +31,18 @@
       placeholder="Enter a strong password"
       [loading]="loading()"
     />
-    <nmf-currency
+
+    <!-- Can use either content projection or the prefix/suffix inputs -->
+    <nmf-number
       formControlName="currency"
       label="Currency Input"
       placeholder="Enter your budget"
+      autocomplete="off"
+      prefix="$"
       [loading]="loading()"
-    />
+      [formatValue]="true"
+      ><span nmfSuffix>USD</span></nmf-number
+    >
 
     <nmf-datepicker
       formControlName="date"

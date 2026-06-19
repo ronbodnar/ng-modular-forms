@@ -1,6 +1,6 @@
 import { signal } from '@angular/core';
 
-export class TextBehavior {
+export class PasswordBehavior {
   private _showPassword = signal<boolean>(false);
 
   showPassword = this._showPassword.asReadonly();

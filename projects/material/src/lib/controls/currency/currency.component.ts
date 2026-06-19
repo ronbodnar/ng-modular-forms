@@ -3,7 +3,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import {
-  CurrencyBehavior,
+  NumberBehavior,
   formatNumber,
   parseNumber,
 } from '@ng-modular-forms/core';
@@ -90,7 +90,7 @@ import { MatFormControlBase } from '../../base/mat-form-control-base';
 export class MatInputCurrencyComponent extends MatFormControlBase<
   number | null
 > {
-  behavior = new CurrencyBehavior();
+  behavior = new NumberBehavior();
 
   private readonly displayValue = toSignal(this.displayControl.valueChanges, {
     initialValue: this.displayControl.value,

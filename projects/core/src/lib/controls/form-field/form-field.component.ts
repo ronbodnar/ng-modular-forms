@@ -13,7 +13,7 @@ import { CommonModule } from '@angular/common';
   imports: [CommonModule, ReactiveFormsModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="nmf-field" [class.loading]="loading()">
+    <div class="nmf-field-wrapper" [class.loading]="loading()">
       @if (label()) {
         <label class="nmf-label">
           {{ label() }}
@@ -45,10 +45,10 @@ import { CommonModule } from '@angular/common';
 })
 export class FormFieldComponent {
   label = input<string>();
-  isRequired = input<boolean>();
   loading = input<boolean>();
   hint = input<string | null>();
+  isRequired = input<boolean>();
   errorMessage = input<string | null>();
 
-  hasErrors = computed(() => this.errorMessage() != null);
+  readonly hasErrors = computed(() => !!this.errorMessage());
 }

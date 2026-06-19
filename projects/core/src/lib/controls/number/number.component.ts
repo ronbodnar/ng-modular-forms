@@ -1,6 +1,8 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
+  contentChild,
   input,
   signal,
 } from '@angular/core';
@@ -8,9 +10,10 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { FormFieldComponent } from '../form-field/form-field.component';
 import { FormControlBase } from '../../base/form-control-base';
-import { TextBehavior } from '../../behavior/text/text.behavior';
-import { CurrencyBehavior } from '../../behavior/currency/currency.behavior';
+import { NumberBehavior } from '../../behavior/number/number.behavior';
 import { parseNumber, formatNumber } from '../../number-utils';
+import { NmfPrefixDirective } from '../../directives/nmf-prefix.directive';
+import { NmfSuffixDirective } from '../../directives/nmf-suffix.directive';
 
 @Component({
   selector: 'nmf-number',
@@ -24,24 +27,46 @@ import { parseNumber, formatNumber } from '../../number-utils';
       [loading]="loading()"
       [errorMessage]="errorMessage()"
     >
-      <input
-        #focusable
-        class="nmf-input"
-        [ngClass]="classList()"
+      <div
+        class="nmf-control-wrapper"
         [class.error]="hasErrors()"
         [class.disabled]="disabled()"
-        [id]="id()"
-        [name]="name()"
-        [type]="formatValue() ? 'text' : 'number'"
-        [value]="displayValue()"
-        [disabled]="disabled()"
-        [required]="isRequired()"
-        [placeholder]="placeholder()"
-        [autocomplete]="autocompleteAttr()"
-        (blur)="onTouched()"
-        (input)="onInput($event)"
-        (keydown)="handleKeyDown($event)"
-      />
+        [class.has-prefix]="hasPrefix()"
+        [class.has-suffix]="hasSuffix()"
+        [style.color]="textColor()"
+      >
+        @if (prefix() != null) {
+          <span class="nmf-prefix">
+            {{ prefix() }}
+          </span>
+        }
+        <ng-content select="[nmfPrefix]" />
+
+        <input
+          #focusable
+          class="nmf-control"
+          [style.color]="textColor()"
+          [ngClass]="classList()"
+          [id]="id()"
+          [name]="name()"
+          [type]="formatValue() ? 'text' : 'number'"
+          [value]="displayValue()"
+          [disabled]="disabled()"
+          [required]="isRequired()"
+          [placeholder]="placeholder()"
+          [autocomplete]="autocompleteAttr()"
+          (blur)="onTouched()"
+          (input)="onInput($event)"
+          (keydown)="handleKeyDown($event)"
+        />
+
+        @if (suffix() != null) {
+          <span class="nmf-suffix">
+            {{ suffix() }}
+          </span>
+        }
+        <ng-content select="[nmfSuffix]" />
+      </div>
     </nmf-form-field>
   `,
 })
@@ -49,10 +74,37 @@ export class InputNumberComponent extends FormControlBase<
   string | number | null
 > {
   formatValue = input<boolean>(false);
+  prefix = input<string | null>(null);
+  suffix = input<string | null>(null);
+  allowNegative = input<boolean>(true);
+  negativeColor = input<string | null>('#dc2626');
+
   displayValue = signal<string>('');
 
-  behavior = new TextBehavior();
-  currencyBehavior = new CurrencyBehavior();
+  numberBehavior = new NumberBehavior();
+
+  prefixContent = contentChild(NmfPrefixDirective);
+  suffixContent = contentChild(NmfSuffixDirective);
+
+  hasPrefix = computed(() => !!this.prefix() || !!this.prefixContent());
+  hasSuffix = computed(() => !!this.suffix() || !!this.suffixContent());
+
+  readonly textColor = computed(() => {
+    const value = this.displayValue();
+    if (
+      value == null ||
+      value === '' ||
+      this.negativeColor() == null ||
+      this._disabledByInput()
+    ) {
+      return 'var(--nmf-input-color)';
+    }
+
+    const parsedValue = parseNumber(value ?? 0);
+    const valid = parsedValue != null && parsedValue >= 0;
+
+    return valid ? 'var(--nmf-input-color)' : this.negativeColor();
+  });
 
   override writeValue(value: string | number | null): void {
     super.writeValue(value);
@@ -60,7 +112,7 @@ export class InputNumberComponent extends FormControlBase<
   }
 
   handleKeyDown(event: KeyboardEvent) {
-    this.currencyBehavior.blockNonDigitKey(event);
+    this.numberBehavior.blockNonDigitKey(event, this.allowNegative());
   }
 
   onInput(event: Event): void {
@@ -70,15 +122,15 @@ export class InputNumberComponent extends FormControlBase<
     const parsed = parseNumber(raw);
 
     this.updateDisplayValue(parsed);
-
     this.onChange(parsed);
   }
 
   updateDisplayValue(value: string | number | null) {
     if (this.formatValue() && value != null) {
       this.displayValue.set(formatNumber(value) ?? '');
-    } else {
-      this.displayValue.set(value != null ? String(value) : '');
+      return;
     }
+
+    this.displayValue.set(value != null ? String(value) : '');
   }
 }

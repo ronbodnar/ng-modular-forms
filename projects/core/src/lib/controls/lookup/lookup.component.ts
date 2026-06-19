@@ -31,16 +31,18 @@ import { LookupBehavior } from '../../behavior/lookup/lookup.behavior';
       [loading]="behavior.status() === 'loading' || loading()"
       [errorMessage]="errorMessage()"
     >
-      <div class="nmf-input-wrapper" [style.position]="'relative'">
-        @if ({ options: behavior.filteredOptions | async }; as stream) {
+      <div
+        class="nmf-control-wrapper"
+        [class.error]="hasErrors()"
+        [class.disabled]="disabled()"
+      >
+        @if (behavior.filteredOptions | async; as options) {
           <input
             #focusable
             type="text"
-            class="nmf-input"
+            class="nmf-control"
             [attr.list]="id + '-options'"
             [ngClass]="classList()"
-            [class.error]="hasErrors()"
-            [class.disabled]="disabled()"
             [style.cursor]="
               behavior.selectedOption() != null ? 'not-allowed' : 'text'
             "
@@ -55,17 +57,17 @@ import { LookupBehavior } from '../../behavior/lookup/lookup.behavior';
             (blur)="onFocusOut()"
             (focus)="onFocusIn()"
             (input)="onInput($event)"
-            (keydown)="onKeyDown($event, stream.options)"
+            (keydown)="onKeyDown($event, options)"
           />
 
-          @if (isOpen() && stream.options && stream.options.length > 0) {
+          @if (isOpen() && options && options.length > 0) {
             <ul
               class="nmf-options-list"
               [class.upward]="openUpwards()"
               (pointerdown)="setOptionsInteraction(true)"
               (pointerup)="setOptionsInteraction(false)"
             >
-              @for (option of stream.options; track option; let i = $index) {
+              @for (option of options; track option; let i = $index) {
                 <li
                   [class.selected]="behavior.selectedOption() == option"
                   [class.active]="activeIndex() === i"

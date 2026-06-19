@@ -7,7 +7,6 @@ import {
   Validators,
 } from '@angular/forms';
 import {
-  InputCurrencyComponent,
   InputDatepickerComponent,
   InputLookupComponent,
   InputNumberComponent,
@@ -33,7 +32,6 @@ interface Country {
     InputTextareaComponent,
     InputLookupComponent,
     InputNumberComponent,
-    InputCurrencyComponent,
     InputDatepickerComponent,
     InputTimepickerComponent,
   ],

@@ -1,5 +1,5 @@
-export class CurrencyBehavior {
-  blockNonDigitKey(event: KeyboardEvent) {
+export class NumberBehavior {
+  blockNonDigitKey(event: KeyboardEvent, allowNegative = true): void {
     const input = event.target as HTMLInputElement;
     const value = input.value;
 
@@ -41,6 +41,11 @@ export class CurrencyBehavior {
     }
 
     if (event.key === '-') {
+      if (!allowNegative) {
+        event.preventDefault();
+        return;
+      }
+
       const hasMinus = value.includes('-');
       const isAtStart = input.selectionStart === 0;
 
