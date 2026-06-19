@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup } from '@angular/forms';
 import {
-  MatInputCurrencyComponent,
+  MatInputNumberComponent,
   MatInputSelectComponent,
   MatInputTextareaComponent,
 } from '@ng-modular-forms/material';
@@ -16,7 +16,7 @@ import type { SelectOption } from '@ng-modular-forms/core';
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    MatInputCurrencyComponent,
+    MatInputNumberComponent,
     MatInputSelectComponent,
     MatInputTextareaComponent,
     FormSectionComponent,
@@ -26,11 +26,15 @@ import type { SelectOption } from '@ng-modular-forms/core';
   template: `
     <app-form-section title="Preferences & Consent" [formGroup]="form()">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <nmf-mat-currency
+        <nmf-mat-number
           formControlName="monthlyBudget"
           label="Monthly Budget"
           placeholder="Enter your budget"
-        />
+          [formatValue]="true"
+          prefix="$"
+          suffix="USD"
+        >
+        </nmf-mat-number>
 
         <nmf-mat-select
           formControlName="referralSource"

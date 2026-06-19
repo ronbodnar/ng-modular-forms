@@ -47,7 +47,13 @@ export class NumberBehavior {
       }
 
       const hasMinus = value.includes('-');
-      const isAtStart = input.selectionStart === 0;
+      const el =
+        (event.target as HTMLInputElement | null) ??
+        (event.currentTarget as HTMLInputElement | null);
+
+      const pos = el?.selectionStart != null ? el.selectionStart : value.length;
+
+      const isAtStart = pos === 0;
 
       if (hasMinus || !isAtStart) {
         event.preventDefault();

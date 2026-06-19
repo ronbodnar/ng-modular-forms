@@ -19,7 +19,6 @@ import {
   MatInputTextComponent,
   MatInputSelectComponent,
   MatInputTextareaComponent,
-  MatInputCurrencyComponent,
   MatInputTimepickerComponent,
   MatInputDatepickerComponent,
   MatInputNumberComponent,
@@ -30,7 +29,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { FormSectionComponent } from '../../ui/form-section/form-section.component';
 import { DocsPageComponent } from '../../ui/docs-page/docs-page.component';
 import { FormStatusOutputComponent } from '../../ui/form-status-output/form-status-output.component';
-import type { LookupOption, SelectOption } from '@ng-modular-forms/core';
+import { type LookupOption, type SelectOption } from '@ng-modular-forms/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
@@ -43,7 +42,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     MatInputTextComponent,
     MatInputSelectComponent,
     MatInputTextareaComponent,
-    MatInputCurrencyComponent,
     MatInputLookupComponent,
     DocsPageComponent,
     FormSectionComponent,

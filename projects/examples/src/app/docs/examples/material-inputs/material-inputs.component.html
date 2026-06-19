@@ -83,15 +83,19 @@
               [shouldLabelFloat]="floatLabel()"
             />
 
-            <nmf-mat-currency
+            <nmf-mat-number
               formControlName="currency"
               label="Currency Input"
               placeholder="Enter your budget"
               autocomplete="off"
+              [formatValue]="true"
               [loading]="loading()"
               [appearance]="appearance()"
               [shouldLabelFloat]="floatLabel()"
-            />
+            >
+              <span nmfPrefix>$</span>
+              <span nmfSuffix>USD</span>
+            </nmf-mat-number>
 
             <nmf-mat-select
               formControlName="select"

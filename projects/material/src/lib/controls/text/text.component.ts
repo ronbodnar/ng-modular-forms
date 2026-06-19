@@ -42,6 +42,13 @@ type TextInputType = 'text' | 'email' | 'tel' | 'url' | 'password' | 'search';
         <mat-label>{{ label() }}</mat-label>
       }
 
+      <div class="nmf-mat-prefix-slot">
+        @if (prefix() != null) {
+          <span>{{ prefix() }}</span>
+        }
+        <ng-content select="[nmfPrefix]"></ng-content>
+      </div>
+
       <input
         #focusable
         matInput
@@ -56,6 +63,13 @@ type TextInputType = 'text' | 'email' | 'tel' | 'url' | 'password' | 'search';
         (blur)="onTouched()"
         (input)="onInput($event)"
       />
+
+      <div class="nmf-mat-suffix-slot">
+        @if (suffix() != null) {
+          <span>{{ suffix() }}</span>
+        }
+        <ng-content select="[nmfSuffix]"></ng-content>
+      </div>
 
       @if (loading()) {
         <mat-spinner
@@ -85,14 +99,14 @@ type TextInputType = 'text' | 'email' | 'tel' | 'url' | 'password' | 'search';
         </button>
       }
 
-      <ng-content></ng-content>
-
       <mat-error>{{ errorMessage() }}</mat-error>
     </mat-form-field>
   `,
 })
 export class MatInputTextComponent extends MatFormControlBase<string | null> {
   type = input<TextInputType>('text');
+  prefix = input<string | null>(null);
+  suffix = input<string | null>(null);
 
   behavior = new PasswordBehavior();
 

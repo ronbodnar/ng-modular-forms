@@ -1,6 +1,43 @@
+.nmf-mat-field {
+  position: relative;
+  width: 100%;
+}
+
 /** Overrides **/
 .mat-mdc-select-placeholder {
   transition: none !important;
+}
+
+.mat-mdc-form-field-infix {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/** Prefix/Suffix slot styling **/
+.nmf-mat-prefix-slot,
+.nmf-mat-suffix-slot {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+  background: transparent;
+}
+
+.nmf-mat-prefix-slot {
+  order: -1;
+}
+
+.nmf-mat-suffix-slot {
+  order: 2;
+}
+
+/** Fix floating label overlap with prefix in outline mode **/
+.nmf-mat-field:has(.nmf-mat-prefix-slot > :not(:empty))
+  .mdc-floating-label:not(.mdc-floating-label--float-above) {
+  padding-left: 1rem;
+  transform: translateY(-0.65rem);
 }
 
 /** Custom Classes **/
@@ -21,6 +58,7 @@
   padding-right: 0.5rem;
   background-color: transparent;
   border: none;
+  white-space: nowrap;
 
   &:disabled {
     color: color-mix(in srgb, var(--mat-sys-on-surface) 38%, transparent);

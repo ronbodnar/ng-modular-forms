@@ -4,7 +4,6 @@
 
 export * from './lib/base/mat-form-control-base';
 
-export * from './lib/controls/currency/currency.component';
 export * from './lib/controls/datepicker/datepicker.component';
 export * from './lib/controls/number/number.component';
 export * from './lib/controls/lookup/lookup.component';

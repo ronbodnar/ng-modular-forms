@@ -77,7 +77,7 @@ export class InputNumberComponent extends FormControlBase<
   prefix = input<string | null>(null);
   suffix = input<string | null>(null);
   allowNegative = input<boolean>(true);
-  negativeColor = input<string | null>('#dc2626');
+  negativeColor = input<string | null>('var(--mat-sys-error)');
 
   displayValue = signal<string>('');
 
@@ -97,13 +97,13 @@ export class InputNumberComponent extends FormControlBase<
       this.negativeColor() == null ||
       this._disabledByInput()
     ) {
-      return 'var(--nmf-input-color)';
+      return 'inherit';
     }
 
     const parsedValue = parseNumber(value ?? 0);
     const valid = parsedValue != null && parsedValue >= 0;
 
-    return valid ? 'var(--nmf-input-color)' : this.negativeColor();
+    return valid ? 'inherit' : this.negativeColor();
   });
 
   override writeValue(value: string | number | null): void {
