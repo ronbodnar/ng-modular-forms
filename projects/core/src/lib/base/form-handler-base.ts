@@ -1,9 +1,9 @@
-import type { FormControl, FormGroup } from '@angular/forms';
+import type { AbstractControl, FormGroup } from '@angular/forms';
 import type { Observable, Subscription } from 'rxjs';
 import { getControl } from '../form-utils';
 
 export abstract class FormHandlerBase<
-  TControls extends Record<string, FormControl<unknown>>,
+  TControls extends Record<string, AbstractControl>,
 > {
   private _form!: FormGroup;
 

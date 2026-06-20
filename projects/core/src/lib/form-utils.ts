@@ -1,36 +1,30 @@
-import type { FormControl, FormGroup } from '@angular/forms';
+import type { AbstractControl, FormGroup } from '@angular/forms';
 import { parseNumber } from './number-utils';
 
-export function getControl<T = unknown>(controlName: string, form: FormGroup) {
+export function getControl<T extends AbstractControl>(
+  controlName: string,
+  form: FormGroup,
+): T {
   if (!form) {
     throw new Error(
       `Missing form instance while getting the control of "${controlName}"`,
     );
   }
 
-  const control = form.get(controlName) as FormControl<T>;
+  const control = form.get(controlName);
+
   if (!control) {
     throw new Error(`Missing control "${controlName}" in form "${form}"`);
   }
 
-  return control;
+  return control as T;
 }
 
 export function getControlValue<T = unknown>(
   controlName: string,
   form: FormGroup,
-): T | null;
-
-export function getControlValue(
-  controlName: string,
-  form: FormGroup,
-): number | null;
-
-export function getControlValue<T = unknown>(
-  controlName: string,
-  form: FormGroup,
 ): T | null {
-  const control = getControl<T>(controlName, form);
+  const control = getControl<AbstractControl>(controlName, form);
   if (!control) {
     throw new Error(`Missing control "${controlName}" in form "${form}"`);
   }
