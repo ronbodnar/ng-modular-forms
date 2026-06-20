@@ -381,12 +381,13 @@ export class ExampleComponent {
 
 All components share a consistent API and are interchangeable between Native and Material implementations without changing form logic.
 
+Prefixes / Suffixes are enabled for text and number fields, allowing number to double as a currency field.
+
 | Input Type      | Native Selector      | Material Selector     |
 |-----------------|----------------------|-----------------------|
 | Text / Password | `nmf-text`           | `nmf-mat-text`        |
 | Lookup          | `nmf-lookup`         | `nmf-mat-lookup`      |
 | Number          | `nmf-number`         | `nmf-mat-number`      |
-| Currency        | `nmf-currency`       | `nmf-mat-currency`    |
 | Date            | `nmf-datepicker`     | `nmf-mat-datepicker`  |
 | Select          | `nmf-select`         | `nmf-mat-select`      |
 | Textarea        | `nmf-textarea`       | `nmf-mat-textarea`    |

@@ -85,6 +85,22 @@ Designed for scalable, enterprise-grade Angular applications.
 
 Compatible with Angular 19–21.
 
+##  Available Input Components
+
+All components share a consistent API and are interchangeable between Native and Material implementations without changing form logic.
+
+Prefixes / Suffixes are enabled for text and number fields, allowing number to double as a currency field.
+
+| Input Type      | Selector              |
+|-----------------|-----------------------|
+| Text / Password | `nmf-mat-text`        |
+| Lookup          | `nmf-mat-lookup`      |
+| Number          | `nmf-mat-number`      |
+| Date            | `nmf-mat-datepicker`  |
+| Select          | `nmf-mat-select`      |
+| Textarea        | `nmf-mat-textarea`    |
+| Time            | `nmf-mat-timepicker`  |
+
 ## Built On
 
 - Angular Reactive Forms
