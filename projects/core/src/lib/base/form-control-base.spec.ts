@@ -23,7 +23,7 @@ import {
       (blur)="onFocusOut()"
     />
 
-    <div class="error">{{ errorMessage() }}</div>
+    <div class="error">{{ translatedErrorMessage() }}</div>
   `,
 })
 class TestControl extends FormControlBase<string | null> {}
