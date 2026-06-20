@@ -27,8 +27,8 @@ import { MatFormControlBase } from '../../base/mat-form-control-base';
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    @if (label() && detachLabel()) {
-      <label class="font-medium text-base">{{ label() }}</label>
+    @if (translatedLabel() && detachLabel()) {
+      <label class="font-medium text-base">{{ translatedLabel() }}</label>
     }
 
     <mat-form-field
@@ -36,8 +36,8 @@ import { MatFormControlBase } from '../../base/mat-form-control-base';
       [appearance]="appearance()"
       [floatLabel]="shouldLabelFloat()"
     >
-      @if (label() && !detachLabel()) {
-        <mat-label>{{ label() }}</mat-label>
+      @if (translatedLabel() && !detachLabel()) {
+        <mat-label>{{ translatedLabel() }}</mat-label>
       }
 
       <input
@@ -84,11 +84,11 @@ import { MatFormControlBase } from '../../base/mat-form-control-base';
         ></mat-spinner>
       }
 
-      @if (hint()) {
-        <mat-hint [ngClass]="hintClassList()">{{ hint() }}</mat-hint>
+      @if (translatedHint()) {
+        <mat-hint [ngClass]="hintClassList()">{{ translatedHint() }}</mat-hint>
       }
 
-      <mat-error>{{ errorMessage() }}</mat-error>
+      <mat-error>{{ translatedErrorMessage() }}</mat-error>
     </mat-form-field>
   `,
 })

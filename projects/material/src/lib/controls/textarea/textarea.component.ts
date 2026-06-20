@@ -17,8 +17,8 @@ import { MatInputModule } from '@angular/material/input';
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    @if (label() && detachLabel()) {
-      <label class="font-medium text-base">{{ label() }}</label>
+    @if (translatedLabel() && detachLabel()) {
+      <label class="font-medium text-base">{{ translatedLabel() }}</label>
     }
 
     <mat-form-field
@@ -26,8 +26,8 @@ import { MatInputModule } from '@angular/material/input';
       [appearance]="appearance()"
       [floatLabel]="shouldLabelFloat()"
     >
-      @if (label() && !detachLabel()) {
-        <mat-label>{{ label() }}</mat-label>
+      @if (translatedLabel() && !detachLabel()) {
+        <mat-label>{{ translatedLabel() }}</mat-label>
       }
 
       <textarea
@@ -37,7 +37,7 @@ import { MatInputModule } from '@angular/material/input';
         [rows]="rows()"
         [cols]="cols()"
         [required]="isRequired()"
-        [placeholder]="placeholder()"
+        [placeholder]="translatedPlaceholder()"
         [autocomplete]="autocompleteAttr()"
         [formControl]="displayControl"
         (blur)="onTouched()"
@@ -54,11 +54,11 @@ import { MatInputModule } from '@angular/material/input';
       }
 
       @if (hint()) {
-        <mat-hint [ngClass]="hintClassList()">{{ hint() }}</mat-hint>
+        <mat-hint [ngClass]="hintClassList()">{{ translatedHint() }}</mat-hint>
       }
 
       <mat-error>
-        {{ errorMessage() }}
+        {{ translatedErrorMessage() }}
       </mat-error>
     </mat-form-field>
   `,

@@ -11,3 +11,5 @@ export * from './lib/controls/select/select.component';
 export * from './lib/controls/text/text.component';
 export * from './lib/controls/textarea/textarea.component';
 export * from './lib/controls/timepicker/timepicker.component';
+
+export * from './lib/providers/mat-config.provider';

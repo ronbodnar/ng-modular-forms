@@ -25,11 +25,14 @@ import { LookupBehavior } from '../../behavior/lookup/lookup.behavior';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <nmf-form-field
-      [label]="label()"
-      [hint]="behavior.status() === 'empty' ? emptyOptionsLabel() : null"
+      [label]="translatedLabel()"
+      [hint]="
+        behavior.status() === 'empty' ? translatedEmptyOptionsLabel() : null
+      "
+      [hintClassList]="hintClassList()"
       [isRequired]="isRequired()"
       [loading]="behavior.status() === 'loading' || loading()"
-      [errorMessage]="errorMessage()"
+      [errorMessage]="translatedErrorMessage()"
     >
       <div
         class="nmf-control-wrapper"
@@ -52,7 +55,7 @@ import { LookupBehavior } from '../../behavior/lookup/lookup.behavior';
             [disabled]="disabled()"
             [required]="isRequired()"
             [readonly]="behavior.selectedOption() != null"
-            [placeholder]="placeholder()"
+            [placeholder]="translatedPlaceholder()"
             [autocomplete]="autocompleteAttr()"
             (blur)="onFocusOut()"
             (focus)="onFocusIn()"
@@ -158,6 +161,10 @@ export class InputLookupComponent<TOption>
 
   readonly isOpen = signal(false);
   readonly openUpwards = signal(false);
+
+  readonly translatedEmptyOptionsLabel = computed(() =>
+    this.translate(this.emptyOptionsLabel()),
+  );
 
   public readonly displayLabel = computed(() => {
     const selected = this.behavior.selectedOption();

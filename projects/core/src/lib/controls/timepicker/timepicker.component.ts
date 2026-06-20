@@ -16,10 +16,12 @@ import { FormControlBase } from '../../base/form-control-base';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <nmf-form-field
-      [label]="label()"
+      [label]="translatedLabel()"
       [isRequired]="isRequired()"
       [loading]="loading()"
-      [errorMessage]="errorMessage()"
+      [errorMessage]="translatedErrorMessage()"
+      [hint]="translatedHint()"
+      [hintClassList]="hintClassList()"
     >
       <div
         class="nmf-control-wrapper"
@@ -37,7 +39,7 @@ import { FormControlBase } from '../../base/form-control-base';
           [value]="displayValue()"
           [disabled]="disabled()"
           [required]="isRequired()"
-          [placeholder]="placeholder()"
+          [placeholder]="translatedPlaceholder()"
           [autocomplete]="autocompleteAttr()"
           (blur)="onTouched()"
           (input)="onInput($event)"

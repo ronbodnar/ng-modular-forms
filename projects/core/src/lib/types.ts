@@ -15,3 +15,14 @@ export interface FormOrchestratorOptions {
   mapperRegistry?: MapperRegistry;
   handlerRegistry?: FormHandlerRegistry;
 }
+
+export interface ValidationMessages {
+  required?: string;
+  minlength?: string;
+  maxlength?: string;
+  min?: string;
+  max?: string;
+  email?: string;
+  pattern?: string;
+  fallback?: string;
+}

@@ -1,4 +1,9 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  input,
+} from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { FormFieldComponent } from '../form-field/form-field.component';
@@ -17,10 +22,12 @@ export interface SelectOption {
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <nmf-form-field
-      [label]="label()"
+      [label]="translatedLabel()"
       [isRequired]="isRequired()"
       [loading]="loading()"
-      [errorMessage]="errorMessage()"
+      [errorMessage]="translatedErrorMessage()"
+      [hint]="translatedHint()"
+      [hintClassList]="hintClassList()"
     >
       <div
         class="nmf-control-wrapper nmf-select"
@@ -41,7 +48,7 @@ export interface SelectOption {
         >
           <!-- Empty option -->
           <option [value]="''" [disabled]="!allowEmptyOptionSelection()">
-            {{ emptyOptionLabel() }}
+            {{ translatedEmptyOptionLabel() }}
           </option>
 
           <!-- Options -->
@@ -61,6 +68,10 @@ export class InputSelectComponent extends FormControlBase<
   options = input<SelectOption[]>([]);
   emptyOptionLabel = input<string>('Select an option');
   allowEmptyOptionSelection = input<boolean>(false);
+
+  readonly translatedEmptyOptionLabel = computed(() =>
+    this.translate(this.emptyOptionLabel()),
+  );
 
   handleChange(event: Event): void {
     if (this._disabledByCva()) return;

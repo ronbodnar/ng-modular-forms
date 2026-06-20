@@ -21,10 +21,12 @@ import { NmfSuffixDirective } from '../../directives/nmf-suffix.directive';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <nmf-form-field
-      [label]="label()"
+      [label]="translatedLabel()"
       [isRequired]="isRequired()"
       [loading]="loading()"
-      [errorMessage]="errorMessage()"
+      [errorMessage]="translatedErrorMessage()"
+      [hint]="translatedHint()"
+      [hintClassList]="hintClassList()"
     >
       <div
         class="nmf-control-wrapper"
@@ -50,7 +52,7 @@ import { NmfSuffixDirective } from '../../directives/nmf-suffix.directive';
           [value]="value"
           [disabled]="disabled()"
           [required]="isRequired()"
-          [placeholder]="placeholder()"
+          [placeholder]="translatedPlaceholder()"
           [autocomplete]="autocompleteAttr()"
           (blur)="onTouched()"
           (input)="onInput($event)"

@@ -29,8 +29,8 @@ type TextInputType = 'text' | 'email' | 'tel' | 'url' | 'password' | 'search';
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    @if (label() && detachLabel()) {
-      <label class="font-medium text-base">{{ label() }}</label>
+    @if (translatedLabel() && detachLabel()) {
+      <label class="font-medium text-base">{{ translatedLabel() }}</label>
     }
 
     <mat-form-field
@@ -38,8 +38,8 @@ type TextInputType = 'text' | 'email' | 'tel' | 'url' | 'password' | 'search';
       [appearance]="appearance()"
       [floatLabel]="shouldLabelFloat()"
     >
-      @if (label() && !detachLabel()) {
-        <mat-label>{{ label() }}</mat-label>
+      @if (translatedLabel() && !detachLabel()) {
+        <mat-label>{{ translatedLabel() }}</mat-label>
       }
 
       <div class="nmf-mat-prefix-slot">
@@ -57,7 +57,7 @@ type TextInputType = 'text' | 'email' | 'tel' | 'url' | 'password' | 'search';
         [name]="name()"
         [type]="computedType()"
         [required]="isRequired()"
-        [placeholder]="placeholder()"
+        [placeholder]="translatedPlaceholder()"
         [autocomplete]="autocompleteAttr()"
         [formControl]="displayControl"
         (blur)="onTouched()"
@@ -81,7 +81,7 @@ type TextInputType = 'text' | 'email' | 'tel' | 'url' | 'password' | 'search';
       }
 
       @if (hint()) {
-        <mat-hint [ngClass]="hintClassList()">{{ hint() }}</mat-hint>
+        <mat-hint [ngClass]="hintClassList()">{{ translatedHint() }}</mat-hint>
       }
 
       @if (type() === 'password' && !loading()) {
@@ -99,7 +99,7 @@ type TextInputType = 'text' | 'email' | 'tel' | 'url' | 'password' | 'search';
         </button>
       }
 
-      <mat-error>{{ errorMessage() }}</mat-error>
+      <mat-error>{{ translatedErrorMessage() }}</mat-error>
     </mat-form-field>
   `,
 })

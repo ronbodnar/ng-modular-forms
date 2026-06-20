@@ -1,19 +1,51 @@
-import { Directive, input } from '@angular/core';
+import { computed, Directive, inject, input } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { FormControlBase } from '@ng-modular-forms/core';
+import { NMF_MATERIAL_CONFIG } from '../providers/mat-config.provider';
+import {
+  FloatLabelType,
+  MatFormFieldAppearance,
+} from '@angular/material/form-field';
 
 @Directive()
 export abstract class MatFormControlBase<
   TValue,
   TDisplayValue = string,
 > extends FormControlBase<TValue> {
-  detachLabel = input<boolean>(false);
+  private readonly materialConfig = inject(NMF_MATERIAL_CONFIG);
 
-  appearance = input<'outline' | 'fill'>('outline');
-  shouldLabelFloat = input<'always' | 'auto'>('auto');
+  readonly _detachLabel = input<boolean>(
+    this.materialConfig.detatchLabels ?? false,
+    {
+      alias: 'detatchLabel',
+    },
+  );
 
-  hint = input<string>();
-  hintClassList = input<string>('');
+  readonly _appearance = input<MatFormFieldAppearance>(
+    this.materialConfig.appearance ?? 'outline',
+    {
+      alias: 'appearance',
+    },
+  );
+
+  readonly _shouldLabelFloat = input<FloatLabelType>(
+    this.materialConfig.floatLabel ?? 'auto',
+    {
+      alias: 'shouldLabelFloat',
+    },
+  );
+
+  readonly detachLabel = computed(
+    () => this.materialConfig.detatchLabels ?? this._detachLabel(),
+  );
+
+  readonly appearance = computed(
+    () => this.materialConfig.appearance ?? this._appearance(),
+  );
+
+  readonly shouldLabelFloat = computed(
+    () => this.materialConfig.floatLabel ?? this._shouldLabelFloat(),
+  );
 
   // Purely a state carrier for mat-form-field, never drives value or internal state
   readonly displayControl = new FormControl<TDisplayValue | null>({

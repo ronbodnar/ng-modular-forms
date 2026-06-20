@@ -19,6 +19,7 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { merge, startWith } from 'rxjs';
+import { NMF_CONFIG } from '../providers/config.provider';
 
 type ControlValue<T> = T | null;
 
@@ -37,6 +38,8 @@ export abstract class FormControlBase<TValue> implements ControlValueAccessor {
   readonly placeholder = input<string>('');
   readonly autocompleteAttr = input<string | null>(null);
   readonly _classList = input<string | string[]>('', { alias: 'classList' });
+  readonly hint = input<string>();
+  readonly hintClassList = input<string>('');
 
   readonly classList = computed(() => {
     const classList = this._classList();
@@ -52,13 +55,14 @@ export abstract class FormControlBase<TValue> implements ControlValueAccessor {
     transform: booleanAttribute,
     alias: 'disabledOverride',
   });
-  readonly _disabledByCva = signal(false);
 
+  readonly _disabledByCva = signal(false);
   readonly cdr = inject(ChangeDetectorRef);
   readonly destroyRef = inject(DestroyRef);
   readonly ngControl = inject(NgControl, {
     optional: true,
   });
+  private readonly config = inject(NMF_CONFIG);
 
   private _focused = signal(false);
 
@@ -73,6 +77,10 @@ export abstract class FormControlBase<TValue> implements ControlValueAccessor {
   );
 
   protected readonly hasErrors = signal(false);
+
+  translatedLabel = computed(() => this.translate(this.label()));
+  translatedHint = computed(() => this.translate(this.hint()));
+  translatedPlaceholder = computed(() => this.translate(this.placeholder()));
 
   protected onChange: (value: TValue | null) => void = () => {};
   protected onTouched: () => void = () => {};
@@ -181,7 +189,7 @@ export abstract class FormControlBase<TValue> implements ControlValueAccessor {
     this.onTouched();
   }
 
-  protected errorMessage(): string | null {
+  protected translatedErrorMessage(): string | null {
     const control = this.control;
     if (control == null || !control.errors || !control.touched) return null;
 
@@ -190,34 +198,69 @@ export abstract class FormControlBase<TValue> implements ControlValueAccessor {
 
     switch (firstKey) {
       case 'required':
-        return 'This field is required';
+        return this.translate(
+          this.config.validationMessages?.required ?? 'This field is required',
+        );
 
       case 'minlength':
-        return `Minimum length is ${error.requiredLength}`;
+        return this.translate(
+          this.config.validationMessages?.minlength ??
+            'Minimum length is {requiredLength}',
+          { requiredLength: error.requiredLength },
+        );
 
       case 'maxlength':
-        return `Maximum length is ${error.requiredLength}`;
+        return this.translate(
+          this.config.validationMessages?.maxlength ??
+            'Maximum length is {requiredLength}',
+          { requiredLength: error.requiredLength },
+        );
 
       case 'min':
-        return `Minimum value is ${error.min}`;
+        return this.translate(
+          this.config.validationMessages?.min ?? 'Minimum value is {min}',
+          { min: error.min },
+        );
 
       case 'max':
-        return `Maximum value is ${error.max}`;
+        return this.translate(
+          this.config.validationMessages?.max ?? 'Maximum value is {max}',
+          { max: error.max },
+        );
 
       case 'email':
-        return 'Invalid email address';
+        return this.translate(
+          this.config.validationMessages?.email ?? 'Invalid email address',
+        );
 
       case 'pattern':
-        return 'Invalid format';
+        return this.translate(
+          this.config.validationMessages?.pattern ?? 'Invalid format',
+        );
 
       case 'custom':
         if (typeof error === 'string') {
-          return error;
+          return this.translate(error);
         }
-        return 'Invalid value';
+        return this.translate(
+          this.config.validationMessages?.fallback ?? 'Invalid value',
+        );
 
       default:
-        return 'Invalid value';
+        return this.translate(
+          this.config.validationMessages?.fallback ?? 'Invalid value',
+        );
     }
+  }
+
+  protected translate(
+    value: string | null | undefined,
+    params?: Record<string, unknown>,
+  ): string {
+    if (!value) {
+      return '';
+    }
+
+    return this.config.translate?.(value, params) ?? value;
   }
 }

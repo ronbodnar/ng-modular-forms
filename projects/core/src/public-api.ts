@@ -23,6 +23,8 @@ export * from './lib/controls/timepicker/timepicker.component';
 export * from './lib/directives/nmf-prefix.directive';
 export * from './lib/directives/nmf-suffix.directive';
 
+export * from './lib/providers/config.provider';
+
 export * from './lib/form-hydrator';
 export * from './lib/form-orchestrator';
 export * from './lib/form-serializer';

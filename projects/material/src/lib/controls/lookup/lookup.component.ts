@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   effect,
   input,
   OnDestroy,
@@ -37,8 +38,8 @@ import { toSignal } from '@angular/core/rxjs-interop';
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    @if (label() && detachLabel()) {
-      <label class="font-medium text-base">{{ label() }}</label>
+    @if (translatedLabel() && detachLabel()) {
+      <label class="font-medium text-base">{{ translatedLabel() }}</label>
     }
 
     <div class="relative">
@@ -47,8 +48,8 @@ import { toSignal } from '@angular/core/rxjs-interop';
         [appearance]="appearance()"
         [floatLabel]="shouldLabelFloat()"
       >
-        @if (label() && !detachLabel()) {
-          <mat-label>{{ label() }}</mat-label>
+        @if (translatedLabel() && !detachLabel()) {
+          <mat-label>{{ translatedLabel() }}</mat-label>
         }
 
         <input
@@ -56,13 +57,13 @@ import { toSignal } from '@angular/core/rxjs-interop';
           matInput
           type="text"
           [class.cursor-not-allowed]="behavior.selectedOption() != null"
-          [attr.aria-label]="detachLabel() ? label() : null"
+          [attr.aria-label]="detachLabel() ? translatedLabel() : null"
           [ngClass]="classList"
           [id]="id()"
           [name]="name()"
           [required]="isRequired()"
           [readonly]="behavior.selectedOption() != null"
-          [placeholder]="placeholder()"
+          [placeholder]="translatedPlaceholder()"
           [formControl]="displayControl"
           [matAutocomplete]="auto"
           (blur)="onTouched()"
@@ -79,12 +80,14 @@ import { toSignal } from '@angular/core/rxjs-interop';
         </mat-autocomplete>
 
         @if (behavior.status() === 'empty') {
-          <mat-hint>{{ emptyOptionsLabel() }}</mat-hint>
+          <mat-hint>{{ translatedEmptyOptionsLabel() }}</mat-hint>
         } @else if (hint()) {
-          <mat-hint [ngClass]="hintClassList()">{{ hint() }}</mat-hint>
+          <mat-hint [ngClass]="hintClassList()">{{
+            translatedHint()
+          }}</mat-hint>
         }
 
-        <mat-error>{{ errorMessage() }}</mat-error>
+        <mat-error>{{ translatedErrorMessage() }}</mat-error>
 
         <!-- Loading status is for lookups and async options, and loading() is for the form control itself -->
         @if (behavior.status() === 'loading' || loading()) {
@@ -160,6 +163,10 @@ export class MatInputLookupComponent<TOption>
 
   private readonly searchQuery = toSignal(
     this.displayControl.valueChanges.pipe(startWith(this.displayControl.value)),
+  );
+
+  readonly translatedEmptyOptionsLabel = computed(() =>
+    this.translate(this.emptyOptionsLabel()),
   );
 
   behavior: LookupBehavior<TOption>;

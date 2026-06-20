@@ -32,8 +32,8 @@ import { toSignal } from '@angular/core/rxjs-interop';
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    @if (label() && detachLabel()) {
-      <label class="font-medium text-base">{{ label() }}</label>
+    @if (translatedLabel() && detachLabel()) {
+      <label class="font-medium text-base">{{ translatedLabel() }}</label>
     }
 
     <mat-form-field
@@ -41,8 +41,8 @@ import { toSignal } from '@angular/core/rxjs-interop';
       [appearance]="appearance()"
       [floatLabel]="shouldLabelFloat()"
     >
-      @if (label() && !detachLabel()) {
-        <mat-label>{{ label() }}</mat-label>
+      @if (translatedLabel() && !detachLabel()) {
+        <mat-label>{{ translatedLabel() }}</mat-label>
       }
 
       <div class="nmf-mat-prefix-slot">
@@ -62,7 +62,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
         [id]="id()"
         [name]="name()"
         [required]="isRequired()"
-        [placeholder]="placeholder()"
+        [placeholder]="translatedPlaceholder()"
         [autocomplete]="autocompleteAttr()"
         [formControl]="displayControl"
         (blur)="onTouched()"
@@ -86,10 +86,10 @@ import { toSignal } from '@angular/core/rxjs-interop';
       }
 
       @if (hint()) {
-        <mat-hint [ngClass]="hintClassList()">{{ hint() }}</mat-hint>
+        <mat-hint [ngClass]="hintClassList()">{{ translatedHint() }}</mat-hint>
       }
 
-      <mat-error>{{ errorMessage() }}</mat-error>
+      <mat-error>{{ translatedErrorMessage() }}</mat-error>
     </mat-form-field>
   `,
 })

@@ -32,7 +32,7 @@ import { CommonModule } from '@angular/common';
       }
 
       @if (hint()) {
-        <p class="nmf-hint">
+        <p class="nmf-hint" [ngClass]="hintClassList()">
           {{ hint() }}
         </p>
       }
@@ -47,6 +47,7 @@ export class FormFieldComponent {
   label = input<string>();
   loading = input<boolean>();
   hint = input<string | null>();
+  hintClassList = input<string>('');
   isRequired = input<boolean>();
   errorMessage = input<string | null>();
 

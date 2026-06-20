@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   input,
   OnInit,
 } from '@angular/core';
@@ -24,8 +25,8 @@ import { SelectOption } from '@ng-modular-forms/core';
   styleUrls: ['../form-controls.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    @if (label() && detachLabel()) {
-      <label class="font-medium text-base">{{ label() }}</label>
+    @if (translatedLabel() && detachLabel()) {
+      <label class="font-medium text-base">{{ translatedLabel() }}</label>
     }
 
     <mat-form-field
@@ -33,8 +34,8 @@ import { SelectOption } from '@ng-modular-forms/core';
       [appearance]="appearance()"
       [floatLabel]="shouldLabelFloat()"
     >
-      @if (label() && !detachLabel()) {
-        <mat-label>{{ label() }}</mat-label>
+      @if (translatedLabel() && !detachLabel()) {
+        <mat-label>{{ translatedLabel() }}</mat-label>
       }
 
       <mat-select
@@ -43,13 +44,13 @@ import { SelectOption } from '@ng-modular-forms/core';
         [id]="id()"
         [panelWidth]="panelWidth()"
         [required]="isRequired()"
-        [placeholder]="emptyOptionLabel()"
+        [placeholder]="translatedEmptyOptionLabel()"
         [formControl]="displayControl"
         (blur)="onTouched()"
         (selectionChange)="onSelectionChange($event)"
       >
         <mat-option [value]="''" [disabled]="!allowEmptyOptionSelection()">
-          {{ emptyOptionLabel() }}
+          {{ translatedEmptyOptionLabel() }}
         </mat-option>
 
         <!-- All Options -->
@@ -70,10 +71,10 @@ import { SelectOption } from '@ng-modular-forms/core';
       }
 
       @if (hint()) {
-        <mat-hint [ngClass]="hintClassList()">{{ hint() }}</mat-hint>
+        <mat-hint [ngClass]="hintClassList()">{{ translatedHint() }}</mat-hint>
       }
 
-      <mat-error>{{ errorMessage() }}</mat-error>
+      <mat-error>{{ translatedErrorMessage() }}</mat-error>
     </mat-form-field>
   `,
 })
@@ -85,6 +86,10 @@ export class MatInputSelectComponent
   emptyOptionLabel = input<string>('Select an option');
   allowEmptyOptionSelection = input<boolean>(false);
   panelWidth = input<string | number | null>('auto');
+
+  readonly translatedEmptyOptionLabel = computed(() =>
+    this.translate(this.emptyOptionLabel()),
+  );
 
   onSelectionChange(event: MatSelectChange): void {
     if (this.disabled()) {
