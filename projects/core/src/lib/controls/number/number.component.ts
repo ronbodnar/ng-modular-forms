@@ -100,8 +100,8 @@ export class InputNumberComponent extends FormControlBase<
       return 'inherit';
     }
 
-    const parsedValue = parseNumber(value ?? 0);
-    const valid = parsedValue != null && parsedValue >= 0;
+    const parsed = parseNumber(value ?? 0);
+    const valid = parsed != null && parsed >= 0;
 
     return valid ? 'inherit' : this.negativeColor();
   });
@@ -118,8 +118,9 @@ export class InputNumberComponent extends FormControlBase<
   onInput(event: Event): void {
     if (this._disabledByInput()) return;
 
-    const raw = (event.target as HTMLInputElement).value;
-    const parsed = parseNumber(raw);
+    const raw = (event.target as HTMLInputElement).value ?? '';
+    const cleaned = this.numberBehavior.sanitize(raw, this.allowNegative());
+    const parsed = parseNumber(cleaned);
 
     this.updateDisplayValue(parsed);
     this.onChange(parsed);
