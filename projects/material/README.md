@@ -40,7 +40,42 @@ Add the global styles to your application's angular.json file under the styles a
 ]
 ```
 
-## Example
+## Global configuration
+Material controls can be configured globally using `provideNmfMaterialConfig`.
+
+This configuration only affects visual behavior of Material components.
+
+### Available options
+  
+```typescript
+appearance: MatFormFieldAppearance;
+floatLabel: FloatLabelType;
+detatchLabels: boolean;
+hideRequiredMarker: boolean;
+```
+
+### Example
+```typescript
+import { ApplicationConfig } from '@angular/core';
+import { provideNmfMaterialConfig } from '@ng-modular-forms/material';
+
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideNmfMaterialConfig({
+      floatLabel: 'always',
+      appearance: 'outline',
+    }),
+  ],
+};
+```
+
+### Translation
+
+Translation is handled globally by <a href="https://www.npmjs.com/package/@ng-modular-forms/core">@ng-modular-forms/core</a>. This includes validation messages.
+
+Material components automatically use the core configuration.
+
+## Usage Example
 
 ```typescript
 import { MatInputTextComponent } from "@ng-modular-forms/material";
@@ -62,28 +97,6 @@ export class ExampleComponent {
   });
 }
 ```
-
-## Why ng-modular-forms?
-
-Angular Reactive Forms often become difficult to maintain as applications grow:
-
-- Reactive subscriptions spread across components
-- Cross-field behavior becomes tightly coupled
-- API mapping logic becomes duplicated
-- Large forms become difficult to test and reuse
-
-`@ng-modular-forms/core` introduces a modular architecture that separates:
-
-- form orchestration
-- reactive behavior
-- API mapping
-- reusable form controls
-
-Built on top of Angular Reactive Forms — not a replacement.
-
-Designed for scalable, enterprise-grade Angular applications.
-
-Compatible with Angular 19–21.
 
 ##  Available Input Components
 

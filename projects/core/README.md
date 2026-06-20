@@ -67,6 +67,52 @@ Add the corresponding styles to your application's angular.json file under the s
 ]
 ```
 
+## Global configuration
+`@ng-modular-forms/core` provides a single global configuration system via `provideNmfConfig`.
+
+This configuration is shared across all packages (core + material) and is optional.
+
+If not provided, sensible defaults are used.
+
+### Available options
+  
+```typescript
+translate?: (
+  key: string,
+  params?: Record<string, unknown>
+) => string;
+
+validationMessages?: ValidationMessages;
+```
+
+### Example
+```typescript
+import { ApplicationConfig, inject } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
+import { provideNmfConfig } from '@ng-modular-forms/core';
+
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideNmfConfig({
+      translate: (key, params) =>
+        inject(TranslateService).instant(key, params),
+
+      validationMessages: {
+        email: 'Please enter a valid e-mail address',
+      },
+    }),
+  ],
+};
+```
+
+### Notes
+
+- `provideNmfConfig` is optional
+- If omitted, the library uses built-in defaults
+- Translation is handled entirely at the core level
+- Material components automatically consume this configuration
+- There is no separate translation configuration for Material
+
 ## Core Primitives
 
 ### FormOrchestrator
