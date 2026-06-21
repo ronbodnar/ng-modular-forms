@@ -93,9 +93,7 @@ export abstract class FormControlBase<TValue> implements ControlValueAccessor {
     return this.ngControl?.control as FormControl<ControlValue<TValue>>;
   }
 
-  get focused(): boolean {
-    return this._focused();
-  }
+  protected focused = this._focused.asReadonly();
 
   constructor() {
     if (this.ngControl) {
@@ -163,6 +161,7 @@ export abstract class FormControlBase<TValue> implements ControlValueAccessor {
     else if ('focus' in target && typeof target.focus === 'function') {
       target.focus();
     }
+    this._focused.set(true);
   }
 
   blur(): void {
@@ -174,10 +173,12 @@ export abstract class FormControlBase<TValue> implements ControlValueAccessor {
     } else if ('blur' in target && typeof target.blur === 'function') {
       target.blur();
     }
+    this._focused.set(false);
+    this.onTouched();
   }
 
   onFocusIn(): void {
-    if (this.focused) {
+    if (this.focused()) {
       return;
     }
     this._focused.set(true);

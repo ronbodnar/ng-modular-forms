@@ -7,7 +7,6 @@
 @use "custom-theme" as theme;
 
 :root {
-  @include mat.form-field-density(0);
   @include mat.tabs-overrides(
     (
       label-text-size: 0.75rem,
@@ -43,10 +42,6 @@ html.dark {
       density: 0,
     )
   );
-}
-
-.mat-form-field-appearance-outline {
-  @include mat.form-field-density(-3);
 }
 
 .white-spinner {

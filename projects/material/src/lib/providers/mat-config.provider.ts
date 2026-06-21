@@ -8,14 +8,14 @@ import {
 export interface NmfMaterialConfig {
   appearance?: MatFormFieldAppearance;
   floatLabel?: FloatLabelType;
-  detatchLabels?: boolean;
+  detachLabels?: boolean;
   hideRequiredMarker?: boolean;
 }
 
 const MATERIAL_DEFAULTS: Required<NmfMaterialConfig> = {
   appearance: 'outline',
   floatLabel: 'auto',
-  detatchLabels: false,
+  detachLabels: false,
   hideRequiredMarker: false,
 };
 

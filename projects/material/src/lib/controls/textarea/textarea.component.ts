@@ -18,7 +18,7 @@ import { MatInputModule } from '@angular/material/input';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @if (translatedLabel() && detachLabel()) {
-      <label class="nmf-mat-label-detatched">{{ translatedLabel() }}</label>
+      <label class="nmf-mat-label-detached">{{ translatedLabel() }}</label>
     }
 
     <mat-form-field

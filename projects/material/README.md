@@ -50,7 +50,7 @@ This configuration only affects visual behavior of Material components.
 ```typescript
 appearance: MatFormFieldAppearance;
 floatLabel: FloatLabelType;
-detatchLabels: boolean;
+detachLabels: boolean;
 hideRequiredMarker: boolean;
 ```
 

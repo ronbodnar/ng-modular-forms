@@ -34,7 +34,7 @@ import { SelectOption } from '@ng-modular-forms/core';
   ],
   template: `
     @if (translatedLabel() && detachLabel()) {
-      <label class="nmf-mat-label-detatched">{{ translatedLabel() }}</label>
+      <label class="nmf-mat-label-detached">{{ translatedLabel() }}</label>
     }
 
     <mat-form-field

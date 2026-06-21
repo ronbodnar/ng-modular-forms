@@ -15,9 +15,9 @@ export abstract class MatFormControlBase<
   private readonly materialConfig = inject(NMF_MATERIAL_CONFIG);
 
   readonly _detachLabel = input<boolean>(
-    this.materialConfig.detatchLabels ?? false,
+    this.materialConfig.detachLabels ?? false,
     {
-      alias: 'detatchLabel',
+      alias: 'detachLabel',
     },
   );
 
@@ -36,15 +36,15 @@ export abstract class MatFormControlBase<
   );
 
   readonly detachLabel = computed(
-    () => this.materialConfig.detatchLabels ?? this._detachLabel(),
+    () => this._detachLabel() ?? this.materialConfig.detachLabels,
   );
 
   readonly appearance = computed(
-    () => this.materialConfig.appearance ?? this._appearance(),
+    () => this._appearance() ?? this.materialConfig.appearance,
   );
 
   readonly shouldLabelFloat = computed(
-    () => this.materialConfig.floatLabel ?? this._shouldLabelFloat(),
+    () => this._shouldLabelFloat() ?? this.materialConfig.floatLabel,
   );
 
   // Purely a state carrier for mat-form-field, never drives value or internal state

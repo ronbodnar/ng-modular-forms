@@ -30,7 +30,7 @@ type TextInputType = 'text' | 'email' | 'tel' | 'url' | 'password' | 'search';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @if (translatedLabel() && detachLabel()) {
-      <label class="nmf-mat-label-detatched">{{ translatedLabel() }}</label>
+      <label class="nmf-mat-label-detached">{{ translatedLabel() }}</label>
     }
 
     <mat-form-field
@@ -42,12 +42,14 @@ type TextInputType = 'text' | 'email' | 'tel' | 'url' | 'password' | 'search';
         <mat-label>{{ translatedLabel() }}</mat-label>
       }
 
-      <div class="nmf-mat-prefix-slot">
-        @if (prefix() != null) {
-          <span>{{ prefix() }}</span>
-        }
-        <ng-content select="[nmfPrefix]"></ng-content>
-      </div>
+      @if (focused()) {
+        <div class="nmf-mat-prefix-slot">
+          @if (prefix() != null) {
+            <span>{{ prefix() }}</span>
+          }
+          <ng-content select="[nmfPrefix]"></ng-content>
+        </div>
+      }
 
       <input
         #focusable
@@ -60,16 +62,19 @@ type TextInputType = 'text' | 'email' | 'tel' | 'url' | 'password' | 'search';
         [placeholder]="translatedPlaceholder()"
         [autocomplete]="autocompleteAttr()"
         [formControl]="displayControl"
-        (blur)="onTouched()"
+        (blur)="blur()"
+        (focus)="focus()"
         (input)="onInput($event)"
       />
 
-      <div class="nmf-mat-suffix-slot">
-        @if (suffix() != null) {
-          <span>{{ suffix() }}</span>
-        }
-        <ng-content select="[nmfSuffix]"></ng-content>
-      </div>
+      @if (focused()) {
+        <div class="nmf-mat-suffix-slot">
+          @if (suffix() != null) {
+            <span>{{ suffix() }}</span>
+          }
+          <ng-content select="[nmfSuffix]"></ng-content>
+        </div>
+      }
 
       @if (loading()) {
         <mat-spinner
