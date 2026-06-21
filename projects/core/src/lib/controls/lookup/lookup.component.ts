@@ -206,7 +206,11 @@ export class InputLookupComponent<TOption>
     super.ngOnInit();
 
     this.behavior.setupFilteredOptions(this._searchQuery$, this._searchQuery);
-    this.behavior.setupOptionsProvider(this._searchQuery$, 500, 2);
+    this.behavior.setupOptionsProvider(
+      this._searchQuery$,
+      this.debounceTime(),
+      this.searchThreshold(),
+    );
   }
 
   override writeValue(value: TOption | null): void {
