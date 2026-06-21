@@ -23,13 +23,22 @@ import { SelectOption } from '@ng-modular-forms/core';
     MatSelectModule,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  styles: [
+    `
+      :host {
+        display: block;
+        flex-basis: 160px; /* Default baseline  */
+        flex-shrink: 1; /* Allows size changes by the parent */
+      }
+    `,
+  ],
   template: `
     @if (translatedLabel() && detachLabel()) {
-      <label class="font-medium text-base">{{ translatedLabel() }}</label>
+      <label class="nmf-mat-label-detatched">{{ translatedLabel() }}</label>
     }
 
     <mat-form-field
-      class="w-full"
+      class="nmf-mat-field"
       [appearance]="appearance()"
       [floatLabel]="shouldLabelFloat()"
     >

@@ -28,11 +28,11 @@ import { MatFormControlBase } from '../../base/mat-form-control-base';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @if (translatedLabel() && detachLabel()) {
-      <label class="font-medium text-base">{{ translatedLabel() }}</label>
+      <label class="nmf-mat-label-detatched">{{ translatedLabel() }}</label>
     }
 
     <mat-form-field
-      class="w-full"
+      class="nmf-mat-field"
       [appearance]="appearance()"
       [floatLabel]="shouldLabelFloat()"
     >

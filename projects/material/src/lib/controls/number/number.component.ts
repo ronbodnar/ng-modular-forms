@@ -33,7 +33,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @if (translatedLabel() && detachLabel()) {
-      <label class="font-medium text-base">{{ translatedLabel() }}</label>
+      <label class="nmf-mat-label-detatched">{{ translatedLabel() }}</label>
     }
 
     <mat-form-field
