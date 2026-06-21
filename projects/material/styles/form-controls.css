@@ -1,17 +1,22 @@
 .nmf-mat-field {
   position: relative;
   width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.nmf-mat-field mat-form-field,
+.nmf-mat-field .mat-mdc-text-field-wrapper,
+.nmf-mat-field .mat-mdc-form-field-flex,
+.nmf-mat-field .mat-mdc-form-field-infix {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box;
 }
 
 /** Overrides **/
 .mat-mdc-select-placeholder {
   transition: none !important;
-}
-
-.mat-mdc-form-field-infix {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
 }
 
 /** Prefix/Suffix slot styling **/
@@ -33,11 +38,17 @@
   order: 2;
 }
 
-/** Fix floating label overlap with prefix in outline mode **/
+/** Fix floating label overlap with prefixes/suffixes in outline mode **/
 .nmf-mat-field:has(.nmf-mat-prefix-slot > :not(:empty))
   .mdc-floating-label:not(.mdc-floating-label--float-above) {
   padding-left: 1rem;
   transform: translateY(-0.65rem);
+}
+
+.nmf-mat-field .mat-mdc-form-field-infix {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 /** Custom Classes **/
