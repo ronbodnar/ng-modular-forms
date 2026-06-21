@@ -93,14 +93,22 @@ import { provideNmfConfig } from '@ng-modular-forms/core';
 
 export const appConfig: ApplicationConfig = {
   providers: [
+    // Simple config
     provideNmfConfig({
-      translate: (key, params) =>
-        inject(TranslateService).instant(key, params),
-
       validationMessages: {
-        email: 'Please enter a valid e-mail address',
+        email: 'Invalid email',
       },
-    }),
+    })
+
+    //DI-based config
+    provideNmfConfigFactory(() => {
+      const translate = inject(TranslateService);
+
+      return {
+        translate: (k, p) => translate.instant(k, p),
+        validationMessages: {},
+      };
+    });
   ],
 };
 ```

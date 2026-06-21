@@ -49,3 +49,10 @@ export function provideNmfConfig(config: Partial<NmfConfig>): Provider[] {
     },
   ];
 }
+
+export function provideNmfConfigFactory(factory: () => NmfConfig): Provider {
+  return {
+    provide: NMF_CONFIG,
+    useFactory: factory,
+  };
+}
