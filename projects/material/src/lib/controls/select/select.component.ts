@@ -22,7 +22,6 @@ import { SelectOption } from '@ng-modular-forms/core';
     ReactiveFormsModule,
     MatSelectModule,
   ],
-  styleUrls: ['../form-controls.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @if (translatedLabel() && detachLabel()) {
