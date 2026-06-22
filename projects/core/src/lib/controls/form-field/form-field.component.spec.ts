@@ -64,15 +64,15 @@ describe('FormFieldComponent', () => {
     fixture.componentInstance.errorMessage = 'Something went wrong';
     fixture.detectChanges();
 
-    const error = fixture.debugElement.query(By.css('.nmf-hint.error'));
+    const error = fixture.debugElement.query(By.css('.nmf-hint-label.error'));
     expect(error.nativeElement.textContent).toContain('Something went wrong');
   });
 
   it('renders empty error paragraph when no error message', () => {
-    const hint = fixture.debugElement.query(By.css('.nmf-hint'));
-    expect(hint.nativeElement.textContent.trim()).toBe('');
+    const hintLabel = fixture.debugElement.query(By.css('.nmf-hint-label'));
+    expect(hintLabel.nativeElement.textContent.trim()).toBe('');
 
-    const error = fixture.debugElement.query(By.css('.nmf-hint.error'));
+    const error = fixture.debugElement.query(By.css('.nmf-hint-label.error'));
     expect(error).toBeNull();
   });
 

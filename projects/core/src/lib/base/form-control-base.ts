@@ -38,7 +38,7 @@ export abstract class FormControlBase<TValue> implements ControlValueAccessor {
   readonly placeholder = input<string>('');
   readonly autocompleteAttr = input<string | null>(null);
   readonly _classList = input<string | string[]>('', { alias: 'classList' });
-  readonly hint = input<string>();
+  readonly hintLabel = input<string>();
   readonly hintClassList = input<string>('');
 
   readonly classList = computed(() => {
@@ -79,13 +79,13 @@ export abstract class FormControlBase<TValue> implements ControlValueAccessor {
   protected readonly hasErrors = signal(false);
 
   translatedLabel = computed(() => this.translate(this.label()));
-  translatedHint = computed(() => this.translate(this.hint()));
+  translatedHintLabel = computed(() => this.translate(this.hintLabel()));
   translatedPlaceholder = computed(() => this.translate(this.placeholder()));
 
   protected onChange: (value: TValue | null) => void = () => {};
   protected onTouched: () => void = () => {};
 
-  protected value = this._value.asReadonly();
+  readonly value = this._value.asReadonly();
 
   get control(): FormControl<ControlValue<TValue>> {
     return this.ngControl?.control as FormControl<ControlValue<TValue>>;

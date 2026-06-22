@@ -25,7 +25,7 @@ import { NmfSuffixDirective } from '../../directives/nmf-suffix.directive';
       [isRequired]="isRequired()"
       [loading]="loading()"
       [errorMessage]="translatedErrorMessage()"
-      [hint]="translatedHint()"
+      [hintLabel]="translatedHintLabel()"
       [hintClassList]="hintClassList()"
     >
       <div
@@ -49,7 +49,7 @@ import { NmfSuffixDirective } from '../../directives/nmf-suffix.directive';
           [id]="id()"
           [name]="name()"
           [type]="computedType()"
-          [value]="value"
+          [value]="value()"
           [disabled]="disabled()"
           [required]="isRequired()"
           [placeholder]="translatedPlaceholder()"

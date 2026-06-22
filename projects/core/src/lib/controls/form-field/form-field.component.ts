@@ -31,13 +31,13 @@ import { CommonModule } from '@angular/common';
         </div>
       }
 
-      @if (hint()) {
-        <p class="nmf-hint" [ngClass]="hintClassList()">
-          {{ hint() }}
+      @if (hintLabel()) {
+        <p class="nmf-hint-label" [ngClass]="hintClassList()">
+          {{ hintLabel() }}
         </p>
       }
 
-      <p class="nmf-hint" [class.error]="hasErrors()">
+      <p class="nmf-hint-label" [class.error]="hasErrors()">
         {{ errorMessage() }}
       </p>
     </div>
@@ -46,7 +46,7 @@ import { CommonModule } from '@angular/common';
 export class FormFieldComponent {
   label = input<string>();
   loading = input<boolean>();
-  hint = input<string | null>();
+  hintLabel = input<string | null>();
   hintClassList = input<string>('');
   isRequired = input<boolean>();
   errorMessage = input<string | null>();

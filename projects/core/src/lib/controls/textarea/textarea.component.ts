@@ -15,7 +15,7 @@ import { FormFieldComponent } from '../form-field/form-field.component';
       [isRequired]="isRequired()"
       [loading]="loading()"
       [errorMessage]="translatedErrorMessage()"
-      [hint]="translatedHint()"
+      [hintLabel]="translatedHintLabel()"
       [hintClassList]="hintClassList()"
     >
       <div
@@ -32,7 +32,7 @@ import { FormFieldComponent } from '../form-field/form-field.component';
           [id]="id()"
           [rows]="rows()"
           [cols]="cols()"
-          [value]="value"
+          [value]="value()"
           [disabled]="disabled()"
           [required]="isRequired()"
           [placeholder]="translatedPlaceholder()"

@@ -253,8 +253,8 @@ select.nmf-control {
   background-color: var(--nmf-lookup-hover-background-color);
 }
 
-/** Hint & loading **/
-.nmf-hint {
+/** Hint  & loading **/
+.nmf-hint-label {
   font-size: calc(var(--nmf-font-size) * 0.9);
 
   height: 16px;
@@ -265,7 +265,7 @@ select.nmf-control {
   min-height: 16px;
 }
 
-.nmf-hint.error {
+.nmf-hint-label.error {
   color: var(--nmf-input-error-color);
 }
 

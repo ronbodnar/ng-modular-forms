@@ -26,7 +26,7 @@ export interface SelectOption {
       [isRequired]="isRequired()"
       [loading]="loading()"
       [errorMessage]="translatedErrorMessage()"
-      [hint]="translatedHint()"
+      [hintLabel]="translatedHintLabel()"
       [hintClassList]="hintClassList()"
     >
       <div
@@ -39,7 +39,7 @@ export interface SelectOption {
           class="nmf-control"
           [ngClass]="classList()"
           [id]="id()"
-          [value]="value ?? ''"
+          [value]="value() ?? ''"
           [disabled]="disabled()"
           [required]="isRequired()"
           [autocomplete]="autocompleteAttr()"

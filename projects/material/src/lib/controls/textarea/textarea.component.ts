@@ -25,6 +25,7 @@ import { MatInputModule } from '@angular/material/input';
       class="nmf-mat-field"
       [appearance]="appearance()"
       [floatLabel]="shouldLabelFloat()"
+      [hideRequiredMarker]="hideRequiredMarker()"
     >
       @if (translatedLabel() && !detachLabel()) {
         <mat-label>{{ translatedLabel() }}</mat-label>
@@ -54,8 +55,10 @@ import { MatInputModule } from '@angular/material/input';
         ></mat-spinner>
       }
 
-      @if (hint()) {
-        <mat-hint [ngClass]="hintClassList()">{{ translatedHint() }}</mat-hint>
+      @if (translatedHintLabel()) {
+        <mat-hint [ngClass]="hintClassList()">{{
+          translatedHintLabel()
+        }}</mat-hint>
       }
 
       <mat-error>

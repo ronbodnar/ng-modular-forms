@@ -37,6 +37,7 @@ type TextInputType = 'text' | 'email' | 'tel' | 'url' | 'password' | 'search';
       class="nmf-mat-field"
       [appearance]="appearance()"
       [floatLabel]="shouldLabelFloat()"
+      [hideRequiredMarker]="hideRequiredMarker()"
     >
       @if (translatedLabel() && !detachLabel()) {
         <mat-label>{{ translatedLabel() }}</mat-label>
@@ -85,8 +86,10 @@ type TextInputType = 'text' | 'email' | 'tel' | 'url' | 'password' | 'search';
         ></mat-spinner>
       }
 
-      @if (hint()) {
-        <mat-hint [ngClass]="hintClassList()">{{ translatedHint() }}</mat-hint>
+      @if (translatedHintLabel()) {
+        <mat-hint [ngClass]="hintClassList()">{{
+          translatedHintLabel()
+        }}</mat-hint>
       }
 
       @if (type() === 'password' && !loading()) {

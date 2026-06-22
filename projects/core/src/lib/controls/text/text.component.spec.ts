@@ -50,7 +50,7 @@ describe('InputTextComponent', () => {
 
     fixture.detectChanges();
 
-    const error = fixture.nativeElement.querySelector('.nmf-hint.error');
+    const error = fixture.nativeElement.querySelector('.nmf-hint-label.error');
     expect(error?.textContent.trim()).toBe('This field is required');
   });
 
@@ -80,7 +80,7 @@ describe('InputTextComponent', () => {
       By.directive(InputTextComponent),
     ).componentInstance;
 
-    expect(component.value).toBe('hello');
+    expect(component.value()).toBe('hello');
   });
 
   it('updates form control when user types', () => {

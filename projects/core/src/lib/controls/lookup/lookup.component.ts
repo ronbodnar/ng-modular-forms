@@ -26,7 +26,7 @@ import { LookupBehavior } from '../../behavior/lookup/lookup.behavior';
   template: `
     <nmf-form-field
       [label]="translatedLabel()"
-      [hint]="
+      [hintLabel]="
         behavior.status() === 'empty' ? translatedEmptyOptionsLabel() : null
       "
       [hintClassList]="hintClassList()"
@@ -136,7 +136,7 @@ export class InputLookupComponent<TOption>
   compareWith = input<(a: TOption, b: TOption) => boolean>();
 
   /*
-   * The provided hint will be displayed when asynchronous lookup is empty.
+   * The provided hint label will be displayed when asynchronous lookup is empty.
    */
   emptyOptionsLabel = input<string>('No results found');
 

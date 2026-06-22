@@ -46,6 +46,7 @@ import { LookupBehavior, LookupOption } from '@ng-modular-forms/core';
         class="nmf-mat-field"
         [appearance]="appearance()"
         [floatLabel]="shouldLabelFloat()"
+        [hideRequiredMarker]="hideRequiredMarker()"
       >
         @if (translatedLabel() && !detachLabel()) {
           <mat-label>{{ translatedLabel() }}</mat-label>
@@ -81,9 +82,9 @@ import { LookupBehavior, LookupOption } from '@ng-modular-forms/core';
 
         @if (behavior.status() === 'empty') {
           <mat-hint>{{ translatedEmptyOptionsLabel() }}</mat-hint>
-        } @else if (hint()) {
+        } @else if (translatedHintLabel()) {
           <mat-hint [ngClass]="hintClassList()">{{
-            translatedHint()
+            translatedHintLabel()
           }}</mat-hint>
         }
 

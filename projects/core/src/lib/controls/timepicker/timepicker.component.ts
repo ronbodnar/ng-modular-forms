@@ -20,7 +20,7 @@ import { FormControlBase } from '../../base/form-control-base';
       [isRequired]="isRequired()"
       [loading]="loading()"
       [errorMessage]="translatedErrorMessage()"
-      [hint]="translatedHint()"
+      [hintLabel]="translatedHintLabel()"
       [hintClassList]="hintClassList()"
     >
       <div

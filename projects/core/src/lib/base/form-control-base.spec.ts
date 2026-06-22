@@ -108,7 +108,7 @@ describe('FormControlBase', () => {
       By.directive(TestControl),
     ).componentInstance;
 
-    expect(component.value).toBe('hello');
+    expect(component.value()).toBe('hello');
   });
 
   it('shows error only when touched + invalid', () => {
