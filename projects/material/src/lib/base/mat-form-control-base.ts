@@ -4,16 +4,20 @@ import { FormControlBase } from '@ng-modular-forms/core';
 import { NMF_MATERIAL_CONFIG } from '../providers/mat-config.provider';
 import {
   FloatLabelType,
+  MAT_FORM_FIELD_DEFAULT_OPTIONS,
   MatFormFieldAppearance,
 } from '@angular/material/form-field';
 import { toSignal } from '@angular/core/rxjs-interop';
 
-@Directive()
+@Directive({})
 export abstract class MatFormControlBase<
   TValue,
   TDisplayValue = string,
 > extends FormControlBase<TValue> {
   private readonly materialConfig = inject(NMF_MATERIAL_CONFIG);
+  private readonly materialDefaults = inject(MAT_FORM_FIELD_DEFAULT_OPTIONS, {
+    optional: true,
+  });
 
   readonly _detachLabel = input<boolean>(
     this.materialConfig.detachLabels ?? false,
@@ -23,16 +27,29 @@ export abstract class MatFormControlBase<
   );
 
   readonly _appearance = input<MatFormFieldAppearance>(
-    this.materialConfig.appearance ?? 'outline',
+    this.materialConfig.appearance ??
+      this.materialDefaults?.appearance ??
+      'outline',
     {
       alias: 'appearance',
     },
   );
 
   readonly _shouldLabelFloat = input<FloatLabelType>(
-    this.materialConfig.floatLabel ?? 'auto',
+    this.materialConfig.floatLabel ??
+      this.materialDefaults?.floatLabel ??
+      'auto',
     {
       alias: 'shouldLabelFloat',
+    },
+  );
+
+  readonly _hideRequiredMarker = input<boolean>(
+    this.materialConfig.hideRequiredMarker ??
+      this.materialDefaults?.hideRequiredMarker ??
+      false,
+    {
+      alias: 'hideRequiredMarker',
     },
   );
 
@@ -48,6 +65,16 @@ export abstract class MatFormControlBase<
     () => this._shouldLabelFloat() ?? this.materialConfig.floatLabel,
   );
 
+  readonly hideRequiredMarker = computed(
+    () =>
+      this._hideRequiredMarker() ??
+      this.materialConfig.hideRequiredMarker ??
+      false,
+  );
+
+  /*
+   * Slots are prefix and suffix elements. They should only be shown under these conditions.
+   */
   readonly showSlots = computed(() => this.focused() || this.value() != null);
 
   // Purely a state carrier for mat-form-field, never drives value or internal state
