@@ -43,7 +43,8 @@ export interface SelectOption {
           [disabled]="disabled()"
           [required]="isRequired()"
           [autocomplete]="autocompleteAttr()"
-          (blur)="onTouched()"
+          (blur)="onFocusOut()"
+          (focus)="onFocusIn()"
           (change)="handleChange($event)"
         >
           <!-- Empty option -->

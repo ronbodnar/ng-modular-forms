@@ -40,7 +40,8 @@ import { MatInputModule } from '@angular/material/input';
         [placeholder]="translatedPlaceholder()"
         [autocomplete]="autocompleteAttr()"
         [formControl]="displayControl"
-        (blur)="onTouched()"
+        (blur)="onFocusOut()"
+        (focus)="onFocusIn()"
         (input)="onInput($event)"
       ></textarea>
 

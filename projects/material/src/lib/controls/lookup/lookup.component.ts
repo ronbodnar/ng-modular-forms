@@ -18,9 +18,8 @@ import {
   MatAutocompleteModule,
   MatAutocompleteSelectedEvent,
 } from '@angular/material/autocomplete';
-import { Observable, startWith } from 'rxjs';
+import { Observable } from 'rxjs';
 import { LookupBehavior, LookupOption } from '@ng-modular-forms/core';
-import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'nmf-mat-lookup',
@@ -66,7 +65,8 @@ import { toSignal } from '@angular/core/rxjs-interop';
           [placeholder]="translatedPlaceholder()"
           [formControl]="displayControl"
           [matAutocomplete]="auto"
-          (blur)="onTouched()"
+          (blur)="onFocusOut()"
+          (focus)="onFocusIn()"
         />
 
         <mat-autocomplete
@@ -161,10 +161,6 @@ export class MatInputLookupComponent<TOption>
    */
   searchThreshold = input<number>(2);
 
-  private readonly searchQuery = toSignal(
-    this.displayControl.valueChanges.pipe(startWith(this.displayControl.value)),
-  );
-
   readonly translatedEmptyOptionsLabel = computed(() =>
     this.translate(this.emptyOptionsLabel()),
   );
@@ -200,7 +196,7 @@ export class MatInputLookupComponent<TOption>
 
     this.behavior.setupFilteredOptions(
       this.displayControl.valueChanges,
-      this.searchQuery,
+      this.displayValue,
     );
     this.behavior.setupOptionsProvider(
       this.displayControl.valueChanges,

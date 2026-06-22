@@ -17,7 +17,6 @@ import {
   parseNumber,
 } from '@ng-modular-forms/core';
 import { MatButtonModule } from '@angular/material/button';
-import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'nmf-mat-number',
@@ -45,7 +44,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
         <mat-label>{{ translatedLabel() }}</mat-label>
       }
 
-      @if (focused()) {
+      @if (showSlots()) {
         <div class="nmf-mat-prefix-slot">
           @if (prefix() != null) {
             <span>{{ prefix() }}</span>
@@ -67,12 +66,12 @@ import { toSignal } from '@angular/core/rxjs-interop';
         [placeholder]="translatedPlaceholder()"
         [autocomplete]="autocompleteAttr()"
         [formControl]="displayControl"
-        (blur)="blur()"
-        (focus)="focus()"
+        (blur)="onFocusOut()"
+        (focus)="onFocusIn()"
         (input)="onInput($event)"
       />
 
-      @if (focused()) {
+      @if (showSlots()) {
         <div class="nmf-mat-suffix-slot">
           @if (suffix() != null) {
             <span>{{ suffix() }}</span>
@@ -108,10 +107,6 @@ export class MatInputNumberComponent extends MatFormControlBase<
   negativeColor = input<string | null>('#dc2626');
 
   private numberBehavior = new NumberBehavior();
-
-  private readonly displayValue = toSignal(this.displayControl.valueChanges, {
-    initialValue: this.displayControl.value,
-  });
 
   readonly textColor = computed(() => {
     const value = this.displayValue();

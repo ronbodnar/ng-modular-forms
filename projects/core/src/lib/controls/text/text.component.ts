@@ -54,7 +54,8 @@ import { NmfSuffixDirective } from '../../directives/nmf-suffix.directive';
           [required]="isRequired()"
           [placeholder]="translatedPlaceholder()"
           [autocomplete]="autocompleteAttr()"
-          (blur)="onTouched()"
+          (blur)="onFocusOut()"
+          (focus)="onFocusIn()"
           (input)="onInput($event)"
         />
 

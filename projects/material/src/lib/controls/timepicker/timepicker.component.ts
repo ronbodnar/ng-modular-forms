@@ -50,7 +50,8 @@ import { MatNativeDateModule } from '@angular/material/core';
         [placeholder]="translatedPlaceholder()"
         [autocomplete]="autocompleteAttr()"
         [formControl]="displayControl"
-        (blur)="onTouched()"
+        (blur)="onFocusOut()"
+        (focus)="onFocusIn()"
         (input)="onInput($event)"
       />
 

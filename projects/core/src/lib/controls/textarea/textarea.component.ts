@@ -37,7 +37,8 @@ import { FormFieldComponent } from '../form-field/form-field.component';
           [required]="isRequired()"
           [placeholder]="translatedPlaceholder()"
           [autocomplete]="autocompleteAttr()"
-          (blur)="onTouched()"
+          (blur)="onFocusOut()"
+          (focus)="onFocusIn()"
           (input)="onInput($event)"
         ></textarea>
       </div>

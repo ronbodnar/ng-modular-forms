@@ -42,7 +42,7 @@ type TextInputType = 'text' | 'email' | 'tel' | 'url' | 'password' | 'search';
         <mat-label>{{ translatedLabel() }}</mat-label>
       }
 
-      @if (focused()) {
+      @if (showSlots()) {
         <div class="nmf-mat-prefix-slot">
           @if (prefix() != null) {
             <span>{{ prefix() }}</span>
@@ -62,12 +62,12 @@ type TextInputType = 'text' | 'email' | 'tel' | 'url' | 'password' | 'search';
         [placeholder]="translatedPlaceholder()"
         [autocomplete]="autocompleteAttr()"
         [formControl]="displayControl"
-        (blur)="blur()"
-        (focus)="focus()"
+        (blur)="onFocusOut()"
+        (focus)="onFocusIn()"
         (input)="onInput($event)"
       />
 
-      @if (focused()) {
+      @if (showSlots()) {
         <div class="nmf-mat-suffix-slot">
           @if (suffix() != null) {
             <span>{{ suffix() }}</span>

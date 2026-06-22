@@ -66,7 +66,7 @@ export abstract class FormControlBase<TValue> implements ControlValueAccessor {
 
   private _focused = signal(false);
 
-  private _value: TValue | null = null;
+  private _value = signal<TValue | null>(null);
 
   protected readonly disabled = computed(
     () => this._disabledByInput() || this._disabledByCva(),
@@ -85,9 +85,7 @@ export abstract class FormControlBase<TValue> implements ControlValueAccessor {
   protected onChange: (value: TValue | null) => void = () => {};
   protected onTouched: () => void = () => {};
 
-  get value(): TValue | null {
-    return this._value;
-  }
+  protected value = this._value.asReadonly();
 
   get control(): FormControl<ControlValue<TValue>> {
     return this.ngControl?.control as FormControl<ControlValue<TValue>>;
@@ -133,7 +131,7 @@ export abstract class FormControlBase<TValue> implements ControlValueAccessor {
   }
 
   writeValue(value: TValue | null): void {
-    this._value = value;
+    this._value.set(value);
     this.cdr.markForCheck();
   }
 
@@ -153,12 +151,9 @@ export abstract class FormControlBase<TValue> implements ControlValueAccessor {
     const target = this.focusableElement();
     if (!target) return;
 
-    // Type guard check for native ElementRef wrapper
     if (target instanceof ElementRef) {
       target.nativeElement.focus();
-    }
-    // Type guard check for a custom component instance with executable methods
-    else if ('focus' in target && typeof target.focus === 'function') {
+    } else if ('focus' in target && typeof target.focus === 'function') {
       target.focus();
     }
     this._focused.set(true);

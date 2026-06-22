@@ -42,7 +42,8 @@ import { FormControlBase } from '../../base/form-control-base';
           [required]="isRequired()"
           [placeholder]="translatedPlaceholder()"
           [autocomplete]="autocompleteAttr()"
-          (blur)="onTouched()"
+          (blur)="onFocusOut()"
+          (focus)="onFocusIn()"
           (input)="onInput($event)"
         />
       </div>

@@ -53,7 +53,8 @@ import { MatFormControlBase } from '../../base/mat-form-control-base';
         [placeholder]="placeholder()"
         [autocomplete]="autocompleteAttr()"
         [formControl]="displayControl"
-        (blur)="onTouched()"
+        (blur)="onFocusOut()"
+        (focus)="onFocusIn()"
         (dateInput)="onInput($event)"
         (dateChange)="onInput($event)"
       />

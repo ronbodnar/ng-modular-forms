@@ -54,7 +54,8 @@ import { SelectOption } from '@ng-modular-forms/core';
         [required]="isRequired()"
         [placeholder]="translatedEmptyOptionLabel()"
         [formControl]="displayControl"
-        (blur)="onTouched()"
+        (blur)="onFocusOut()"
+        (focus)="onFocusIn()"
         (selectionChange)="onSelectionChange($event)"
       >
         <mat-option [value]="''" [disabled]="!allowEmptyOptionSelection()">

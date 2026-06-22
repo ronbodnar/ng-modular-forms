@@ -6,6 +6,7 @@ import {
   FloatLabelType,
   MatFormFieldAppearance,
 } from '@angular/material/form-field';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Directive()
 export abstract class MatFormControlBase<
@@ -47,10 +48,16 @@ export abstract class MatFormControlBase<
     () => this._shouldLabelFloat() ?? this.materialConfig.floatLabel,
   );
 
+  readonly showSlots = computed(() => this.focused() || this.value() != null);
+
   // Purely a state carrier for mat-form-field, never drives value or internal state
-  readonly displayControl = new FormControl<TDisplayValue | null>({
+  protected readonly displayControl = new FormControl<TDisplayValue | null>({
     value: null,
     disabled: false,
+  });
+
+  protected readonly displayValue = toSignal(this.displayControl.valueChanges, {
+    initialValue: this.displayControl.value,
   });
 
   override writeValue(value: TValue | null): void {
