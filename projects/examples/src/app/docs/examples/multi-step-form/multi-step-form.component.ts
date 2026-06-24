@@ -13,6 +13,7 @@ import {
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import {
+  FormHandlerRegistry,
   FormHydrator,
   FormOrchestrator,
   FormOrchestratorOptions,
@@ -54,10 +55,12 @@ import { FormStepWrapperComponent } from '../../ui/form-step-wrapper/form-step-w
   templateUrl: './multi-step-form.component.html',
 })
 export class MultiStepFormComponent extends FormOrchestrator {
-  private readonly mainHandler = inject(MultiStepFormHandler);
-  private readonly personalInfoHandler = inject(PersonalInfoFormHandler);
-  private readonly accountHandler = inject(AccountDetailsFormHandler);
-  private readonly preferencesHandler = inject(PreferencesFormHandler);
+  private handlers: FormHandlerRegistry = [
+    inject(MultiStepFormHandler),
+    inject(PersonalInfoFormHandler),
+    inject(AccountDetailsFormHandler),
+    inject(PreferencesFormHandler),
+  ];
 
   constructor(
     override readonly hydrator: FormHydrator,
@@ -111,12 +114,7 @@ export class MultiStepFormComponent extends FormOrchestrator {
         }),
       }),
 
-      handlerRegistry: [
-        this.mainHandler,
-        this.personalInfoHandler,
-        this.accountHandler,
-        this.preferencesHandler,
-      ],
+      handlerRegistry: [...this.handlers],
 
       mapperRegistry: {
         preferences: new PreferencesMapper(),

@@ -7,7 +7,13 @@ import { FormHydrator } from './form-hydrator';
 import { FormSerializer } from './form-serializer';
 import { FormHandlerBase } from './base/form-handler-base';
 
-class TestOrchestrator extends FormOrchestrator {}
+class TestOrchestrator extends FormOrchestrator {
+  logicSubscription: Subscription = new Subscription();
+
+  public addReactiveLogic(subscription: Subscription) {
+    this.logicSubscription.add(subscription);
+  }
+}
 
 class MockHandler extends FormHandlerBase<{ foo: FormControl }> {
   calls = 0;
@@ -161,10 +167,13 @@ describe('FormOrchestrator', () => {
   });
 
   it('unsubscribes all logic on destroy', () => {
-    const sub = new Subscription();
-    const unsubscribeSpy = vi.spyOn(sub, 'unsubscribe');
+    const handler = new MockHandler();
+    const unsubscribeSpy = vi.spyOn(
+      orchestrator._testLogicSubscription,
+      'unsubscribe',
+    );
 
-    orchestrator.addReactiveLogic(sub);
+    orchestrator.addReactiveLogic(handler.getReactiveLogic());
     orchestrator.ngOnDestroy();
 
     expect(unsubscribeSpy).toHaveBeenCalled();

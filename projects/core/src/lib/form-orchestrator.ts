@@ -50,7 +50,7 @@ export abstract class FormOrchestrator
     this._handlerRegistry.set(handlerRegistry);
 
     Object.values(this.handlerRegistry()).forEach((handler) => {
-      this.addReactiveLogic(handler.getReactiveLogic(form));
+      this._logicSubscription.add(handler.getReactiveLogic(form));
     });
   }
 
@@ -67,12 +67,11 @@ export abstract class FormOrchestrator
   public addHandlerToRegistry<TControls extends Record<string, FormControl>>(
     handler: FormHandlerBase<TControls>,
   ) {
+    if (handler == null || this.handlerRegistry().includes(handler)) {
+      return;
+    }
     this._handlerRegistry.set([...this._handlerRegistry(), handler]);
-    this.addReactiveLogic(handler.getReactiveLogic(this.form()));
-  }
-
-  public addReactiveLogic(subscription: Subscription) {
-    this._logicSubscription.add(subscription);
+    this._logicSubscription.add(handler.getReactiveLogic(this.form()));
   }
 
   public setStatus(status: FormStatus) {
@@ -120,5 +119,10 @@ export abstract class FormOrchestrator
 
   ngOnDestroy(): void {
     this._logicSubscription.unsubscribe();
+  }
+
+  // only for testing
+  public get _testLogicSubscription() {
+    return this._logicSubscription;
   }
 }
