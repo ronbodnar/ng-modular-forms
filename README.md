@@ -17,33 +17,270 @@
 
 <p align="center">
   <a href="https://ngmf.ronbodnar.com/docs/examples">
-    <strong>Live Examples & Interactive Demo</strong>
+    <strong>Live Examples & Interactive Demo →</strong>
   </a>
 </p>
 
-## Why ng-modular-forms?
+## The Problem
 
-Angular Reactive Forms often become difficult to maintain or scale as applications grow:
+As enterprise Angular applications grow, form logic quickly becomes a maintenance bottleneck. Side-effect subscriptions spread across components, API data mapping logic gets duplicated, and components bloat with validation mechanics. 
 
-- Reactive subscriptions spread across components
-- Cross-field behavior becomes tightly coupled
-- API mapping logic becomes duplicated
-- Large forms become difficult to test and reuse
+## The Solution
 
-`@ng-modular-forms/core` introduces a modular architecture that separates:
+`ng-modular-forms` introduces a strict **separation of concerns** layer built right on top of Angular Reactive Forms. It isn't a replacement for standard reactive APIs — it's an architectural framework designed to decouple:
 
-- form orchestration
-- reactive behavior
-- API mapping
-- reusable form controls
+* **Form Orchestration:** Isolate conditional validation and multi-step workflow logic.
+* **Reactive Behaviors:** Pull complex cross-field dependencies out of presentation components.
+* **Data Mapping:** Translate backend DTOs to form states declaratively.
+* **UI Shells:** Interchange native elements and Angular Material layers instantly.
 
-Built on top of Angular Reactive Forms — not a replacement.
+## Key Features
+- Typed Reactive Forms support
+- Form orchestration layer
+- DTO ↔ Form mapping
+- State hydration and serialization
+- Cross-field behavior management
+- Dynamic enable/disable workflows
+- Native and Angular Material UI packages
+- Consistent component APIs
+- Enterprise-scale architecture patterns
+- Angular 19–21 support
 
-Designed for scalable, enterprise-grade Angular applications.
+## Installation & Setup
 
-Compatible with Angular 19–21.
+### 1. Install Packages
+Start with core:
 
-## Packages
+```bash
+npm install @ng-modular-forms/core
+```
+
+If you are using Angular Material components, install the UI adapter and its peer dependencies:
+
+```bash
+npm install @ng-modular-forms/material @angular/material @angular/cdk
+```
+
+### 2. Configure Global Styles
+Add the required control structural themes to your angular.json styles pipeline depending on your configuration:
+
+```json
+"styles": [
+  "src/styles.css",
+  
+  // Required ONLY if utilizing @ng-modular-forms/core native UI elements
+  "node_modules/@ng-modular-forms/core/styles/form-controls.css",
+  
+  // Required ONLY if utilizing @ng-modular-forms/material UI components
+  "node_modules/@ng-modular-forms/material/styles/form-controls.css"
+]
+```
+
+###  3. Configure Global Configuration
+`@ng-modular-forms/core` provides a single global configuration system via `provideNmfConfig`.
+
+This configuration is shared across all packages (core + material) **and is optional**.
+
+If not provided, sensible defaults are used.
+
+#### Available options
+  
+```typescript
+translate?: (
+  key: string,
+  params?: Record<string, unknown>
+) => string;
+
+validationMessages?: ValidationMessages;
+```
+
+#### Code Example
+```typescript
+import { ApplicationConfig, inject } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
+import { provideNmfConfig } from '@ng-modular-forms/core';
+
+export const appConfig: ApplicationConfig = {
+  providers: [
+    // Simple config
+    provideNmfConfig({
+      validationMessages: {
+        email: 'Invalid email',
+      },
+    })
+
+    //DI-based config
+    provideNmfConfigFactory(() => {
+      const translate = inject(TranslateService);
+
+      return {
+        translate: (k, p) => translate.instant(k, p),
+        validationMessages: {},
+      };
+    });
+  ],
+};
+```
+
+## Code Examples
+
+### Start Simple
+
+```typescript
+@Component({
+  template: `
+    <form [formGroup]="form">
+      <nmf-text
+        label="First Name"
+        formControlName="firstName"
+      />
+
+      <nmf-number
+        label="Salary"
+        formControlName="salary"
+        [formatValue]="true"
+        prefix="$"
+        suffix="USD"
+      />
+    </form>
+  `,
+})
+export class EmployeeComponent {
+  form = new FormGroup({
+    firstName: new FormControl('', Validators.required),
+    salary: new FormControl<number | null>(null),
+  });
+}
+```
+
+Start with standard Angular Reactive Forms and adopt orchestration features only when your application needs them.
+
+### Add Reactive Logic
+
+As forms grow, reactive business rules often end up scattered throughout Angular components.
+
+`ng-modular-forms` allows reactive behavior to be moved into dedicated handlers.
+
+```typescript
+@Injectable()
+export class RegistrationFormHandler extends FormHandlerBase<Controls> {
+
+  override getReactiveLogic(form?: FormGroup) {
+    if (!form) {
+      throw new Error(
+        'RegistrationFormHandler requires a form instance'
+      );
+    }
+
+    this.initializeForm(form);
+
+    const emailControl =
+      this.getControl('personalInfo.email');
+
+    return this.valueChangesOf(
+      'preferences.agreeToTerms'
+    ).subscribe((acceptedTerms) => {
+
+      const validators = acceptedTerms
+        ? [Validators.required, Validators.email]
+        : [Validators.email];
+
+      emailControl.setValidators(validators);
+      emailControl.updateValueAndValidity({
+        emitEvent: false,
+      });
+    });
+  }
+}
+```
+
+Instead of managing subscriptions inside components, business rules are isolated into reusable handlers that can be tested independently.
+
+### DTO ↔ Form Mapping
+
+API contracts and form models often evolve independently.
+
+`ng-modular-forms` provides dedicated mappers for translating between them.
+
+```typescript
+export class PreferencesMapper extends FormMapperBase<
+  PreferencesDto,
+  PreferencesForm,
+  PreferencesForm,
+  PreferencesOptions
+> {
+
+  override fromModel(dto: PreferencesDto) {
+    return {
+      receiveEmails: dto.receive_emails,
+      theme: dto.theme_name,
+    };
+  }
+
+  override toRequest(formValue: PreferencesForm, options?: PreferencesOptions) {
+    return {
+      receive_emails: formValue.receiveEmails,
+      theme: formValue.theme,
+    };
+  }
+}
+```
+
+Mapping logic remains centralized and reusable instead of being duplicated throughout components and services.
+
+### Large Forms and Multi-Step Workflows
+
+As complexity grows, handlers, mappers, hydration, and serialization can be orchestrated through a single coordinator.
+
+```typescript
+@Component({
+  providers: [
+    MultiStepFormHandler,
+    PersonalInfoFormHandler,
+    AccountDetailsFormHandler,
+    PreferencesFormHandler,
+  ],
+})
+export class MultiStepFormComponent
+  extends FormOrchestrator {
+
+  initialize() {
+    this.orchestrate({
+      form: registrationForm,
+
+      handlerRegistry: [
+        inject(MultiStepFormHandler),
+        inject(PersonalInfoFormHandler),
+        inject(AccountDetailsFormHandler),
+        inject(PreferencesFormHandler),
+      ],
+
+      mapperRegistry: {
+        preferences: new PreferencesMapper(),
+      },
+    });
+
+    this.hydrateFromModel(existingUser);
+  }
+}
+```
+
+The same architecture scales from simple forms to enterprise workflows without moving business logic into Angular components.
+
+## Developer Quick Start
+
+Clone and run the examples app:
+
+```bash
+git clone https://github.com/ronbodnar/ng-modular-forms.git
+cd ng-modular-forms
+npm install
+npm start
+```
+
+Open your browser to `http://localhost:4200/docs/examples` to see the live interactive examples.
+
+## Ecosystem Packages
 <table>
   <tr>
     <th style="white-space: nowrap;">Package</th>
@@ -74,91 +311,21 @@ Compatible with Angular 19–21.
   </tr>
 </table>
 
-## Installation
+## Unified Input Control API
 
-Start with core:
+All integrated control primitives are built on ControlValueAccessor. This allows you to interchange Native selectors for Material selectors instantly without altering a single line of orchestration logic.
 
-```bash
-npm install @ng-modular-forms/core
-```
+| Input Type        | Native Selector                | Material Selector                  | Description                                              |
+|-------------------|--------------------------------|------------------------------------|----------------------------------------------------------|
+| Text / Password   | `nmf-text`                     | `nmf-mat-text`                     | Masking, text parsing, and standard string inputs.       |
+| Lookup            | `nmf-lookup`                   | `nmf-mat-lookup`                   | Automated synchronous/asynchronous auto-complete engine. |
+| Number / Currency | `nmf-number`                   | `nmf-mat-number`                   | Strictly typed runtime numeric normalization.            |
+| Date              | `nmf-datepicker`               | `nmf-mat-datepicker`               | Calendar utility wrappers.                               |
+| Time              | `nmf-timepicker`               | `nmf-mat-timepicker`               | Standard temporal data picking inputs.                   |
+| Select            | `nmf-select`                   | `nmf-mat-select`                   | Option-driven stream selectors.                          |
+| Textarea          | `nmf-textarea`                 | `nmf-mat-textarea`                 | Multi-line textual controls.                             |
 
-Add Material UI support if needed:
-
-```bash
-npm install @ng-modular-forms/material
-```
-
-## Styles Setup
-Add the corresponding styles to your application's angular.json file under the styles array. Only include the files for the packages you are actively using:
-
-```json
-"styles": [
-  "src/styles.css",
-  
-  // Required ONLY if using @ng-modular-forms/core native controls
-  "node_modules/@ng-modular-forms/core/styles/form-controls.css",
-  
-  // Required ONLY if using @ng-modular-forms/material
-  "node_modules/@ng-modular-forms/material/styles/form-controls.css"
-]
-```
-
-### Peer Dependencies
-
-For the Material package, you'll also need:
-
-```bash
-npm install @angular/material @angular/cdk
-```
-
-## Quick Start
-
-Clone and run the examples app:
-
-```bash
-git clone https://github.com/ronbodnar/ng-modular-forms.git
-cd ng-modular-forms
-npm install
-npm start
-```
-
-Navigate to `http://localhost:4200/docs/examples` to see the interactive examples.
-
-##  Simple Example
-
-```typescript
-@Component({
-  template: `
-    <form [formGroup]="form">
-      <nmf-text formControlName="name" label="Name" />
-      <nmf-currency formControlName="salary" label="Salary" />
-    </form>
-  `,
-})
-export class ExampleComponent {
-  form = new FormGroup({
-    name: new FormControl<string>('', Validators.required),
-    salary: new FormControl<number | null>(null),
-  });
-}
-```
-
-##  Input Components
-
-All inputs share a consistent API and are interchangeable between Native and Material implementations without changing form logic.
-
-| Input Type      | Native Selector                | Material Selector                  | Description                                     |
-|-----------------|--------------------------------|------------------------------------|-------------------------------------------------|
-| Text / Password | `nmf-text`                     | `nmf-mat-text`                     | Text / password input with toggle support       |
-| Lookup          | `nmf-lookup`                   | `nmf-mat-lookup`                   | Synchronous or asynchronous lookup/autocomplete |
-| Number          | `nmf-number`                   | `nmf-mat-number`                   | Type-safe numeric input                         |
-| Currency        | `nmf-currency`                 | `nmf-mat-currency`                 | Formatting + parsing support                    |
-| Date            | `nmf-datepicker`               | `nmf-mat-datepicker`               | Native or Material datepicker                   |
-| Time            | `nmf-timepicker`               | `nmf-mat-timepicker`               | Structured time input                           |
-| Select          | `nmf-select`                   | `nmf-mat-select`                   | Dropdown with option support                    |
-| Textarea        | `nmf-textarea`                 | `nmf-mat-textarea`                 | Multi-line input                                |
-
-###  Shared Features
+### Features
 
 - `ControlValueAccessor` compatible
 - Fully compatible with Angular Reactive Forms
@@ -166,11 +333,6 @@ All inputs share a consistent API and are interchangeable between Native and Mat
 - Built-in validation state + error messaging
 - Label, required indicator, and loading state support
 - Behavior-driven input handling (formatting, parsing, restrictions)
-
-## Requirements
-
-- Angular 19–21
-- Reactive Forms module
 
 ## License
 

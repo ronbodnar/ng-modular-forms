@@ -21,60 +21,69 @@
   </a>
 </p>
 
-## Why ng-modular-forms?
+## The Problem
 
-Angular Reactive Forms often become difficult to maintain as applications grow:
+As enterprise Angular applications grow, form logic quickly becomes a maintenance bottleneck. Side-effect subscriptions spread across components, API data mapping logic gets duplicated, and components bloat with validation mechanics. 
 
-- Reactive subscriptions spread across components
-- Cross-field behavior becomes tightly coupled
-- API mapping logic becomes duplicated
-- Large forms become difficult to test and reuse
+## The Solution
 
-`@ng-modular-forms/core` introduces a modular architecture that separates:
+`ng-modular-forms` introduces a strict **separation of concerns** layer built right on top of Angular Reactive Forms. It isn't a replacement for standard reactive APIs — it's an architectural framework designed to decouple:
 
-- form orchestration
-- reactive behavior
-- API mapping
-- reusable form controls
+* **Form Orchestration:** Isolate conditional validation and multi-step workflow logic.
+* **Reactive Behaviors:** Pull complex cross-field dependencies out of presentation components.
+* **Data Mapping:** Translate backend DTOs to form states declaratively.
+* **UI Shells:** Interchange native elements and Angular Material layers instantly.
 
-Built on top of Angular Reactive Forms — not a replacement.
+## Key Features
+- Typed Reactive Forms support
+- Form orchestration layer
+- DTO ↔ Form mapping
+- State hydration and serialization
+- Cross-field behavior management
+- Dynamic enable/disable workflows
+- Native and Angular Material UI packages
+- Consistent component APIs
+- Enterprise-scale architecture patterns
+- Angular 19–21 support
 
-Designed for scalable, enterprise-grade Angular applications.
+## Installation & Setup
 
-Compatible with Angular 19–21.
-
-## Installation
+### 1. Install Packages
+Start with core:
 
 ```bash
 npm install @ng-modular-forms/core
-
-# Optional Material UI bindings:
-npm install @ng-modular-forms/material
 ```
 
-## Styles Setup
-Add the corresponding styles to your application's angular.json file under the styles array. Only include the files for the packages you are actively using:
+If you are using Angular Material components, install the UI adapter and its peer dependencies:
+
+```bash
+npm install @ng-modular-forms/material @angular/material @angular/cdk
+```
+
+### 2. Configure Global Styles
+Add the required control structural themes to your angular.json styles pipeline depending on your configuration:
 
 ```json
 "styles": [
   "src/styles.css",
   
-  // Required ONLY if using @ng-modular-forms/core native controls
+  // Required ONLY if utilizing @ng-modular-forms/core native UI components
   "node_modules/@ng-modular-forms/core/styles/form-controls.css",
   
-  // Required ONLY if using @ng-modular-forms/material
+  // Required ONLY if utilizing @ng-modular-forms/material UI components
   "node_modules/@ng-modular-forms/material/styles/form-controls.css"
 ]
 ```
 
-## Global configuration
-`@ng-modular-forms/core` provides a single global configuration system via `provideNmfConfig`.
+### 3. Global Configuration
+`@ng-modular-forms/core` provides a single global configuration system via `provideNmfConfig` or `provideNmfConfigFactory`.
 
-This configuration is shared across all packages (core + material) and is optional.
+This **optional** configuration is shared across all packages (core + material).
 
 If not provided, sensible defaults are used.
 
-### Available options
+#### Available options
   
 ```typescript
 translate?: (
@@ -85,7 +94,7 @@ translate?: (
 validationMessages?: ValidationMessages;
 ```
 
-### Example
+#### Code Example
 ```typescript
 import { ApplicationConfig, inject } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
@@ -106,20 +115,86 @@ export const appConfig: ApplicationConfig = {
 
       return {
         translate: (k, p) => translate.instant(k, p),
-        validationMessages: {},
+        validationMessages: {
+          email: 'Invalid email'
+        },
       };
     });
   ],
 };
 ```
 
-### Notes
+## Without ng-modular-forms
+```typescript
+@Component({
+  selector: 'app-legacy-form',
+  imports: [ReactiveFormsModule, CommonModule],
+  template: `
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <div>
+        <label>Field A</label>
+        <input formControlName="fieldA" />
+      </div>
 
-- `provideNmfConfig` is optional
-- If omitted, the library uses built-in defaults
-- Translation is handled entirely at the core level
-- Material components automatically consume this configuration
-- There is no separate translation configuration for Material
+      <div>
+        <label>Field B</label>
+        <input formControlName="fieldB" />
+      </div>
+
+      @if (form.errors?.custom) {
+        <div class="error">{{ form.errors.custom }}</div>
+      }
+
+      <button type="submit" [disabled]="status() === 'submitting'">Submit</button>
+    </form>
+  `
+})
+export class LegacyFormComponent implements OnInit {
+  status = signal<'idle' | 'submitting' | 'error' | 'success'>('idle');
+
+  form = new FormGroup({
+    fieldA: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
+    fieldB: new FormControl({ value: '', disabled: true })
+  });
+
+  ngOnInit() {
+    // Reactive business rules quickly pollute the lifecycle hooks
+    this.form.get('fieldA')?.valueChanges.subscribe((value) => {
+      const fieldB = this.form.get('fieldB');
+      if (value) {
+        fieldB?.enable();
+      } else {
+        fieldB?.reset();
+        fieldB?.disable();
+      }
+    });
+  }
+
+  submit() {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
+
+    // Direct mapping leak: Transforming UI state directly inside presentation
+    const rawA = this.form.value.fieldA ?? '';
+    const payload = {
+      fieldA: rawA.trim().replace(/\s+/g, '-').toLowerCase(),
+      fieldB: this.form.value.fieldB,
+      submittedAt: new Date()
+    };
+
+    this.status.set('submitting');
+    apiCall(payload).subscribe({
+      next: () => this.status.set('success'),
+      error: () => {
+        this.form.setErrors({ custom: 'Something went wrong' });
+        this.status.set('error');
+      }
+    });
+  }
+}
+```
 
 ## Core Primitives
 
@@ -127,6 +202,42 @@ export const appConfig: ApplicationConfig = {
 
 Coordinates form structure and lifecycle.
 
+#### Basic usage
+
+```typescript
+import {
+  FormOrchestrator, FormHydrator, FormSerializer
+} from '@ng-modular-forms/core';
+
+@Component({
+  // ...
+  template: `
+    <form [formGroup]="form">
+      <nmf-text formControlName="fieldA" label="Field A" />
+      <nmf-text formControlName="fieldB" label="Field B" />
+    </form>
+  `,
+})
+export class ExampleComponent extends FormOrchestrator {
+
+  constructor(
+    override readonly hydrator: FormHydrator,
+    override readonly serializer: FormSerializer,
+  ) {
+    super(hydrator, serializer);
+
+    this.orchestrate({
+      form: new FormGroup({
+        fieldA: new FormControl(''),
+        fieldB: new FormControl('')
+      })
+    });
+  }
+
+}
+```
+
+#### Advanced usage
 ```typescript
 import {
   FormOrchestrator, FormHydrator, FormSerializer
@@ -167,8 +278,10 @@ export class ExampleComponent extends FormOrchestrator {
     // The mapperRegistry and handlerRegistry are optional
     this.orchestrate({ form, handlerRegistry, mapperRegistry });
 
-    const model = { fieldA: "aValue", fieldB: "bValue" };
-    this.hydrateFromModel(model);
+    this.hydrateFromModel({
+      fieldA: "aValue",
+      fieldB: "bValue"
+    });
   }
 
   submit(): void {
@@ -219,25 +332,11 @@ export class SectionAHandler extends FormHandlerBase<Controls> {
   override getReactiveLogic(form: FormGroup): Subscription {
     this.initializeForm(form);
 
-    const subscription = new Subscription();
+    return this.valueChangesOf('fieldA').subscribe((value) => {
+      const fieldB = this.getControl('fieldB', form);
 
-    subscription.add(
-      this.valueChangesOf('fieldA').subscribe((val) => {
-        const fieldB = this.getControl('fieldB', form);
-
-        val?.trim()
-          ? fieldB.enable()
-          : fieldB.disable();
-      }),
-    );
-
-    subscription.add(
-      this.valueChangesOf('fieldB').subscribe((val) => {
-        console.log('Field B changed:', val);
-      }),
-    );
-
-    return subscription;
+      value ? fieldB.enable() : fieldB.disable();
+    });
   }
 }
 ```
@@ -252,12 +351,12 @@ import { FormMapperBase, getControlValue } from '@ng-modular-forms/core';
 export class SectionAMapper extends FormMapperBase<
   ApiModel, RequestModel, FormModel, FormMapperOptions
 > {
-  toRequest(form: FormGroup, _options?: FormMapperOptions): RequestModel {
+  toRequest(formValue: FormModel, _options?: FormMapperOptions): RequestModel {
     const fieldAValue = getControlValue<string>('fieldA', form);
     const fieldBValue = getControlValue<string>('fieldB', form);
     return {
-      fieldA: fieldAValue?.trim() ?? '',
-      fieldB: fieldBValue?.trim() ?? ''
+      fieldA: formValue.fieldA?.trim() ?? '',
+      fieldB: formValue.fieldB?.trim() ?? ''
     };
   }
 
@@ -271,12 +370,11 @@ export class SectionAMapper extends FormMapperBase<
 
 // Each model can have its own shape.
 // If all are the same, you only need one and others will inherit from it.
-// FormMapperBase<T> is the same as FormMapperBase<T, T, T>
+// FormMapperBase<T> is the same as FormMapperBase<T, T, T, object>
 type ApiModel = {
   fieldA: string;
   fieldB: string;
 };
-
 type RequestModel = ApiModel;
 type FormModel = ApiModel;
 
@@ -284,16 +382,6 @@ interface FormMapperOptions {
   extraField1?: string;
   extraField2?: string;
 }
-
-/**
- * These are intentionally separated even if identical.
- * In real applications:
- * - ApiModel represents backend responses
- * - FormModel represents UI state shape
- * - RequestModel represents payload contracts
- *
- * They may diverge as the system evolves.
- */
 ```
 
 ### FormControlBase
