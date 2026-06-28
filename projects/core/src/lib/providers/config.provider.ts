@@ -20,8 +20,8 @@ const DEFAULT_NMF_CONFIG: Required<NmfConfig> = {
   },
   validationMessages: {
     required: 'This field is required',
-    minLength: 'Minimum length is {{minLength}}',
-    maxLength: 'Maximum length is {{maxLength}}',
+    minLength: 'Minimum length is {{requiredLength}}',
+    maxLength: 'Maximum length is {{requiredLength}}',
     min: 'Minimum value is {{min}}',
     max: 'Maximum value is {{max}}',
     email: 'Invalid email address',

@@ -198,18 +198,18 @@ export abstract class FormControlBase<TValue> implements ControlValueAccessor {
           this.config.validationMessages?.required ?? 'This field is required',
         );
 
-      case 'minLength':
+      case 'minlength':
         return this.translate(
           this.config.validationMessages?.minLength ??
-            'Minimum length is {{minLength}}',
-          { minLength: error.minLength },
+            'Minimum length is {{requiredLength}}',
+          { requiredLength: error.requiredLength },
         );
 
-      case 'maxLength':
+      case 'maxlength':
         return this.translate(
           this.config.validationMessages?.maxLength ??
-            'Maximum length is {{maxLength}}',
-          { maxLength: error.maxLength },
+            'Maximum length is {{requiredLength}}',
+          { requiredLength: error.requiredLength },
         );
 
       case 'min':
