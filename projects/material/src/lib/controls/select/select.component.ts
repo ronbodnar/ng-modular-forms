@@ -64,7 +64,7 @@ import { SelectOption } from '@ng-modular-forms/core';
         </mat-option>
 
         <!-- All Options -->
-        @for (option of options(); track option.value) {
+        @for (option of translatedOptions(); track option.value) {
           <mat-option [value]="option.value" [disabled]="option.disabled">
             {{ option.label }}
           </mat-option>
@@ -98,6 +98,13 @@ export class MatInputSelectComponent
   emptyOptionLabel = input<string>('Select an option');
   allowEmptyOptionSelection = input<boolean>(false);
   panelWidth = input<string | number | null>('auto');
+
+  translatedOptions = computed(() =>
+    this.options().map((option) => ({
+      ...option,
+      label: this.translate(String(option.label)),
+    })),
+  );
 
   readonly translatedEmptyOptionLabel = computed(() =>
     this.translate(this.emptyOptionLabel()),

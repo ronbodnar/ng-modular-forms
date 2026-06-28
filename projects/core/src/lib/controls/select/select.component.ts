@@ -53,7 +53,7 @@ export interface SelectOption {
           </option>
 
           <!-- Options -->
-          @for (option of options(); track option.value) {
+          @for (option of translatedOptions(); track option.value) {
             <option [value]="option.value" [disabled]="option.disabled">
               {{ option.label }}
             </option>
@@ -69,6 +69,13 @@ export class InputSelectComponent extends FormControlBase<
   options = input<SelectOption[]>([]);
   emptyOptionLabel = input<string>('Select an option');
   allowEmptyOptionSelection = input<boolean>(false);
+
+  translatedOptions = computed(() =>
+    this.options().map((option) => ({
+      ...option,
+      label: this.translate(String(option.label)),
+    })),
+  );
 
   readonly translatedEmptyOptionLabel = computed(() =>
     this.translate(this.emptyOptionLabel()),
