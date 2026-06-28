@@ -14,7 +14,9 @@ export function getControl<T extends AbstractControl>(
   const control = form.get(controlName);
 
   if (!control) {
-    throw new Error(`Missing control "${controlName}" in form "${form}"`);
+    throw new Error(
+      `Missing control "${controlName}" in form. Valid controls: "${Object.keys(form.controls).join(', ')}"`,
+    );
   }
 
   return control as T;
@@ -26,7 +28,9 @@ export function getControlValue<T = unknown>(
 ): T | null {
   const control = getControl<AbstractControl>(controlName, form);
   if (!control) {
-    throw new Error(`Missing control "${controlName}" in form "${form}"`);
+    throw new Error(
+      `Missing control "${controlName}" in form. Valid controls: "${Object.keys(form.controls).join(', ')}"`,
+    );
   }
 
   const value = control.getRawValue();

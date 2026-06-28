@@ -56,13 +56,13 @@ import { LookupBehavior, LookupOption } from '@ng-modular-forms/core';
           #focusable
           matInput
           type="text"
-          [class.cursor-not-allowed]="behavior.selectedOption() != null"
+          [class.cursor-not-allowed]="!isOptionSelected(null)"
           [attr.aria-label]="detachLabel() ? translatedLabel() : null"
           [ngClass]="classList"
           [id]="id()"
           [name]="name()"
           [required]="isRequired()"
-          [readonly]="behavior.selectedOption() != null"
+          [readonly]="!isOptionSelected(null)"
           [placeholder]="translatedPlaceholder()"
           [formControl]="displayControl"
           [matAutocomplete]="auto"
@@ -80,7 +80,7 @@ import { LookupBehavior, LookupOption } from '@ng-modular-forms/core';
           }
         </mat-autocomplete>
 
-        @if (behavior.status() === 'empty') {
+        @if (status() === 'empty') {
           <mat-hint>{{ translatedEmptyOptionsLabel() }}</mat-hint>
         } @else if (translatedHintLabel()) {
           <mat-hint [ngClass]="hintClassList()">{{
@@ -91,7 +91,7 @@ import { LookupBehavior, LookupOption } from '@ng-modular-forms/core';
         <mat-error>{{ translatedErrorMessage() }}</mat-error>
 
         <!-- Loading status is for lookups and async options, and loading() is for the form control itself -->
-        @if (behavior.status() === 'loading' || loading()) {
+        @if (status() === 'loading' || loading()) {
           <mat-spinner
             matSuffix
             class="nmf-mat-loader"
@@ -100,7 +100,7 @@ import { LookupBehavior, LookupOption } from '@ng-modular-forms/core';
           />
         }
 
-        @if (behavior.selectedOption()) {
+        @if (!isOptionSelected(null)) {
           <button
             matSuffix
             mat-icon-button
@@ -162,6 +162,8 @@ export class MatInputLookupComponent<TOption>
    */
   searchThreshold = input<number>(2);
 
+  readonly status = computed(() => this.behavior.status());
+
   readonly translatedEmptyOptionsLabel = computed(() =>
     this.translate(this.emptyOptionsLabel()),
   );
@@ -206,6 +208,10 @@ export class MatInputLookupComponent<TOption>
     );
   }
 
+  ngOnDestroy(): void {
+    this.behavior.optionsUpdated$.complete();
+  }
+
   override writeValue(value: TOption | null): void {
     super.writeValue(value);
     this.behavior.selectedMatchedOption(value);
@@ -224,7 +230,7 @@ export class MatInputLookupComponent<TOption>
     this.behavior.clearSelectedOption();
   }
 
-  ngOnDestroy(): void {
-    this.behavior.optionsUpdated$.complete();
+  isOptionSelected(value: TOption | null): boolean {
+    return this.behavior.isOptionSelected(value);
   }
 }

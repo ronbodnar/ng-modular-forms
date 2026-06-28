@@ -31,9 +31,6 @@ export class LookupBehavior<TOption> {
   public readonly options = this._options.asReadonly();
   public readonly selectedOption = this._selectedOption.asReadonly();
 
-  /*
-   * Emits when the options have been updated. Ensures Material autocomplete updates its
-   */
   public readonly optionsUpdated$ = new Subject<void>();
 
   public filteredOptions!: Observable<LookupOption<TOption>[]>;
@@ -119,6 +116,20 @@ export class LookupBehavior<TOption> {
       });
       return;
     }
+  }
+
+  isOptionSelected(value: TOption | null): boolean {
+    const selected = this.selectedOption();
+    if (!selected) {
+      return value == selected;
+    }
+
+    const { resolvers } = this.bOptions;
+    const compare = resolvers.compare() ?? undefined;
+
+    return compare
+      ? compare(selected.value, value as TOption)
+      : selected.value === value;
   }
 
   updateOptions(results: LookupOption<TOption>[], status?: LookupStatus): void {

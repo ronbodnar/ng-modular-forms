@@ -26,12 +26,10 @@ import { LookupBehavior } from '../../behavior/lookup/lookup.behavior';
   template: `
     <nmf-form-field
       [label]="translatedLabel()"
-      [hintLabel]="
-        behavior.status() === 'empty' ? translatedEmptyOptionsLabel() : null
-      "
+      [hintLabel]="status() === 'empty' ? translatedEmptyOptionsLabel() : null"
       [hintClassList]="hintClassList()"
       [isRequired]="isRequired()"
-      [loading]="behavior.status() === 'loading' || loading()"
+      [loading]="status() === 'loading' || loading()"
       [errorMessage]="translatedErrorMessage()"
     >
       <div
@@ -46,15 +44,13 @@ import { LookupBehavior } from '../../behavior/lookup/lookup.behavior';
             class="nmf-control"
             [attr.list]="id + '-options'"
             [ngClass]="classList()"
-            [style.cursor]="
-              behavior.selectedOption() != null ? 'not-allowed' : 'text'
-            "
+            [style.cursor]="!isOptionSelected(null) ? 'not-allowed' : 'text'"
             [id]="id()"
             [name]="name()"
             [value]="displayLabel()"
             [disabled]="disabled()"
             [required]="isRequired()"
-            [readonly]="behavior.selectedOption() != null"
+            [readonly]="!isOptionSelected(null)"
             [placeholder]="translatedPlaceholder()"
             [autocomplete]="autocompleteAttr()"
             (blur)="onFocusOut()"
@@ -72,7 +68,7 @@ import { LookupBehavior } from '../../behavior/lookup/lookup.behavior';
             >
               @for (option of options; track option; let i = $index) {
                 <li
-                  [class.selected]="behavior.selectedOption() == option"
+                  [class.selected]="isOptionSelected(option.value)"
                   [class.active]="activeIndex() === i"
                   (click)="selectOption($event, option)"
                 >
@@ -84,7 +80,7 @@ import { LookupBehavior } from '../../behavior/lookup/lookup.behavior';
             </ul>
           }
 
-          @if (behavior.selectedOption() && !disabled()) {
+          @if (!isOptionSelected(null) && !disabled()) {
             <button
               class="nmf-clear-button"
               type="button"
@@ -150,6 +146,8 @@ export class InputLookupComponent<TOption>
    */
   searchThreshold = input<number>(2);
 
+  protected behavior: LookupBehavior<TOption>;
+
   private readonly _activeIndex = signal(-1);
 
   public readonly activeIndex = this._activeIndex.asReadonly();
@@ -174,9 +172,9 @@ export class InputLookupComponent<TOption>
     return this._searchQuery();
   });
 
-  inputElement = inject(ElementRef<HTMLInputElement>);
+  readonly status = computed(() => this.behavior.status());
 
-  behavior: LookupBehavior<TOption>;
+  inputElement = inject(ElementRef<HTMLInputElement>);
 
   constructor() {
     super();
@@ -251,14 +249,6 @@ export class InputLookupComponent<TOption>
     this.isOpen.set(false);
   }
 
-  resetActiveIndex(): void {
-    this._activeIndex.set(-1);
-  }
-
-  setOptionsInteraction(state: boolean): void {
-    this._isInteractingWithOptions.set(state);
-  }
-
   updateOptions(results: LookupOption<TOption>[], status?: LookupStatus): void {
     this.behavior.updateOptions(results, status);
     this.resetActiveIndex();
@@ -268,6 +258,18 @@ export class InputLookupComponent<TOption>
     this._searchQuery.set('');
     this.behavior.clearSelectedOption();
     this.focus();
+  }
+
+  isOptionSelected(value: TOption | null): boolean {
+    return this.behavior.isOptionSelected(value);
+  }
+
+  resetActiveIndex(): void {
+    this._activeIndex.set(-1);
+  }
+
+  setOptionsInteraction(state: boolean): void {
+    this._isInteractingWithOptions.set(state);
   }
 
   onKeyDown(
