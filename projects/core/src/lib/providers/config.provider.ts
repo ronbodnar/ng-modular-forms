@@ -13,17 +13,17 @@ const DEFAULT_NMF_CONFIG: Required<NmfConfig> = {
     }
     return Object.keys(params).reduce((acc, paramKey) => {
       return acc.replace(
-        new RegExp(`{${paramKey}}`, 'g'),
+        new RegExp(`{{${paramKey}}}`, 'g'),
         String(params[paramKey]),
       );
     }, key);
   },
   validationMessages: {
     required: 'This field is required',
-    minlength: 'Minimum length is {requiredLength}',
-    maxlength: 'Maximum length is {requiredLength}',
-    min: 'Minimum value is {min}',
-    max: 'Maximum value is {max}',
+    minLength: 'Minimum length is {{minLength}}',
+    maxLength: 'Maximum length is {{maxLength}}',
+    min: 'Minimum value is {{min}}',
+    max: 'Maximum value is {{max}}',
     email: 'Invalid email address',
     pattern: 'Invalid format',
     fallback: 'Invalid value',

@@ -112,7 +112,7 @@ describe('FormControlBase', () => {
   });
 
   it('shows error only when touched + invalid', () => {
-    control.setErrors({ minlength: { requiredLength: 5, actualLength: 1 } });
+    control.setErrors({ minLength: { minLength: 5, actualLength: 1 } });
 
     expect(
       fixture.debugElement.query(By.css('.error')).nativeElement.textContent,

@@ -18,8 +18,8 @@ export interface FormOrchestratorOptions {
 
 export interface ValidationMessages {
   required?: string;
-  minlength?: string;
-  maxlength?: string;
+  minLength?: string;
+  maxLength?: string;
   min?: string;
   max?: string;
   email?: string;
