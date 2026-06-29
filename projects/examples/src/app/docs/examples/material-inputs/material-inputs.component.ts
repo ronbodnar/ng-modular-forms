@@ -69,7 +69,7 @@ export class MaterialInputsExampleComponent implements OnInit {
       Validators.required,
       Validators.minLength(8),
     ]),
-    select: new FormControl('', Validators.required),
+    select: new FormControl<string | null>(null, Validators.required),
     currency: new FormControl<number | null>(null, [Validators.min(0)]),
     textarea: new FormControl('', [
       Validators.maxLength(500),

@@ -54,7 +54,11 @@ export interface SelectOption {
 
           <!-- Options -->
           @for (option of translatedOptions(); track option.value) {
-            <option [value]="option.value" [disabled]="option.disabled">
+            <option
+              [value]="option.value"
+              [disabled]="option.disabled"
+              [selected]="option.value === value()"
+            >
               {{ option.label }}
             </option>
           }
