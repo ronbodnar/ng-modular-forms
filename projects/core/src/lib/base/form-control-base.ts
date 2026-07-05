@@ -136,7 +136,11 @@ export abstract class FormControlBase<TValue> implements ControlValueAccessor {
   }
 
   registerOnChange(fn: (value: TValue | null) => void): void {
-    this.onChange = fn;
+    this.onChange = (value: TValue | null) => {
+      this._value.set(value);
+      fn(value);
+      this.cdr.markForCheck();
+    };
   }
 
   registerOnTouched(fn: () => void): void {
