@@ -297,12 +297,13 @@ select.nmf-control {
 }
 
 /** Remove arrows from number fields **/
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
+.nmf-hide-stepper::-webkit-outer-spin-button,
+.nmf-hide-stepper::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
-input[type="number"] {
+
+.nmf-hide-stepper {
   appearance: textfield;
   -moz-appearance: textfield;
 }

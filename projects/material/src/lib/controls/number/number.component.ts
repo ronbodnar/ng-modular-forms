@@ -63,6 +63,9 @@ import { MatButtonModule } from '@angular/material/button';
         [style.opacity]="disabled() ? 0.6 : 1"
         [id]="id()"
         [name]="name()"
+        [min]="min()"
+        [max]="max()"
+        [step]="step()"
         [required]="isRequired()"
         [placeholder]="translatedPlaceholder()"
         [autocomplete]="autocompleteAttr()"
@@ -108,6 +111,9 @@ export class MatInputNumberComponent extends MatFormControlBase<
   suffix = input<string | null>(null);
   allowNegative = input<boolean>(true);
   negativeColor = input<string | null>('#dc2626');
+  min = input<number | null>(null);
+  max = input<number | null>(null);
+  step = input<number | null>(null);
 
   private numberBehavior = new NumberBehavior();
 

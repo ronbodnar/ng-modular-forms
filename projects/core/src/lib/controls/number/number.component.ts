@@ -48,10 +48,14 @@ import { NmfSuffixDirective } from '../../directives/nmf-suffix.directive';
           #focusable
           class="nmf-control"
           [style.color]="textColor()"
+          [class.nmf-hide-stepper]="hideStepper()"
           [ngClass]="classList()"
           [id]="id()"
           [name]="name()"
           [type]="formatValue() ? 'text' : 'number'"
+          [min]="min()"
+          [max]="max()"
+          [step]="step()"
           [value]="displayValue()"
           [disabled]="disabled()"
           [required]="isRequired()"
@@ -81,6 +85,10 @@ export class InputNumberComponent extends FormControlBase<
   suffix = input<string | null>(null);
   allowNegative = input<boolean>(true);
   negativeColor = input<string | null>('var(--mat-sys-error)');
+  hideStepper = input<boolean>(false);
+  min = input<number | null>(null);
+  max = input<number | null>(null);
+  step = input<number | null>(null);
 
   displayValue = signal<string>('');
 
