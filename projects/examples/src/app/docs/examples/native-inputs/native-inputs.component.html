@@ -23,6 +23,7 @@
               label="Text Input"
               placeholder="Input some text..."
               autocomplete="off"
+              autocapitalize="on"
               [loading]="loading()"
             />
 
@@ -31,6 +32,7 @@
               label="Number Input"
               placeholder="Enter a number"
               autocomplete="off"
+              [step]="10"
               [loading]="loading()"
             />
 
@@ -39,9 +41,6 @@
               label="Number Input (formatted)"
               placeholder="Enter a number"
               autocomplete="off"
-              [min]="0"
-              [max]="100"
-              [step]="5"
               [loading]="loading()"
               [formatValue]="true"
             />
@@ -128,7 +127,9 @@
               placeholder="Enter a number"
               autocomplete="off"
               [min]="0"
-              [max]="100"
+              [max]="1000"
+              [step]="100"
+              [formatTickValues]="true"
               [loading]="loading()"
             />
           </div>

@@ -32,6 +32,7 @@ import { NmfSuffixDirective } from '../../directives/nmf-suffix.directive';
         class="nmf-control-wrapper"
         [class.error]="hasErrors()"
         [class.disabled]="disabled()"
+        [class.readonly]="readonly()"
         [class.has-prefix]="hasPrefix()"
         [class.has-suffix]="hasSuffix()"
       >
@@ -53,7 +54,15 @@ import { NmfSuffixDirective } from '../../directives/nmf-suffix.directive';
           [disabled]="disabled()"
           [required]="isRequired()"
           [placeholder]="translatedPlaceholder()"
-          [autocomplete]="autocompleteAttr()"
+          [attr.aria-label]="ariaLabel() ?? translatedLabel()"
+          [attr.aria-describedby]="ariaDescribedBy()"
+          [attr.aria-labelledby]="ariaLabelledBy()"
+          [attr.autocomplete]="autocomplete()"
+          [attr.autocapitalize]="autocapitalize()"
+          [attr.minlength]="minlength()"
+          [attr.maxlength]="maxlength()"
+          [attr.pattern]="pattern()"
+          [readonly]="readonly()"
           (blur)="onFocusOut()"
           (focus)="onFocusIn()"
           (input)="onInput($event)"
@@ -125,6 +134,15 @@ export class InputTextComponent extends FormControlBase<
   type = input<'text' | 'email' | 'tel' | 'url' | 'password' | 'search'>(
     'text',
   );
+  autocapitalize = input<
+    'off' | 'none' | 'on' | 'sentences' | 'words' | 'characters'
+  >('off');
+
+  minlength = input<number | null>(null);
+  maxlength = input<number | null>(null);
+
+  pattern = input<string | null>(null);
+
   prefix = input<string | null>(null);
   suffix = input<string | null>(null);
 

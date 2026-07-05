@@ -14,8 +14,6 @@ import { MatFormControlBase } from '../../base/mat-form-control-base';
 import { MatButtonModule } from '@angular/material/button';
 import { PasswordBehavior } from '@ng-modular-forms/core';
 
-type TextInputType = 'text' | 'email' | 'tel' | 'url' | 'password' | 'search';
-
 @Component({
   selector: 'nmf-mat-text',
   imports: [
@@ -61,7 +59,14 @@ type TextInputType = 'text' | 'email' | 'tel' | 'url' | 'password' | 'search';
         [type]="computedType()"
         [required]="isRequired()"
         [placeholder]="translatedPlaceholder()"
-        [autocomplete]="autocompleteAttr()"
+        [attr.aria-label]="ariaLabel() ?? translatedLabel()"
+        [attr.aria-describedby]="ariaDescribedBy()"
+        [attr.aria-labelledby]="ariaLabelledBy()"
+        [attr.autocomplete]="autocomplete()"
+        [attr.autocapitalize]="autocapitalize()"
+        [attr.minlength]="minlength()"
+        [attr.maxlength]="maxlength()"
+        [attr.pattern]="pattern()"
         [formControl]="displayControl"
         (blur)="onFocusOut()"
         (focus)="onFocusIn()"
@@ -112,7 +117,18 @@ type TextInputType = 'text' | 'email' | 'tel' | 'url' | 'password' | 'search';
   `,
 })
 export class MatInputTextComponent extends MatFormControlBase<string | null> {
-  type = input<TextInputType>('text');
+  type = input<'text' | 'email' | 'tel' | 'url' | 'password' | 'search'>(
+    'text',
+  );
+  autocapitalize = input<
+    'off' | 'none' | 'on' | 'sentences' | 'words' | 'characters'
+  >('off');
+
+  minlength = input<number | null>(null);
+  maxlength = input<number | null>(null);
+
+  pattern = input<string | null>(null);
+
   prefix = input<string | null>(null);
   suffix = input<string | null>(null);
 

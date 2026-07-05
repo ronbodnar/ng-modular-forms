@@ -68,7 +68,10 @@ import { MatButtonModule } from '@angular/material/button';
         [step]="step()"
         [required]="isRequired()"
         [placeholder]="translatedPlaceholder()"
-        [autocomplete]="autocompleteAttr()"
+        [attr.aria-label]="ariaLabel() ?? translatedLabel()"
+        [attr.aria-describedby]="ariaDescribedBy()"
+        [attr.aria-labelledby]="ariaLabelledBy()"
+        [attr.autocomplete]="autocomplete()"
         [formControl]="displayControl"
         (blur)="onFocusOut()"
         (focus)="onFocusIn()"
@@ -149,12 +152,19 @@ export class MatInputNumberComponent extends MatFormControlBase<
   }
 
   updateDisplayValue(value: number | string | null) {
-    const shouldFormat = this.formatValue() && value != null;
-    const displayValue = shouldFormat
-      ? (formatNumber(value) ?? '')
-      : value != null
-        ? String(value)
-        : '';
+    const normalized =
+      value == null
+        ? null
+        : typeof value === 'number'
+          ? value
+          : parseNumber(value);
+
+    const displayValue =
+      this.formatValue() && normalized != null
+        ? (formatNumber(normalized) ?? '')
+        : value != null
+          ? String(value)
+          : '';
 
     this.displayControl.setValue(displayValue, {
       emitEvent: false,

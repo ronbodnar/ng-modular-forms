@@ -9,7 +9,7 @@ import { CommonModule } from '@angular/common';
 import { FormFieldComponent } from '../form-field/form-field.component';
 import { FormControlBase } from '../../base/form-control-base';
 import { NumberBehavior } from '../../behavior/number/number.behavior';
-import { parseNumber } from '../../number-utils';
+import { formatNumber, parseNumber } from '../../number-utils';
 
 @Component({
   selector: 'nmf-range',
@@ -39,7 +39,7 @@ import { parseNumber } from '../../number-utils';
                 [style.--range-pct]="fillPercentage()"
               >
                 <div class="nmf-range-popup">
-                  {{ value() }}
+                  {{ formatValue(value()) }}
                 </div>
               </div>
             </div>
@@ -54,18 +54,21 @@ import { parseNumber } from '../../number-utils';
             [style.accentColor]="'var(--nmf-input-accent-color)'"
             [id]="id()"
             [name]="name()"
-            [min]="min()"
-            [max]="max()"
+            [value]="value() ?? min() ?? 0"
+            [disabled]="disabled()"
+            [required]="isRequired()"
+            [placeholder]="translatedPlaceholder()"
+            [attr.autocomplete]="autocomplete()"
+            [attr.min]="min()"
+            [attr.max]="max()"
+            [attr.step]="step()"
+            [attr.aria-label]="ariaLabel() ?? translatedLabel()"
+            [attr.aria-describedby]="ariaDescribedBy()"
+            [attr.aria-labelledby]="ariaLabelledBy()"
             [attr.aria-valuemin]="min() ?? 0"
             [attr.aria-valuemax]="max() ?? 100"
             [attr.aria-valuenow]="value() ?? min() ?? 0"
             [attr.aria-valuetext]="ariaValueText()"
-            [attr.aria-label]="label()"
-            [value]="value()"
-            [disabled]="disabled()"
-            [required]="isRequired()"
-            [placeholder]="translatedPlaceholder()"
-            [autocomplete]="autocompleteAttr()"
             (blur)="onFocusOut()"
             (focus)="onFocusIn()"
             (input)="onInput($event)"
@@ -74,7 +77,7 @@ import { parseNumber } from '../../number-utils';
           @if (showTicks()) {
             <div class="nmf-range-ticks">
               @for (marker of markerOptions(); track marker) {
-                <option [value]="marker">{{ marker }}</option>
+                <option [value]="marker">{{ formatValue(marker) }}</option>
               }
             </div>
           }
@@ -86,8 +89,10 @@ import { parseNumber } from '../../number-utils';
 export class InputRangeComponent extends FormControlBase<number | null> {
   min = input.required<number | null>();
   max = input.required<number | null>();
+  step = input<number | null>(null);
   showTicks = input<boolean>(true);
   tickCount = input<number>(2);
+  formatTickValues = input<boolean>(false);
 
   numberBehavior = new NumberBehavior();
 
@@ -105,17 +110,26 @@ export class InputRangeComponent extends FormControlBase<number | null> {
   markerOptions = computed(() => {
     const min = this.min() ?? 0;
     const max = this.max() ?? 100;
+    const step = this.step() ?? 1;
     const ticks = this.tickCount();
 
     if (ticks <= 1) return [min];
-    if (ticks < 2) return [min, max];
+    if (ticks === 2) return [min, max];
 
     const range = max - min;
 
-    return Array.from({ length: ticks }, (_, i) => {
+    const raw = Array.from({ length: ticks }, (_, i) => {
       const ratio = i / (ticks - 1);
-      return Number((min + ratio * range).toFixed(2));
+      return min + ratio * range;
     });
+
+    const snapped = raw.map((v) => {
+      const snapped = Math.round((v - min) / step) * step + min;
+
+      return snapped;
+    });
+
+    return Array.from(new Set(snapped));
   });
 
   ariaValueText = computed(() => {
@@ -131,5 +145,15 @@ export class InputRangeComponent extends FormControlBase<number | null> {
     const parsed = parseNumber(cleaned);
 
     this.onChange(parsed);
+  }
+
+  formatValue(v: number | null | undefined): string {
+    if (v == null) return '';
+
+    if (!this.formatTickValues()) {
+      return String(v);
+    }
+
+    return formatNumber(v) ?? '';
   }
 }

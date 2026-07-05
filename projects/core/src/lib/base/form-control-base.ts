@@ -28,20 +28,43 @@ type ControlValue<T> = T | null;
 export abstract class FormControlBase<TValue> implements ControlValueAccessor {
   static nextId = 0;
 
-  readonly focusableElement = viewChild<
-    ElementRef<HTMLElement> | { focus: () => void; blur: () => void }
-  >('focusable');
-
   readonly id = input<string>(`nmf-form-control-${FormControlBase.nextId++}`);
   readonly label = input<string>('');
   readonly loading = input<boolean>(false);
   readonly name = input<string>('');
   readonly placeholder = input<string>('');
-  readonly autocompleteAttr = input<string | null>(null);
+  readonly autocomplete = input<string | null>(null);
   readonly autofocus = input<boolean>(false);
+  readonly readonly = input<boolean>(false);
   readonly _classList = input<string | string[]>('', { alias: 'classList' });
   readonly hintLabel = input<string>();
   readonly hintClassList = input<string>('');
+  readonly ariaLabel = input<string | null>(null);
+  readonly ariaDescribedBy = input<string | null>(null);
+  readonly ariaLabelledBy = input<string | null>(null);
+  readonly _disabledByInput = input<boolean, unknown>(false, {
+    transform: booleanAttribute,
+    alias: 'disabledOverride',
+  });
+
+  protected readonly cdr = inject(ChangeDetectorRef);
+  protected readonly destroyRef = inject(DestroyRef);
+  protected readonly ngControl = inject(NgControl, {
+    optional: true,
+  });
+  private readonly config = inject(NMF_CONFIG);
+
+  private readonly focusableElement = viewChild<
+    ElementRef<HTMLElement> | { focus: () => void; blur: () => void }
+  >('focusable');
+
+  private _disabledByCva = signal(false);
+  private _focused = signal(false);
+  private _value = signal<TValue | null>(null);
+
+  protected readonly disabled = computed(
+    () => this._disabledByInput() || this._disabledByCva(),
+  );
 
   readonly classList = computed(() => {
     const classList = this._classList();
@@ -52,27 +75,6 @@ export abstract class FormControlBase<TValue> implements ControlValueAccessor {
 
     return classList.split(/\s+/).filter((className) => className.length > 0);
   });
-
-  readonly _disabledByInput = input<boolean, unknown>(false, {
-    transform: booleanAttribute,
-    alias: 'disabledOverride',
-  });
-
-  readonly _disabledByCva = signal(false);
-  readonly cdr = inject(ChangeDetectorRef);
-  readonly destroyRef = inject(DestroyRef);
-  readonly ngControl = inject(NgControl, {
-    optional: true,
-  });
-  private readonly config = inject(NMF_CONFIG);
-
-  private _focused = signal(false);
-
-  private _value = signal<TValue | null>(null);
-
-  protected readonly disabled = computed(
-    () => this._disabledByInput() || this._disabledByCva(),
-  );
 
   protected readonly isRequired = signal(
     this.ngControl?.control?.hasValidator(Validators.required) ?? false,

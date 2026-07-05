@@ -42,7 +42,10 @@ export interface SelectOption {
           [value]="value() ?? ''"
           [disabled]="disabled()"
           [required]="isRequired()"
-          [autocomplete]="autocompleteAttr()"
+          [attr.autocomplete]="autocomplete()"
+          [attr.aria-label]="ariaLabel() ?? translatedLabel()"
+          [attr.aria-describedby]="ariaDescribedBy()"
+          [attr.aria-labelledby]="ariaLabelledBy()"
           (blur)="onFocusOut()"
           (focus)="onFocusIn()"
           (change)="handleChange($event)"
@@ -86,7 +89,7 @@ export class InputSelectComponent extends FormControlBase<
   );
 
   handleChange(event: Event): void {
-    if (this._disabledByCva()) return;
+    if (this.disabled()) return;
 
     const input = event.target as HTMLSelectElement;
     this.onChange(input.value || null);

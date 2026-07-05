@@ -57,13 +57,16 @@ import { LookupBehavior, LookupOption } from '@ng-modular-forms/core';
           matInput
           type="text"
           [class.cursor-not-allowed]="!isOptionSelected(null)"
-          [attr.aria-label]="detachLabel() ? translatedLabel() : null"
           [ngClass]="classList"
           [id]="id()"
           [name]="name()"
           [required]="isRequired()"
           [readonly]="!isOptionSelected(null)"
           [placeholder]="translatedPlaceholder()"
+          [attr.aria-label]="ariaLabel() ?? translatedLabel()"
+          [attr.aria-describedby]="ariaDescribedBy()"
+          [attr.aria-labelledby]="ariaLabelledBy()"
+          [attr.autocomplete]="autocomplete()"
           [formControl]="displayControl"
           [matAutocomplete]="auto"
           (blur)="onFocusOut()"
@@ -118,7 +121,7 @@ export class MatInputLookupComponent<TOption>
   extends MatFormControlBase<TOption, string>
   implements OnDestroy
 {
-  override readonly autocompleteAttr = input<string | null>('off');
+  override readonly autocomplete = input<string | null>('off');
 
   /*
    * Static options to display in the dropdown. This is for synchronous sources.

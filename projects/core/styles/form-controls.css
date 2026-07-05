@@ -93,8 +93,13 @@ html.dark {
 }
 
 .nmf-control-wrapper.disabled {
-  opacity: 0.6;
+  opacity: 0.4;
   cursor: not-allowed;
+}
+
+.nmf-control-wrapper.readonly {
+  opacity: 0.8;
+  cursor: default;
 }
 
 .nmf-control-wrapper:focus-within {

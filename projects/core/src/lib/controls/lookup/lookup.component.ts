@@ -52,7 +52,10 @@ import { LookupBehavior } from '../../behavior/lookup/lookup.behavior';
             [required]="isRequired()"
             [readonly]="!isOptionSelected(null)"
             [placeholder]="translatedPlaceholder()"
-            [autocomplete]="autocompleteAttr()"
+            [attr.aria-label]="ariaLabel() ?? translatedLabel()"
+            [attr.aria-describedby]="ariaDescribedBy()"
+            [attr.aria-labelledby]="ariaLabelledBy()"
+            [attr.autocomplete]="autocomplete()"
             (blur)="onFocusOut()"
             (focus)="onFocusIn()"
             (input)="onInput($event)"
@@ -99,7 +102,7 @@ export class InputLookupComponent<TOption>
   extends FormControlBase<TOption>
   implements OnDestroy
 {
-  override readonly autocompleteAttr = input<string | null>('off');
+  override readonly autocomplete = input<string | null>('off');
 
   /*
    * Static options to display in the dropdown. This is for synchronous sources.

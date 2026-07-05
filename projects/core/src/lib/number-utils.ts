@@ -7,10 +7,16 @@ export function parseNumber(
     return Number.isFinite(input) ? input : null;
   }
 
-  const normalized = input
-    .trim()
-    .replace(/,/g, '') // remove thousands
-    .replace(/(?!^)-/g, ''); // only allow leading '-'
+  let normalized = input.trim();
+
+  // remove currency symbols and spaces
+  normalized = normalized.replace(/[$€£¥₩₹\s]/g, '');
+
+  // remove thousands separators
+  normalized = normalized.replace(/,/g, '');
+
+  // keep only one leading minus
+  normalized = normalized.replace(/(?!^)-/g, '');
 
   if (normalized === '-' || normalized === '.' || normalized === '-.') {
     return null;
@@ -22,26 +28,11 @@ export function parseNumber(
 }
 
 export function formatNumber(
-  value: string | number | null,
-  locale: string = 'en-US',
+  value: number | null,
+  locale: string | undefined = undefined,
   options: Intl.NumberFormatOptions = { maximumFractionDigits: 2 },
 ): string | null {
-  if (value == null || value === '') {
-    return null;
-  }
-  if (typeof value !== 'string') {
-    value = String(value);
-  }
+  if (value == null || !Number.isFinite(value)) return null;
 
-  value = value.replace(/[^\d\-,.]/g, '');
-
-  if (value === '') {
-    return null;
-  }
-
-  const isNegative = value.startsWith('-');
-  const numericValue = Number(value.replace(/[,$-]/g, ''));
-  const formatted = numericValue.toLocaleString(locale, options);
-
-  return isNegative ? `-${formatted}` : formatted;
+  return new Intl.NumberFormat(locale, options).format(value);
 }

@@ -53,14 +53,17 @@ import { NmfSuffixDirective } from '../../directives/nmf-suffix.directive';
           [id]="id()"
           [name]="name()"
           [type]="formatValue() ? 'text' : 'number'"
-          [min]="min()"
-          [max]="max()"
-          [step]="step()"
           [value]="displayValue()"
           [disabled]="disabled()"
           [required]="isRequired()"
           [placeholder]="translatedPlaceholder()"
-          [autocomplete]="autocompleteAttr()"
+          [attr.aria-label]="ariaLabel() ?? translatedLabel()"
+          [attr.aria-describedby]="ariaDescribedBy()"
+          [attr.aria-labelledby]="ariaLabelledBy()"
+          [attr.autocomplete]="autocomplete()"
+          [attr.min]="min()"
+          [attr.max]="max()"
+          [attr.step]="step()"
           (blur)="onFocusOut()"
           (focus)="onFocusIn()"
           (input)="onInput($event)"
@@ -138,11 +141,18 @@ export class InputNumberComponent extends FormControlBase<
   }
 
   updateDisplayValue(value: string | number | null) {
-    if (this.formatValue() && value != null) {
-      this.displayValue.set(formatNumber(value) ?? '');
+    if (value == null) {
+      this.displayValue.set('');
       return;
     }
 
-    this.displayValue.set(value != null ? String(value) : '');
+    const parsed = typeof value === 'number' ? value : parseNumber(value);
+
+    if (this.formatValue() && parsed != null) {
+      this.displayValue.set(formatNumber(parsed) ?? '');
+      return;
+    }
+
+    this.displayValue.set(String(value));
   }
 }
