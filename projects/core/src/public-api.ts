@@ -15,6 +15,7 @@ export * from './lib/controls/form-field/form-field.component';
 export * from './lib/controls/lookup/lookup.component';
 export * from './lib/controls/lookup/lookup.types';
 export * from './lib/controls/number/number.component';
+export * from './lib/controls/range/range.component';
 export * from './lib/controls/select/select.component';
 export * from './lib/controls/text/text.component';
 export * from './lib/controls/textarea/textarea.component';

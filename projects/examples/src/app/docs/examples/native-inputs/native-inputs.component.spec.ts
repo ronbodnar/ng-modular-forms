@@ -28,6 +28,7 @@ describe('BasicInputsFormComponent', () => {
       date: expect.any(Date),
       time: expect.any(Date),
       number: 1230,
+      numberRange: 75,
       numberFormatted: 1230,
       password: '12345678',
       select: 'us',

@@ -84,7 +84,7 @@ export class InputNumberComponent extends FormControlBase<
   prefix = input<string | null>(null);
   suffix = input<string | null>(null);
   allowNegative = input<boolean>(true);
-  negativeColor = input<string | null>('var(--mat-sys-error)');
+  negativeColor = input<string | null>('var(--nmf-input-error-color)');
   hideStepper = input<boolean>(false);
   min = input<number | null>(null);
   max = input<number | null>(null);

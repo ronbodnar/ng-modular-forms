@@ -11,6 +11,7 @@ import {
   InputDatepickerComponent,
   InputLookupComponent,
   InputNumberComponent,
+  InputRangeComponent,
   InputSelectComponent,
   InputTextareaComponent,
   InputTextComponent,
@@ -32,6 +33,7 @@ import { Observable, of, delay } from 'rxjs';
     InputTextareaComponent,
     InputLookupComponent,
     InputNumberComponent,
+    InputRangeComponent,
     InputDatepickerComponent,
     InputTimepickerComponent,
     DocsPageComponent,
@@ -44,6 +46,11 @@ export class NativeInputsExampleComponent implements OnInit {
   form = new FormGroup({
     text: new FormControl('', [Validators.required, Validators.minLength(3)]),
     number: new FormControl<number | null>(null, [
+      Validators.required,
+      Validators.min(0),
+      Validators.max(100),
+    ]),
+    numberRange: new FormControl<number | null>(null, [
       Validators.required,
       Validators.min(0),
       Validators.max(100),
@@ -171,6 +178,7 @@ export class NativeInputsExampleComponent implements OnInit {
     this.form.patchValue({
       text: 'Hello World',
       number: 1230,
+      numberRange: 75,
       numberFormatted: 1230,
       password: '12345678',
       select: 'us',

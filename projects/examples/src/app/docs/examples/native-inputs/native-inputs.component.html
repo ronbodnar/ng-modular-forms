@@ -29,7 +29,6 @@
             <nmf-number
               formControlName="number"
               label="Number Input"
-              type="number"
               placeholder="Enter a number"
               autocomplete="off"
               [loading]="loading()"
@@ -38,11 +37,24 @@
             <nmf-number
               formControlName="numberFormatted"
               label="Number Input (formatted)"
-              type="number"
               placeholder="Enter a number"
               autocomplete="off"
+              [min]="0"
+              [max]="100"
+              [step]="5"
               [loading]="loading()"
               [formatValue]="true"
+            />
+
+            <nmf-range
+              formControlName="numberRange"
+              label="Number Input (range)"
+              type="range"
+              placeholder="Enter a number"
+              autocomplete="off"
+              [min]="0"
+              [max]="100"
+              [loading]="loading()"
             />
 
             <nmf-text

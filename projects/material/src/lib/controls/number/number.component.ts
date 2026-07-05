@@ -110,7 +110,7 @@ export class MatInputNumberComponent extends MatFormControlBase<
   prefix = input<string | null>(null);
   suffix = input<string | null>(null);
   allowNegative = input<boolean>(true);
-  negativeColor = input<string | null>('#dc2626');
+  negativeColor = input<string | null>('var(--mat-sys-error)');
   min = input<number | null>(null);
   max = input<number | null>(null);
   step = input<number | null>(null);

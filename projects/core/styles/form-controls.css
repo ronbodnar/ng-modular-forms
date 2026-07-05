@@ -81,6 +81,13 @@ html.dark {
     box-shadow 0.15s ease;
 }
 
+.frameless-control {
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+}
+
 .nmf-control-wrapper.nmf-select {
   padding: 0;
 }
