@@ -46,17 +46,6 @@
               [formatValue]="true"
             />
 
-            <nmf-range
-              formControlName="numberRange"
-              label="Number Input (range)"
-              type="range"
-              placeholder="Enter a number"
-              autocomplete="off"
-              [min]="0"
-              [max]="100"
-              [loading]="loading()"
-            />
-
             <nmf-text
               formControlName="password"
               label="Password Input"
@@ -130,6 +119,17 @@
               autocomplete="off"
               [loading]="loading()"
               [rows]="4"
+            />
+
+            <nmf-range
+              formControlName="range"
+              label="Range Input"
+              type="range"
+              placeholder="Enter a number"
+              autocomplete="off"
+              [min]="0"
+              [max]="100"
+              [loading]="loading()"
             />
           </div>
         </form>

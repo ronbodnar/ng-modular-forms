@@ -50,11 +50,6 @@ export class NativeInputsExampleComponent implements OnInit {
       Validators.min(0),
       Validators.max(100),
     ]),
-    numberRange: new FormControl<number | null>(null, [
-      Validators.required,
-      Validators.min(0),
-      Validators.max(100),
-    ]),
     numberFormatted: new FormControl<number | null>(null, [
       Validators.min(0),
       Validators.max(100),
@@ -66,13 +61,18 @@ export class NativeInputsExampleComponent implements OnInit {
     date: new FormControl<Date | null>(null, Validators.required),
     time: new FormControl<Date | null>(null, Validators.required),
     select: new FormControl<string | null>(null, Validators.required),
+    lookupSync: new FormControl<string | null>(null),
+    lookupAsync: new FormControl<Country | null>(null),
     currency: new FormControl<number | null>(null, [
       Validators.required,
       Validators.min(0),
     ]),
     textarea: new FormControl('', [Validators.maxLength(500)]),
-    lookupSync: new FormControl<string | null>(null),
-    lookupAsync: new FormControl<Country | null>(null),
+    range: new FormControl<number | null>(null, [
+      Validators.required,
+      Validators.min(0),
+      Validators.max(100),
+    ]),
     array: new FormArray<
       FormGroup<{
         text: FormControl<string | null>;
@@ -177,8 +177,8 @@ export class NativeInputsExampleComponent implements OnInit {
   populateForm(): void {
     this.form.patchValue({
       text: 'Hello World',
+      range: 75,
       number: 1230,
-      numberRange: 75,
       numberFormatted: 1230,
       password: '12345678',
       select: 'us',

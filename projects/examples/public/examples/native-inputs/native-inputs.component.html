@@ -93,5 +93,16 @@
       [loading]="loading()"
       [rows]="4"
     />
+
+    <nmf-range
+      formControlName="range"
+      label="Range Input"
+      type="range"
+      placeholder="Enter a number"
+      autocomplete="off"
+      [min]="0"
+      [max]="100"
+      [loading]="loading()"
+    />
   </div>
 </form>

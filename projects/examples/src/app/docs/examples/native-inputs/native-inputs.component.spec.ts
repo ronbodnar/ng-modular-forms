@@ -28,12 +28,12 @@ describe('BasicInputsFormComponent', () => {
       date: expect.any(Date),
       time: expect.any(Date),
       number: 1230,
-      numberRange: 75,
       numberFormatted: 1230,
       password: '12345678',
       select: 'us',
       currency: 1230,
       textarea: expect.stringContaining('Hello'),
+      range: 75,
       lookupSync: 'us',
       lookupAsync: {
         code: 'us',
