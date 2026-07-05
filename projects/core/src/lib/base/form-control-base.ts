@@ -6,6 +6,7 @@ import {
   Validators,
 } from '@angular/forms';
 import {
+  afterNextRender,
   booleanAttribute,
   ChangeDetectorRef,
   computed,
@@ -37,6 +38,7 @@ export abstract class FormControlBase<TValue> implements ControlValueAccessor {
   readonly name = input<string>('');
   readonly placeholder = input<string>('');
   readonly autocompleteAttr = input<string | null>(null);
+  readonly autofocus = input<boolean>(false);
   readonly _classList = input<string | string[]>('', { alias: 'classList' });
   readonly hintLabel = input<string>();
   readonly hintClassList = input<string>('');
@@ -97,9 +99,15 @@ export abstract class FormControlBase<TValue> implements ControlValueAccessor {
     if (this.ngControl) {
       this.ngControl.valueAccessor = this;
     }
+
+    afterNextRender(() => {
+      if (this.autofocus()) {
+        this.focus();
+      }
+    });
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     const control = this.control;
     if (!control) return;
 
@@ -184,7 +192,6 @@ export abstract class FormControlBase<TValue> implements ControlValueAccessor {
   }
 
   onFocusOut(): void {
-    //this.control?.markAsTouched();
     this._focused.set(false);
     this.onTouched();
   }
