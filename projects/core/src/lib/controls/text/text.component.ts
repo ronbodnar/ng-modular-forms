@@ -52,6 +52,7 @@ import { NmfSuffixDirective } from '../../directives/nmf-suffix.directive';
           [type]="computedType()"
           [value]="value()"
           [disabled]="disabled()"
+          [readonly]="readonly()"
           [required]="isRequired()"
           [placeholder]="translatedPlaceholder()"
           [attr.aria-label]="ariaLabel() ?? translatedLabel()"

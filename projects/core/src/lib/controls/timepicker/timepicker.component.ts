@@ -39,6 +39,7 @@ import { FormControlBase } from '../../base/form-control-base';
           [value]="displayValue()"
           [disabled]="disabled()"
           [required]="isRequired()"
+          [readonly]="readonly()"
           [placeholder]="translatedPlaceholder()"
           [attr.aria-label]="ariaLabel() ?? translatedLabel()"
           [attr.aria-describedby]="ariaDescribedBy()"

@@ -37,6 +37,7 @@ import { MatInputModule } from '@angular/material/input';
         [id]="id()"
         [rows]="rows()"
         [cols]="cols()"
+        [readonly]="readonly()"
         [required]="isRequired()"
         [placeholder]="translatedPlaceholder()"
         [attr.aria-label]="ariaLabel() ?? translatedLabel()"

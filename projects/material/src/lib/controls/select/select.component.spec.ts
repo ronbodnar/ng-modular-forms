@@ -32,7 +32,7 @@ describe('MatInputSelectComponent', () => {
     component.writeValue('one');
     fixture.detectChanges();
 
-    expect(component.displayControl.value).toBe('one');
+    expect(component.value()).toBe('one');
   });
 
   it('calls onChange with the selected value when selection changes', () => {

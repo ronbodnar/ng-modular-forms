@@ -9,7 +9,11 @@ import {
 } from '@angular/material/form-field';
 import { toSignal } from '@angular/core/rxjs-interop';
 
-@Directive({})
+@Directive({
+  host: {
+    class: 'nmf-material',
+  },
+})
 export abstract class MatFormControlBase<
   TValue,
   TDisplayValue = string,

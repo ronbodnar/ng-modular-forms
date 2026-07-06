@@ -50,6 +50,7 @@ import { MatFormControlBase } from '../../base/mat-form-control-base';
         [max]="maxDate()"
         [matDatepicker]="picker"
         [matDatepickerFilter]="dateFilter()"
+        [readonly]="readonly()"
         [required]="isRequired()"
         [placeholder]="placeholder()"
         [attr.aria-label]="ariaLabel() ?? translatedLabel()"

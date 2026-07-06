@@ -66,8 +66,8 @@ export class NativeInputsExampleComponent {
     textarea: new FormControl('', [Validators.maxLength(500)]),
     range: new FormControl<number | null>(null, [
       Validators.required,
-      Validators.min(0),
-      Validators.max(100),
+      Validators.min(200),
+      Validators.max(500),
     ]),
     array: new FormArray<
       FormGroup<{

@@ -47,6 +47,7 @@ import { MatNativeDateModule } from '@angular/material/core';
         [matTimepicker]="picker"
         [matTimepickerMin]="minDate()"
         [matTimepickerMax]="maxDate()"
+        [readonly]="readonly()"
         [required]="isRequired()"
         [placeholder]="translatedPlaceholder()"
         [attr.aria-label]="ariaLabel() ?? translatedLabel()"

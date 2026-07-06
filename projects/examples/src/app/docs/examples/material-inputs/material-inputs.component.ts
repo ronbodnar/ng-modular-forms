@@ -31,6 +31,7 @@ import { DocsPageComponent } from '../../ui/docs-page/docs-page.component';
 import { FormStatusOutputComponent } from '../../ui/form-status-output/form-status-output.component';
 import { type LookupOption, type SelectOption } from '@ng-modular-forms/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { MatInputRangeComponent } from '../../../../../../material/src/lib/controls/range/range.component';
 
 @Component({
   selector: 'app-material-inputs-example',
@@ -49,6 +50,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     MatInputTimepickerComponent,
     MatInputDatepickerComponent,
     MatInputNumberComponent,
+    MatInputRangeComponent,
   ],
   templateUrl: './material-inputs.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -74,6 +76,10 @@ export class MaterialInputsExampleComponent implements OnInit {
     textarea: new FormControl('', [
       Validators.maxLength(500),
       Validators.required,
+    ]),
+    range: new FormControl<number | null>(null, [
+      Validators.min(200),
+      Validators.max(500),
     ]),
     date: new FormControl<Date | null>(null, Validators.required),
     time: new FormControl<Date | null>(null, Validators.required),
@@ -200,6 +206,7 @@ export class MaterialInputsExampleComponent implements OnInit {
       select: 'us',
       currency: 1230,
       textarea: 'Hello\n\nWorld',
+      range: 75,
       date: new Date(),
       time: new Date(),
       lookupSync: 'us',

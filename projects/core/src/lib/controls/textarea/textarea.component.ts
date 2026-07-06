@@ -34,6 +34,7 @@ import { FormFieldComponent } from '../form-field/form-field.component';
           [cols]="cols()"
           [value]="value()"
           [disabled]="disabled()"
+          [readonly]="readonly()"
           [required]="isRequired()"
           [placeholder]="translatedPlaceholder()"
           [attr.aria-label]="ariaLabel() ?? translatedLabel()"

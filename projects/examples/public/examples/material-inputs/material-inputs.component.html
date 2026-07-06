@@ -65,6 +65,15 @@
       placeholder="Tell us about yourself..."
       [rows]="4"
     />
+
+    <nmf-mat-range
+      formControlName="range"
+      label="Range Input"
+      type="range"
+      [min]="0"
+      [max]="1000"
+      [step]="10"
+    />
   </div>
 
   <div class="col-start-1" formArrayName="array">

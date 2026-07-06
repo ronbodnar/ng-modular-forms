@@ -55,6 +55,7 @@ import { NmfSuffixDirective } from '../../directives/nmf-suffix.directive';
           [type]="formatValue() ? 'text' : 'number'"
           [value]="displayValue()"
           [disabled]="disabled()"
+          [readonly]="readonly()"
           [required]="isRequired()"
           [placeholder]="translatedPlaceholder()"
           [attr.aria-label]="ariaLabel() ?? translatedLabel()"

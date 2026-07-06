@@ -57,6 +57,7 @@ import { PasswordBehavior } from '@ng-modular-forms/core';
         [id]="id()"
         [name]="name()"
         [type]="computedType()"
+        [readonly]="readonly()"
         [required]="isRequired()"
         [placeholder]="translatedPlaceholder()"
         [attr.aria-label]="ariaLabel() ?? translatedLabel()"

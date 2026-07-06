@@ -66,6 +66,7 @@ import { MatButtonModule } from '@angular/material/button';
         [min]="min()"
         [max]="max()"
         [step]="step()"
+        [readonly]="readonly()"
         [required]="isRequired()"
         [placeholder]="translatedPlaceholder()"
         [attr.aria-label]="ariaLabel() ?? translatedLabel()"

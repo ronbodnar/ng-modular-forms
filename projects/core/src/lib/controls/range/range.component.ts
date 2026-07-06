@@ -56,6 +56,7 @@ import { formatNumber, parseNumber } from '../../number-utils';
             [name]="name()"
             [value]="value() ?? min() ?? 0"
             [disabled]="disabled()"
+            [readonly]="readonly()"
             [required]="isRequired()"
             [placeholder]="translatedPlaceholder()"
             [attr.autocomplete]="autocomplete()"

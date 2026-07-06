@@ -160,6 +160,18 @@
               [appearance]="appearance()"
               [shouldLabelFloat]="floatLabel()"
             />
+
+            <nmf-mat-range
+              formControlName="range"
+              label="Range Input"
+              type="range"
+              [min]="0"
+              [max]="1000"
+              [step]="10"
+              [loading]="loading()"
+              [appearance]="appearance()"
+              [shouldLabelFloat]="floatLabel()"
+            />
           </div>
         </form>
       </app-form-section>

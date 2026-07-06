@@ -61,7 +61,7 @@ import { LookupBehavior, LookupOption } from '@ng-modular-forms/core';
           [id]="id()"
           [name]="name()"
           [required]="isRequired()"
-          [readonly]="!isOptionSelected(null)"
+          [readonly]="readonly() || !isOptionSelected(null)"
           [placeholder]="translatedPlaceholder()"
           [attr.aria-label]="ariaLabel() ?? translatedLabel()"
           [attr.aria-describedby]="ariaDescribedBy()"

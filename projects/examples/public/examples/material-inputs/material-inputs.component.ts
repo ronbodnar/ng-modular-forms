@@ -16,6 +16,7 @@ import {
   MatInputDatepickerComponent,
   MatInputNumberComponent,
   MatInputLookupComponent,
+  MatInputRangeComponent,
 } from '@ng-modular-forms/material';
 import type { LookupOption, SelectOption } from '@ng-modular-forms/core';
 import { Observable, of, delay } from 'rxjs';
@@ -33,6 +34,7 @@ import { Observable, of, delay } from 'rxjs';
     MatInputDatepickerComponent,
     MatInputNumberComponent,
     MatInputLookupComponent,
+    MatInputRangeComponent,
   ],
   templateUrl: './material-inputs.component.html',
 })
@@ -57,6 +59,10 @@ export class MaterialInputsExampleComponent {
     textarea: new FormControl('', [
       Validators.maxLength(500),
       Validators.required,
+    ]),
+    range: new FormControl<number | null>(null, [
+      Validators.min(200),
+      Validators.max(500),
     ]),
     date: new FormControl<Date | null>(null, Validators.required),
     time: new FormControl<Date | null>(null, Validators.required),
