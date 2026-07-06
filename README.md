@@ -320,7 +320,7 @@ All integrated control primitives are built on ControlValueAccessor. This allows
 | Text / Password   | `nmf-text`                     | `nmf-mat-text`                     | Masking, text parsing, and standard string inputs.       |
 | Lookup            | `nmf-lookup`                   | `nmf-mat-lookup`                   | Automated synchronous/asynchronous auto-complete engine. |
 | Number / Currency | `nmf-number`                   | `nmf-mat-number`                   | Strictly typed runtime numeric normalization.            |
-| Range Slider      | `nmf-range`                    | Not available                      | Clamped min/max sliding numeric selection                |
+| Range Slider      | `nmf-range`                    | `nmf-mat-range`                    | Clamped min/max sliding numeric selection                |
 | Date              | `nmf-datepicker`               | `nmf-mat-datepicker`               | Calendar utility wrappers.                               |
 | Time              | `nmf-timepicker`               | `nmf-mat-timepicker`               | Standard temporal data picking inputs.                   |
 | Select            | `nmf-select`                   | `nmf-mat-select`                   | Option-driven stream selectors.                          |

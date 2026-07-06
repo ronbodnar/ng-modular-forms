@@ -110,6 +110,7 @@ Prefixes / Suffixes are enabled for text and number fields, allowing number to d
 | Lookup          | `nmf-mat-lookup`      |
 | Number          | `nmf-mat-number`      |
 | Date            | `nmf-mat-datepicker`  |
+| Range / Slider  | `nmf-mat-range`       |
 | Select          | `nmf-mat-select`      |
 | Textarea        | `nmf-mat-textarea`    |
 | Time            | `nmf-mat-timepicker`  |

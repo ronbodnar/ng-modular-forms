@@ -531,7 +531,7 @@ Prefixes / Suffixes are enabled for text and number fields, allowing number to d
 | Lookup          | `nmf-lookup`         | `nmf-mat-lookup`      |
 | Number          | `nmf-number`         | `nmf-mat-number`      |
 | Date            | `nmf-datepicker`     | `nmf-mat-datepicker`  |
-| Range Slider    | `nmf-range`          | Not available         |
+| Range Slider    | `nmf-range`          | `nmf-mat-range`       |
 | Select          | `nmf-select`         | `nmf-mat-select`      |
 | Textarea        | `nmf-textarea`       | `nmf-mat-textarea`    |
 | Time            | `nmf-timepicker`     | `nmf-mat-timepicker`  |
