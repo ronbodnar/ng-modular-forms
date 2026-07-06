@@ -1,3 +1,15 @@
+:root {
+  --nmf-mat-label-detached-color: var(--mat-sys-on-surface-variant);
+  --nmf-mat-label-detached-size: 0.9rem;
+  --nmf-mat-label-detached-weight: 500;
+  --nmf-mat-label-detached-padding: 0 0.25rem;
+}
+
+.nmf-material {
+  --nmf-input-error-color: var(--mat-sys-error);
+  --nmf-input-accent-color: var(--mat-sys-primary);
+}
+
 .nmf-mat-field {
   position: relative;
   width: 100%;
@@ -15,10 +27,10 @@
 }
 
 .nmf-mat-label-detached {
-  padding: 0 0.25rem;
-  color: var(--mat-sys-on-surface-variant);
-  font-size: 0.75rem;
-  font-weight: 500;
+  padding: var(--nmf-mat-label-detached-padding);
+  color: var(--nmf-mat-label-detached-color);
+  font-size: var(--nmf-mat-label-detached-size);
+  font-weight: var(--nmf-mat-label-detached-weight);
 }
 
 .cursor-not-allowed {
