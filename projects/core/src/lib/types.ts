@@ -16,6 +16,14 @@ export interface FormOrchestratorOptions {
   handlerRegistry?: FormHandlerRegistry;
 }
 
+export interface NmfTranslations {
+  fileSelector?: {
+    filesSelected?: string;
+  };
+
+  validationMessages?: Partial<ValidationMessages>;
+}
+
 export interface ValidationMessages {
   required?: string;
   minLength?: string;

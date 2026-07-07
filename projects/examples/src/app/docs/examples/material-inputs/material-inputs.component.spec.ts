@@ -40,6 +40,7 @@ describe('MaterialInputsFormComponent', () => {
       },
       range: 75,
       array: [{ text: 'Array value 1' }, { text: 'Array value 2' }],
+      file: null,
     });
   });
 });

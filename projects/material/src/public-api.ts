@@ -5,8 +5,9 @@
 export * from './lib/base/mat-form-control-base';
 
 export * from './lib/controls/datepicker/datepicker.component';
-export * from './lib/controls/number/number.component';
+export * from './lib/controls/file-selector/file-selector.component';
 export * from './lib/controls/lookup/lookup.component';
+export * from './lib/controls/number/number.component';
 export * from './lib/controls/range/range.component';
 export * from './lib/controls/select/select.component';
 export * from './lib/controls/text/text.component';

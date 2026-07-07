@@ -23,6 +23,8 @@ import {
   MatInputDatepickerComponent,
   MatInputNumberComponent,
   MatInputLookupComponent,
+  MatInputFileSelectorComponent,
+  MatInputRangeComponent,
 } from '@ng-modular-forms/material';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatButtonModule } from '@angular/material/button';
@@ -31,7 +33,6 @@ import { DocsPageComponent } from '../../ui/docs-page/docs-page.component';
 import { FormStatusOutputComponent } from '../../ui/form-status-output/form-status-output.component';
 import { type LookupOption, type SelectOption } from '@ng-modular-forms/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { MatInputRangeComponent } from '../../../../../../material/src/lib/controls/range/range.component';
 
 @Component({
   selector: 'app-material-inputs-example',
@@ -51,6 +52,7 @@ import { MatInputRangeComponent } from '../../../../../../material/src/lib/contr
     MatInputDatepickerComponent,
     MatInputNumberComponent,
     MatInputRangeComponent,
+    MatInputFileSelectorComponent,
   ],
   templateUrl: './material-inputs.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -90,6 +92,7 @@ export class MaterialInputsExampleComponent implements OnInit {
         text: FormControl<string | null>;
       }>
     >([]),
+    file: new FormControl<File | null>(null, Validators.required),
   });
 
   get arrayGroup(): FormGroup {

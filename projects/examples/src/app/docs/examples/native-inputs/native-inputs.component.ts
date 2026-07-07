@@ -9,6 +9,7 @@ import {
 import { CommonModule } from '@angular/common';
 import {
   InputDatepickerComponent,
+  InputFileSelectorComponent,
   InputLookupComponent,
   InputNumberComponent,
   InputRangeComponent,
@@ -39,6 +40,7 @@ import { Observable, of, delay } from 'rxjs';
     DocsPageComponent,
     FormSectionComponent,
     FormStatusOutputComponent,
+    InputFileSelectorComponent,
   ],
   templateUrl: './native-inputs.component.html',
 })
@@ -73,6 +75,7 @@ export class NativeInputsExampleComponent implements OnInit {
       Validators.min(200),
       Validators.max(500),
     ]),
+    file: new FormControl<File | null>(null, Validators.required),
     array: new FormArray<
       FormGroup<{
         text: FormControl<string | null>;
@@ -188,6 +191,7 @@ export class NativeInputsExampleComponent implements OnInit {
       time: new Date(),
       lookupSync: 'us',
       lookupAsync: this.rawCountries[0],
+      file: null,
     });
 
     this.arrayControl.clear();

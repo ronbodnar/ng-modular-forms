@@ -525,16 +525,17 @@ All components share a consistent API and are interchangeable between Native and
 
 Prefixes / Suffixes are enabled for text and number fields, allowing number to double as a currency field.
 
-| Input Type      | Native Selector      | Material Selector     |
-|-----------------|----------------------|-----------------------|
-| Text / Password | `nmf-text`           | `nmf-mat-text`        |
-| Lookup          | `nmf-lookup`         | `nmf-mat-lookup`      |
-| Number          | `nmf-number`         | `nmf-mat-number`      |
-| Date            | `nmf-datepicker`     | `nmf-mat-datepicker`  |
-| Range Slider    | `nmf-range`          | `nmf-mat-range`       |
-| Select          | `nmf-select`         | `nmf-mat-select`      |
-| Textarea        | `nmf-textarea`       | `nmf-mat-textarea`    |
-| Time            | `nmf-timepicker`     | `nmf-mat-timepicker`  |
+| Input Type      | Native Selector      | Material Selector       |
+|-----------------|----------------------|-------------------------|
+| Date            | `nmf-datepicker`     | `nmf-mat-datepicker`    |
+| File Selector   | `nmf-file-selector`  | `nmf-mat-file-selector` |
+| Lookup          | `nmf-lookup`         | `nmf-mat-lookup`        |
+| Number          | `nmf-number`         | `nmf-mat-number`        |
+| Range Slider    | `nmf-range`          | `nmf-mat-range`         |
+| Select          | `nmf-select`         | `nmf-mat-select`        |
+| Text / Password | `nmf-text`           | `nmf-mat-text`          |
+| Textarea        | `nmf-textarea`       | `nmf-mat-textarea`      |
+| Time            | `nmf-timepicker`     | `nmf-mat-timepicker`    |
 
 ###  Shared Features
 

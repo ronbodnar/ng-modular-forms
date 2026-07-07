@@ -208,43 +208,48 @@ export abstract class FormControlBase<TValue> implements ControlValueAccessor {
     switch (firstKey) {
       case 'required':
         return this.translate(
-          this.config.validationMessages?.required ?? 'This field is required',
+          this.config.translations?.validationMessages?.required ??
+            'This field is required',
         );
 
       case 'minlength':
         return this.translate(
-          this.config.validationMessages?.minLength ??
+          this.config.translations?.validationMessages?.minLength ??
             'Minimum length is {{requiredLength}}',
           { requiredLength: error.requiredLength },
         );
 
       case 'maxlength':
         return this.translate(
-          this.config.validationMessages?.maxLength ??
+          this.config.translations?.validationMessages?.maxLength ??
             'Maximum length is {{requiredLength}}',
           { requiredLength: error.requiredLength },
         );
 
       case 'min':
         return this.translate(
-          this.config.validationMessages?.min ?? 'Minimum value is {{min}}',
+          this.config.translations?.validationMessages?.min ??
+            'Minimum value is {{min}}',
           { min: error.min },
         );
 
       case 'max':
         return this.translate(
-          this.config.validationMessages?.max ?? 'Maximum value is {{max}}',
+          this.config.translations?.validationMessages?.max ??
+            'Maximum value is {{max}}',
           { max: error.max },
         );
 
       case 'email':
         return this.translate(
-          this.config.validationMessages?.email ?? 'Invalid email address',
+          this.config.translations?.validationMessages?.email ??
+            'Invalid email address',
         );
 
       case 'pattern':
         return this.translate(
-          this.config.validationMessages?.pattern ?? 'Invalid format',
+          this.config.translations?.validationMessages?.pattern ??
+            'Invalid format',
         );
 
       case 'custom':
@@ -252,23 +257,35 @@ export abstract class FormControlBase<TValue> implements ControlValueAccessor {
           return this.translate(error);
         }
         return this.translate(
-          this.config.validationMessages?.fallback ?? 'Invalid value',
+          this.config.translations?.validationMessages?.fallback ??
+            'Invalid value',
         );
 
       default:
         return this.translate(
-          this.config.validationMessages?.fallback ?? 'Invalid value',
+          this.config.translations?.validationMessages?.fallback ??
+            'Invalid value',
         );
     }
   }
 
   protected translate(
-    value: string | null | undefined,
+    key: string | null | undefined,
     params?: Record<string, unknown>,
   ): string {
-    if (!value) {
+    if (!key) {
       return '';
     }
+
+    const translation = key.split('.').reduce<unknown>((obj, part) => {
+      if (obj && typeof obj === 'object') {
+        return (obj as Record<string, unknown>)[part];
+      }
+
+      return undefined;
+    }, this.config.translations);
+
+    const value = typeof translation === 'string' ? translation : key;
 
     return this.config.translate?.(value, params) ?? value;
   }

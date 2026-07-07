@@ -40,6 +40,7 @@ describe('BasicInputsFormComponent', () => {
         name: 'United States',
       },
       array: [{ text: 'Array value 1' }, { text: 'Array value 2' }],
+      file: null,
     });
   });
 });

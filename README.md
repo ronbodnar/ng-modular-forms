@@ -317,14 +317,15 @@ All integrated control primitives are built on ControlValueAccessor. This allows
 
 | Input Type        | Native Selector                | Material Selector                  | Description                                              |
 |-------------------|--------------------------------|------------------------------------|----------------------------------------------------------|
-| Text / Password   | `nmf-text`                     | `nmf-mat-text`                     | Masking, text parsing, and standard string inputs.       |
+| Date              | `nmf-datepicker`               | `nmf-mat-datepicker`               | Calendar utility wrappers.                               |
+| File Selector     | `nmf-file-selector`            | `nmf-mat-file-selector`            | File and camera upload with multiple selection support.  |
 | Lookup            | `nmf-lookup`                   | `nmf-mat-lookup`                   | Automated synchronous/asynchronous auto-complete engine. |
 | Number / Currency | `nmf-number`                   | `nmf-mat-number`                   | Strictly typed runtime numeric normalization.            |
 | Range Slider      | `nmf-range`                    | `nmf-mat-range`                    | Clamped min/max sliding numeric selection                |
-| Date              | `nmf-datepicker`               | `nmf-mat-datepicker`               | Calendar utility wrappers.                               |
-| Time              | `nmf-timepicker`               | `nmf-mat-timepicker`               | Standard temporal data picking inputs.                   |
 | Select            | `nmf-select`                   | `nmf-mat-select`                   | Option-driven stream selectors.                          |
+| Text / Password   | `nmf-text`                     | `nmf-mat-text`                     | Masking, text parsing, and standard string inputs.       |
 | Textarea          | `nmf-textarea`                 | `nmf-mat-textarea`                 | Multi-line textual controls.                             |
+| Time              | `nmf-timepicker`               | `nmf-mat-timepicker`               | Standard temporal data picking inputs.                   |
 
 ### Features
 
