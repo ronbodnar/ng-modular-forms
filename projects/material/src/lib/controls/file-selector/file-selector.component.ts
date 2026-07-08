@@ -12,6 +12,13 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatFormControlBase } from '../../base/mat-form-control-base';
 import { MatButtonModule } from '@angular/material/button';
+import {
+  FileSelectorCapture,
+  FileSelectorSelectionMode,
+  filesToAcceptString,
+  formatFileName,
+  getSelectedFiles,
+} from '@ng-modular-forms/core';
 
 @Component({
   selector: 'nmf-mat-file-selector',
@@ -101,41 +108,30 @@ import { MatButtonModule } from '@angular/material/button';
 export class MatInputFileSelectorComponent extends MatFormControlBase<
   File | File[] | null
 > {
-  multiple = input<boolean>(true);
+  multiple = input<boolean>(false);
   accept = input<string | string[] | null>(null);
-  capture = input<'user' | 'environment' | null>(null);
+  capture = input<FileSelectorCapture>(null);
+  selectionMode = input<FileSelectorSelectionMode>('replace');
 
-  acceptAsString = computed(() => {
-    const accept = this.accept();
+  acceptAsString = computed(() => filesToAcceptString(this.accept()));
 
-    if (Array.isArray(accept)) {
-      return accept.join(',');
-    }
-
-    return accept;
-  });
-
-  fileName = computed(() => {
-    const value = this.value();
-
-    if (Array.isArray(value)) {
-      return value.length === 1
-        ? (value[0]?.name ?? '')
-        : this.translate('fileSelector.filesSelected', {
-            count: value.length,
-          });
-    }
-
-    return value?.name ?? '';
-  });
+  fileName = computed(() =>
+    formatFileName(this.value(), this.translate.bind(this)),
+  );
 
   onFileSelected(event: Event) {
-    const files = (event.target as HTMLInputElement).files ?? null;
+    if (this._disabledByInput()) return;
 
-    if (this.multiple()) {
-      this.onChange(Array.from(files ?? []));
-    } else {
-      this.onChange(files ? files[0] : null);
-    }
+    const input = event.target as HTMLInputElement;
+    const selected = getSelectedFiles(
+      Array.from(input.files ?? []),
+      this.multiple(),
+      this.selectionMode(),
+      this.value(),
+    );
+
+    this.onChange(selected);
+
+    input.value = '';
   }
 }

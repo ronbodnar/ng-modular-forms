@@ -19,6 +19,7 @@ import { InputFileSelectorComponent } from './file-selector.component';
         label="File"
         [accept]="accept"
         [multiple]="multiple"
+        [selectionMode]="selectionMode"
       />
     </form>
   `,
@@ -26,6 +27,7 @@ import { InputFileSelectorComponent } from './file-selector.component';
 class HostComponent {
   accept: string | string[] | null = null;
   multiple = false;
+  selectionMode: 'replace' | 'append' = 'replace';
 
   form = new FormGroup({
     file: new FormControl<File | File[] | null>(null, Validators.required),
@@ -46,6 +48,21 @@ describe('InputFileSelectorComponent', () => {
     fixture.detectChanges();
   });
 
+  function getFileInput(): HTMLInputElement {
+    return fixture.debugElement.query(By.css('input[type="file"]'))
+      .nativeElement;
+  }
+
+  function getDisplayInput(): HTMLInputElement {
+    return fixture.debugElement.query(By.css('input[type="text"]'))
+      .nativeElement;
+  }
+
+  function getComponent(): InputFileSelectorComponent {
+    return fixture.debugElement.query(By.directive(InputFileSelectorComponent))
+      .componentInstance;
+  }
+
   function createFile(
     name: string,
     type = 'text/plain',
@@ -60,14 +77,12 @@ describe('InputFileSelectorComponent', () => {
       value: files,
     });
 
-    input.dispatchEvent(new Event('input'));
+    input.dispatchEvent(new Event('change'));
     fixture.detectChanges();
   }
 
   it('shows required error when touched and invalid', () => {
-    const control = host.form.controls.file;
-
-    control.markAsTouched();
+    host.form.controls.file.markAsTouched();
     fixture.detectChanges();
 
     const error = fixture.nativeElement.querySelector('.nmf-hint-label.error');
@@ -76,12 +91,9 @@ describe('InputFileSelectorComponent', () => {
   });
 
   it('updates the form control with a single File', () => {
-    const input = fixture.debugElement.query(By.css('input'))
-      .nativeElement as HTMLInputElement;
-
     const file = createFile('resume.pdf', 'application/pdf');
 
-    setFiles(input, [file]);
+    setFiles(getFileInput(), [file]);
 
     expect(host.form.controls.file.value).toBe(file);
   });
@@ -90,45 +102,32 @@ describe('InputFileSelectorComponent', () => {
     host.multiple = true;
     fixture.detectChanges();
 
-    const input = fixture.debugElement.query(By.css('input'))
-      .nativeElement as HTMLInputElement;
+    const files = [createFile('one.txt'), createFile('two.txt')];
 
-    const file1 = createFile('one.txt');
-    const file2 = createFile('two.txt');
+    setFiles(getFileInput(), files);
 
-    setFiles(input, [file1, file2]);
-
-    expect(host.form.controls.file.value).toEqual([file1, file2]);
+    expect(host.form.controls.file.value).toEqual(files);
   });
 
   it('sets the accept attribute from a string', () => {
     host.accept = '.jpg,.png';
     fixture.detectChanges();
 
-    const input = fixture.debugElement.query(By.css('input'))
-      .nativeElement as HTMLInputElement;
-
-    expect(input.getAttribute('accept')).toBe('.jpg,.png');
+    expect(getFileInput().getAttribute('accept')).toBe('.jpg,.png');
   });
 
   it('joins an array accept value into a comma-separated string', () => {
     host.accept = ['.jpg', '.png', '.gif'];
     fixture.detectChanges();
 
-    const input = fixture.debugElement.query(By.css('input'))
-      .nativeElement as HTMLInputElement;
-
-    expect(input.getAttribute('accept')).toBe('.jpg,.png,.gif');
+    expect(getFileInput().getAttribute('accept')).toBe('.jpg,.png,.gif');
   });
 
   it('sets the multiple attribute', () => {
     host.multiple = true;
     fixture.detectChanges();
 
-    const input = fixture.debugElement.query(By.css('input'))
-      .nativeElement as HTMLInputElement;
-
-    expect(input.multiple).toBe(true);
+    expect(getFileInput().multiple).toBe(true);
   });
 
   it('writes a File value through the ControlValueAccessor', () => {
@@ -137,10 +136,53 @@ describe('InputFileSelectorComponent', () => {
     host.form.controls.file.setValue(file);
     fixture.detectChanges();
 
-    const component = fixture.debugElement.query(
-      By.directive(InputFileSelectorComponent),
-    ).componentInstance as InputFileSelectorComponent;
+    expect(getComponent().value()).toBe(file);
+    expect(getDisplayInput().value).toBe('avatar.png');
+  });
 
-    expect(component.value()).toBe(file);
+  it('writes multiple files through the ControlValueAccessor', () => {
+    const files = [createFile('one.png'), createFile('two.png')];
+
+    host.form.controls.file.setValue(files);
+    fixture.detectChanges();
+
+    expect(getComponent().value()).toEqual(files);
+    expect(getDisplayInput().value).toContain('2');
+  });
+
+  it('uses append selection mode when selecting multiple files', () => {
+    host.multiple = true;
+    host.selectionMode = 'append';
+    fixture.detectChanges();
+
+    const first = createFile('one.txt');
+    const second = createFile('two.txt');
+
+    setFiles(getFileInput(), [first]);
+    setFiles(getFileInput(), [second]);
+
+    expect(host.form.controls.file.value).toEqual([first, second]);
+  });
+
+  it('uses replace selection mode when selecting multiple files', () => {
+    host.multiple = true;
+    host.selectionMode = 'replace';
+    fixture.detectChanges();
+
+    const first = createFile('one.txt');
+    const second = createFile('two.txt');
+
+    setFiles(getFileInput(), [first]);
+    setFiles(getFileInput(), [second]);
+
+    expect(host.form.controls.file.value).toEqual([second]);
+  });
+
+  it('clears the native file input after selection', () => {
+    const input = getFileInput();
+
+    setFiles(input, [createFile('test.txt')]);
+
+    expect(input.value).toBe('');
   });
 });

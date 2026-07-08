@@ -12,6 +12,8 @@ export * from './lib/behavior/password/password.behavior';
 
 export * from './lib/controls/datepicker/datepicker.component';
 export * from './lib/controls/file-selector/file-selector.component';
+export * from './lib/controls/file-selector/file-selector.utils';
+export * from './lib/controls/file-selector/file-selector.types';
 export * from './lib/controls/form-field/form-field.component';
 export * from './lib/controls/lookup/lookup.component';
 export * from './lib/controls/lookup/lookup.types';
