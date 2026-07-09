@@ -45,6 +45,9 @@ export function formatFileName(
   translate: (key: string, params?: Record<string, unknown>) => string,
 ): string {
   if (Array.isArray(value)) {
+    if (value.length === 0) {
+      return '';
+    }
     return value.length === 1
       ? (value[0]?.name ?? '')
       : translate('fileSelector.filesSelected', {

@@ -110,8 +110,8 @@ describe('file-selector.utils', () => {
       expect(formatFileName(null, translate)).toBe('');
     });
 
-    it('returns translated zero count for an empty array', () => {
-      expect(formatFileName([], translate)).toBe('0 files selected');
+    it('returns an empty string for an empty array', () => {
+      expect(formatFileName([], translate)).toBe('');
     });
   });
 });
