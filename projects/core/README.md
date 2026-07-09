@@ -76,10 +76,32 @@ Add the required control structural themes to your angular.json styles pipeline 
 ]
 ```
 
-### 3. Global Configuration
-`@ng-modular-forms/core` provides a single global configuration system via `provideNmfConfig` or `provideNmfConfigFactory`.
+To override defaults, you can provide these in your CSS loaded **after** `ng-modular-forms` stylesheets:
 
-This **optional** configuration is shared across all packages (core + material).
+```css
+--nmf-input-accent-color
+--nmf-input-border-color
+--nmf-input-background-color
+--nmf-input-color
+--nmf-input-error-color
+--nmf-select-caret-color
+--nmf-border-radius
+--nmf-font-size
+--nmf-input-height
+```
+
+For the Angular Material adapter:
+```css
+--nmf-mat-label-detached-color
+--nmf-mat-label-detached-size
+--nmf-mat-label-detached-weight
+--nmf-mat-label-detached-padding
+```
+
+###  3. Configure Global Configuration
+`@ng-modular-forms/core` provides a single global configuration system via `provideNmfConfig`.
+
+This configuration is shared across all packages (core + material) **and is optional**.
 
 If not provided, sensible defaults are used.
 
@@ -91,7 +113,22 @@ translate?: (
   params?: Record<string, unknown>
 ) => string;
 
-validationMessages?: ValidationMessages;
+translations: {
+  fileSelector?: {
+    filesSelected?: string;
+  };
+
+  validationMessages?: {
+    required?: string;
+    minLength?: string;
+    maxLength?: string;
+    min?: string;
+    max?: string;
+    email?: string;
+    pattern?: string;
+    fallback?: string;
+  }
+}
 ```
 
 #### Code Example
