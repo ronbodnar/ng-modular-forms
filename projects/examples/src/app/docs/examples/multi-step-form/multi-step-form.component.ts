@@ -122,6 +122,7 @@ export class MultiStepFormComponent extends FormOrchestrator {
     };
 
     this.orchestrate(options);
+
     this.hydrateFromModel({
       personalInfo: {
         array: [{ text: 'hey' }, { text: 'okay' }],

@@ -176,8 +176,9 @@
             <nmf-mat-file-selector
               formControlName="file"
               label="File Selector Input"
-              placeholder="Select a file"
+              placeholder="Select file(s) to upload..."
               autocomplete="off"
+              [multiple]="true"
               [loading]="loading()"
               [appearance]="appearance()"
               [shouldLabelFloat]="floatLabel()"

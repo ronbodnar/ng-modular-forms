@@ -41,18 +41,18 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     ReactiveFormsModule,
     MatCheckboxModule,
     MatButtonModule,
-    MatInputTextComponent,
-    MatInputSelectComponent,
-    MatInputTextareaComponent,
-    MatInputLookupComponent,
     DocsPageComponent,
     FormSectionComponent,
     FormStatusOutputComponent,
-    MatInputTimepickerComponent,
     MatInputDatepickerComponent,
+    MatInputFileSelectorComponent,
+    MatInputLookupComponent,
     MatInputNumberComponent,
     MatInputRangeComponent,
-    MatInputFileSelectorComponent,
+    MatInputSelectComponent,
+    MatInputTextComponent,
+    MatInputTextareaComponent,
+    MatInputTimepickerComponent,
   ],
   templateUrl: './material-inputs.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -92,7 +92,7 @@ export class MaterialInputsExampleComponent implements OnInit {
         text: FormControl<string | null>;
       }>
     >([]),
-    file: new FormControl<File | null>(null, Validators.required),
+    file: new FormControl<File[]>([], Validators.required),
   });
 
   get arrayGroup(): FormGroup {
@@ -215,6 +215,7 @@ export class MaterialInputsExampleComponent implements OnInit {
       lookupSync: 'us',
       lookupAsync: this.rawCountries[0],
       array: [{ text: 'Text for array 1' }, { text: 'Text for array 2' }],
+      file: [],
     });
 
     this.arrayControl.clear();

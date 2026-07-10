@@ -29,18 +29,18 @@ import { Observable, of, delay } from 'rxjs';
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    InputTextComponent,
-    InputSelectComponent,
-    InputTextareaComponent,
-    InputLookupComponent,
-    InputNumberComponent,
-    InputRangeComponent,
-    InputDatepickerComponent,
-    InputTimepickerComponent,
     DocsPageComponent,
     FormSectionComponent,
     FormStatusOutputComponent,
+    InputDatepickerComponent,
     InputFileSelectorComponent,
+    InputLookupComponent,
+    InputNumberComponent,
+    InputRangeComponent,
+    InputSelectComponent,
+    InputTextComponent,
+    InputTextareaComponent,
+    InputTimepickerComponent,
   ],
   templateUrl: './native-inputs.component.html',
 })
@@ -75,12 +75,12 @@ export class NativeInputsExampleComponent implements OnInit {
       Validators.min(200),
       Validators.max(500),
     ]),
-    file: new FormControl<File | null>(null, Validators.required),
     array: new FormArray<
       FormGroup<{
         text: FormControl<string | null>;
       }>
     >([]),
+    file: new FormControl<File[]>([], Validators.required),
   });
 
   get arrayGroup(): FormGroup {
@@ -191,7 +191,7 @@ export class NativeInputsExampleComponent implements OnInit {
       time: new Date(),
       lookupSync: 'us',
       lookupAsync: this.rawCountries[0],
-      file: null,
+      file: [],
     });
 
     this.arrayControl.clear();
