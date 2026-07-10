@@ -17,6 +17,7 @@ import {
   MatInputNumberComponent,
   MatInputLookupComponent,
   MatInputRangeComponent,
+  MatInputFileSelectorComponent,
 } from '@ng-modular-forms/material';
 import type { LookupOption, SelectOption } from '@ng-modular-forms/core';
 import { Observable, of, delay } from 'rxjs';
@@ -27,14 +28,15 @@ import { Observable, of, delay } from 'rxjs';
     ReactiveFormsModule,
     MatCheckboxModule,
     MatButtonModule,
-    MatInputTextComponent,
+    MatInputDatepickerComponent,
+    MatInputFileSelectorComponent,
+    MatInputLookupComponent,
+    MatInputNumberComponent,
+    MatInputRangeComponent,
     MatInputSelectComponent,
+    MatInputTextComponent,
     MatInputTextareaComponent,
     MatInputTimepickerComponent,
-    MatInputDatepickerComponent,
-    MatInputNumberComponent,
-    MatInputLookupComponent,
-    MatInputRangeComponent,
   ],
   templateUrl: './material-inputs.component.html',
 })
@@ -73,6 +75,7 @@ export class MaterialInputsExampleComponent {
         text: FormControl<string | null>;
       }>
     >([]),
+    file: new FormControl<File[]>([], Validators.required),
   });
 
   get arrayGroup(): FormGroup {

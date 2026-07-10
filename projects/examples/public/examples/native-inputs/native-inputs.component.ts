@@ -8,6 +8,7 @@ import {
 } from '@angular/forms';
 import {
   InputDatepickerComponent,
+  InputFileSelectorComponent,
   InputLookupComponent,
   InputNumberComponent,
   InputRangeComponent,
@@ -28,13 +29,14 @@ interface Country {
   selector: 'app-native-inputs-example',
   imports: [
     ReactiveFormsModule,
-    InputTextComponent,
-    InputRangeComponent,
-    InputSelectComponent,
-    InputTextareaComponent,
+    InputDatepickerComponent,
+    InputFileSelectorComponent,
     InputLookupComponent,
     InputNumberComponent,
-    InputDatepickerComponent,
+    InputRangeComponent,
+    InputSelectComponent,
+    InputTextComponent,
+    InputTextareaComponent,
     InputTimepickerComponent,
   ],
   templateUrl: './native-inputs.component.html',
@@ -74,6 +76,7 @@ export class NativeInputsExampleComponent {
         text: FormControl<string | null>;
       }>
     >([]),
+    file: new FormControl<File[]>([], Validators.required),
   });
 
   get arrayGroup(): FormGroup {

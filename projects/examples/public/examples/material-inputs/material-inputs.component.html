@@ -74,6 +74,14 @@
       [max]="1000"
       [step]="10"
     />
+
+    <nmf-mat-file-selector
+      formControlName="file"
+      label="File Selector Input"
+      placeholder="Select file(s) to upload..."
+      autocomplete="off"
+      [multiple]="true"
+    />
   </div>
 
   <div class="col-start-1" formArrayName="array">
