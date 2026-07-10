@@ -2,8 +2,8 @@ import { InjectionToken, Provider } from '@angular/core';
 import { NmfTranslations } from '../types';
 
 export interface NmfConfig {
-  translate?: (key: string, params?: Record<string, unknown>) => string;
-  translations?: NmfTranslations;
+  translate: (key: string, params?: Record<string, unknown>) => string;
+  translations: NmfTranslations;
 }
 
 const DEFAULT_NMF_CONFIG: Required<NmfConfig> = {
@@ -39,26 +39,30 @@ export const NMF_CONFIG = new InjectionToken<NmfConfig>('NMF_CONFIG', {
   factory: () => DEFAULT_NMF_CONFIG,
 });
 
-export function provideNmfConfig(config: Partial<NmfConfig>): Provider[] {
-  return [
-    {
-      provide: NMF_CONFIG,
-      useValue: {
-        ...DEFAULT_NMF_CONFIG,
-        ...config,
-        translations: mergeTranslations(
-          DEFAULT_NMF_CONFIG.translations,
-          config.translations,
-        ),
-      },
-    },
-  ];
-}
-
-export function provideNmfConfigFactory(factory: () => NmfConfig): Provider {
+export function provideNmfConfig(config: Partial<NmfConfig>): Provider {
   return {
     provide: NMF_CONFIG,
-    useFactory: factory,
+    useValue: mergeConfig(config),
+  };
+}
+
+export function provideNmfConfigFactory(
+  factory: () => Partial<NmfConfig>,
+): Provider {
+  return {
+    provide: NMF_CONFIG,
+    useFactory: () => mergeConfig(factory()),
+  };
+}
+
+function mergeConfig(config: Partial<NmfConfig>): NmfConfig {
+  return {
+    ...DEFAULT_NMF_CONFIG,
+    ...config,
+    translations: mergeTranslations(
+      DEFAULT_NMF_CONFIG.translations,
+      config.translations,
+    ),
   };
 }
 

@@ -45,3 +45,19 @@ export function provideNmfMaterialConfig(
     },
   ];
 }
+
+export function provideNmfMaterialConfigFactory(
+  factory: () => Partial<NmfMaterialConfig>,
+): Provider[] {
+  return [
+    {
+      provide: NMF_MATERIAL_CONFIG,
+      useFactory: () => {
+        return {
+          ...MATERIAL_DEFAULTS,
+          ...factory(),
+        };
+      },
+    },
+  ];
+}
