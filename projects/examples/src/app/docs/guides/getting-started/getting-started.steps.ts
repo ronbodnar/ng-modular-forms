@@ -23,6 +23,45 @@ npm install @ng-modular-forms/material`,
   /** STEP 2 **/
   {
     id: '2',
+    title: 'Add styles (if using UI control components)',
+    description:
+      'Add the core input styles to your angular.json file. If using Material, add the Material theme instead of the core theme. If using both, add them both to the stylesheet array.',
+    variant: 'styles',
+    tabs: [
+      {
+        id: 'core-styles',
+        label: 'angular.json (core)',
+        language: 'json',
+        code: `"styles": [
+  "..."
+  "node_modules/@ng-modular-forms/core/styles/form-controls.css"
+]`,
+      },
+      {
+        id: 'material-styles',
+        label: 'angular.json (material)',
+        language: 'json',
+        code: `"styles": [
+  "..."
+  "node_modules/@ng-modular-forms/material/styles/material-theme.css"
+]`,
+      },
+      {
+        id: 'both-styles',
+        label: 'angular.json (both)',
+        language: 'json',
+        code: `"styles": [
+  "..."
+  "node_modules/@ng-modular-forms/core/styles/form-controls.css",
+  "node_modules/@ng-modular-forms/material/styles/material-theme.css"
+]`,
+      },
+    ],
+  },
+
+  /** STEP 3 **/
+  {
+    id: '3',
     title: 'Use the UI form field controls',
     description:
       'Drop-in form controls built on ControlValueAccessor that work seamlessly with formControlName and formControl.',
@@ -82,31 +121,29 @@ export class SignupComponent {
     ],
   },
 
-  /** STEP 3 **/
+  /** STEP 4 **/
   {
-    id: '3',
+    id: '4',
     title: 'Add an orchestrator',
     description:
       'When forms grow across multiple components, FormOrchestrator keeps them coordinated from a single root.',
     variant: 'orchestrator',
     tabs: [
       {
-        id: 'parent',
-        label: 'parent.component.ts',
+        id: 'orchestrated-form',
+        label: 'orchestrated-form.component.ts',
         language: 'typescript',
         code: `@Component({
-  imports: [ReactiveFormsModule, SectionAComponent],
-  providers: [SectionAHandler],
+  imports: [ReactiveFormsModule],
   template: \`
     <form [formGroup]="form()" (ngSubmit)="submit()">
-      <app-section-a [form]="getSubForm('sectionA')" />
+      <nmf-text formControlName="fieldA" label="Field A" />
+      <nmf-text formControlName="fieldB" label="Field B" />
       <button type="submit">Submit</button>
     </form>
   \`,
 })
-export class ParentComponent extends FormOrchestrator {
-  readonly sectionAHandler = inject(SectionAHandler);
-
+export class OrchestratedFormComponent extends FormOrchestrator {
   constructor(
     override readonly hydrator: FormHydrator,
     override readonly serializer: FormSerializer,
@@ -114,18 +151,11 @@ export class ParentComponent extends FormOrchestrator {
     super(hydrator, serializer);
 
     const form = new FormGroup({
-      sectionA: new FormGroup({
-        fieldA: new FormControl('', Validators.required),
-        fieldB: new FormControl({ value: '', disabled: true }),
-      }),
+      fieldA: new FormControl(false),
+      fieldB: new FormControl({ value: '', disabled: true }),
     })
 
-    const mapperRegistry = { sectionA: new SectionAMapper() };
-
-    const handlerRegistry = [this.sectionAHandler];
-
-    // The mapperRegistry and handlerRegistry are optional, for when components grow
-    this.orchestrate({ form, mapperRegistry, handlerRegistry });
+    this.orchestrate({ form });
   }
 
   submit() {
@@ -135,82 +165,9 @@ export class ParentComponent extends FormOrchestrator {
       return;
     }
 
-    this.setStatus('submitting');
+    const requestBody = this.buildRequest();
 
-    const requestBody = this.buildRequest(form);
-
-    apiCall(requestBody).subscribe({
-      next: () => this.setStatus('success'),
-      error: () => {
-        form.setErrors({ custom: 'Something went wrong' });
-        this.setStatus('error');
-      },
-    });
-  }
-}`,
-      },
-      {
-        id: 'section-a',
-        label: 'section-a.component.ts',
-        language: 'typescript',
-        code: `// Subforms are pure presentational components.
-// No logic, no subscriptions — just a FormGroup input.
-@Component({
-  selector: 'app-section-a',
-  imports: [ReactiveFormsModule, NmfTextComponent],
-  template: \`
-    <div [formGroup]="form">
-      <nmf-text formControlName="fieldA" label="Field A" />
-      <nmf-text formControlName="fieldB" label="Field B" />
-    </div>
-  \`,
-})
-export class SectionAComponent {
-  @Input({ required: true }) form!: FormGroup;
-}`,
-      },
-    ],
-  },
-
-  /** STEP 4 **/
-  {
-    id: '4',
-    title: 'Encapsulate reactive logic in handlers',
-    description:
-      'Extract cross-field dependencies, conditional enabling, and derived state from components into handlers. One handler per form section, or a single handler for the entire form.',
-    variant: 'handler',
-    note: 'Handlers are standard Angular services — fully injectable and independently testable.',
-    tabs: [
-      {
-        id: 'section-a-handler',
-        label: 'section-a.handler.ts',
-        language: 'typescript',
-        code: `const CONTROLS = ['sectionA.fieldA', 'sectionA.fieldB'] as const;
-
-type ControlNames = typeof CONTROLS[number];
-
-@Injectable()
-export class SectionAHandler extends FormHandlerBase<ControlNames> {
-
-  // The FormOrchestrator handles registering and unregistering subscriptions from handlers.
-  // If you don't use the orchestrator, you must manually register and unregister them yourself.
-  override getReactiveLogic(form: FormGroup): Subscription {
-    this.registerControls(form, [...CONTROLS]);
-
-    const sub = new Subscription();
-
-    sub.add(
-      this.valueChangesOf('sectionA.fieldA').subscribe(value => {
-        const fieldB = getControl('sectionA.fieldB', form);
-        if (!value) {
-          fieldB.reset();
-          fieldB.disable();
-          return;
-        }
-        fieldB.enable();
-      }));
-
-    return sub;
+    console.log('Generated request body:', requestBody);
   }
 }`,
       },
@@ -220,6 +177,44 @@ export class SectionAHandler extends FormHandlerBase<ControlNames> {
   /** STEP 5 **/
   {
     id: '5',
+    title: 'Encapsulate reactive logic in handlers',
+    description:
+      'Extract cross-field dependencies, conditional enabling, and derived state from components into handlers. One handler per form section, or a single handler for the entire form.',
+    variant: 'handler',
+    note: 'Handlers are standard Angular services — fully injectable and independently testable.',
+    tabs: [
+      {
+        id: 'form-handler',
+        label: 'form.handler.ts',
+        language: 'typescript',
+        code: `type Controls = {
+  'fieldA': FormControl<boolean>;
+  'fieldB': FormControl<string>;
+};
+
+@Injectable()
+export class FormHandler extends FormHandlerBase<Controls> {
+  override getReactiveLogic(form: FormGroup): Subscription {
+    this.initializeForm(form);
+
+    return this.valueChangesOf('fieldA').subscribe(value => {
+      const fieldB = this.getControl('fieldB');
+      if (!value) {
+        fieldB.reset();
+        fieldB.disable();
+        return;
+      }
+      fieldB.enable();
+    });
+  }
+}`,
+      },
+    ],
+  },
+
+  /** STEP 6 **/
+  {
+    id: '6',
     title: 'Transform data with mappers',
     description:
       'Keep API serialization and hydration logic out of components. One mapper per form section or per form for small forms.',
@@ -227,24 +222,24 @@ export class SectionAHandler extends FormHandlerBase<ControlNames> {
     note: 'The Mapper is not meant to be invoked directly, however it can be. FormSerializer and FormHydrator will call it automatically.',
     tabs: [
       {
-        id: 'section-a-mapper',
-        label: 'section-a.mapper.ts',
+        id: 'form-mapper',
+        label: 'form.mapper.ts',
         language: 'typescript',
-        code: `export class SectionAMapper extends FormMapperBase<
+        code: `export class FormMapper extends FormMapperBase<
   ApiResponseModel,
   ApiRequestModel,
   FormModel
 > {
-  buildRequest(form: FormGroup): ApiRequestModel {
-    const fieldA = form.value.fieldA ?? '';
+  toRequest(formValue: FormModel): ApiRequestModel {
+    const fieldA = formValue.fieldA ?? '';
     return {
       fieldA: fieldA.trim().replace(/\\s+/g, '-').toLowerCase(),
-      fieldB: form.value.fieldB,
+      fieldB: formValue.fieldB,
       requestedAt: new Date(),
     };
   }
 
-  transformModelToForm(model: ApiResponseModel): FormModel {
+  fromModel(model: ApiResponseModel): FormModel {
     return {
       fieldA: model.fieldA,
       fieldB: model.fieldB,

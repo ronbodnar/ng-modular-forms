@@ -28,6 +28,7 @@ export class GettingStartedComponent {
     const isDark = this.themeService.effectiveTheme() === 'dark';
     return {
       install: isDark ? 'bg-emerald-800' : 'bg-emerald-300',
+      styles: isDark ? 'bg-indigo-800' : 'bg-indigo-300',
       ui: isDark ? 'bg-amber-800' : 'bg-amber-300',
       orchestrator: isDark ? 'bg-teal-800' : 'bg-teal-300',
       handler: isDark ? 'bg-orange-800' : 'bg-orange-300',

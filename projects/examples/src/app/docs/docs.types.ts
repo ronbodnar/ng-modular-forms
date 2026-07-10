@@ -1,5 +1,6 @@
 export type StepVariant =
   | 'install'
+  | 'styles'
   | 'ui'
   | 'orchestrator'
   | 'handler'
@@ -9,7 +10,7 @@ export interface TabContent {
   id: string;
   code: string;
   label?: string;
-  language: 'shell' | 'typescript' | 'html';
+  language: 'shell' | 'typescript' | 'html' | 'css' | 'json';
 }
 
 export interface DocStep {
