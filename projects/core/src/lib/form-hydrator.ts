@@ -1,17 +1,18 @@
 import { Injectable } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { isRecord } from './type-guards';
-import type { MapperRegistry } from './types';
+import type { FormMapperRegistry } from './types';
 
 @Injectable({ providedIn: 'root' })
 export class FormHydrator {
   hydrate(
     form: FormGroup | FormArray,
     model: unknown,
-    registry: MapperRegistry = {},
+    registry: FormMapperRegistry = {},
+    emitEvents: boolean = false,
   ) {
     if (form instanceof FormArray) {
-      this.hydrateFormArray(form, model, registry);
+      this.hydrateFormArray(form, model, registry, emitEvents);
       return;
     }
 
@@ -24,7 +25,7 @@ export class FormHydrator {
       const value = (model as Record<string, unknown>)[key];
 
       if (control instanceof FormArray) {
-        this.hydrateFormArray(control, value, registry);
+        this.hydrateFormArray(control, value, registry, emitEvents);
         return;
       }
 
@@ -33,22 +34,23 @@ export class FormHydrator {
           const mapped = mapFn(value);
 
           if (isRecord(mapped)) {
-            control.patchValue(mapped, { emitEvent: false });
+            control.patchValue(mapped, { emitEvent: emitEvents });
           }
         } else {
-          this.hydrate(control, value ?? {}, registry);
+          this.hydrate(control, value ?? {}, registry, emitEvents);
         }
         return;
       }
 
-      control.patchValue(value, { emitEvent: false });
+      control.patchValue(value, { emitEvent: emitEvents });
     });
   }
 
   private hydrateFormArray(
     formArray: FormArray,
     model: unknown,
-    registry: MapperRegistry,
+    registry: FormMapperRegistry,
+    emitEvents: boolean = false,
   ) {
     const values = Array.isArray(model) ? model : [];
 
@@ -77,11 +79,11 @@ export class FormHydrator {
       const child = formArray.at(index);
 
       if (child instanceof FormGroup && isRecord(item)) {
-        this.hydrate(child, item, registry);
+        this.hydrate(child, item, registry, emitEvents);
       } else if (child instanceof FormArray && Array.isArray(item)) {
-        this.hydrate(child, item, registry);
+        this.hydrate(child, item, registry, emitEvents);
       } else {
-        child.patchValue(item, { emitEvent: false });
+        child.patchValue(item, { emitEvent: emitEvents });
       }
     });
   }

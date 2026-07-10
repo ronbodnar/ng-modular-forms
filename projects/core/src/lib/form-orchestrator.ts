@@ -7,9 +7,9 @@ import { FormHydrator } from './form-hydrator';
 import { FormSerializer } from './form-serializer';
 import type {
   FormHandlerRegistry,
+  FormMapperRegistry,
   FormOrchestratorOptions,
   FormStatus,
-  MapperRegistry,
 } from './types';
 import { isRecord } from './type-guards';
 
@@ -19,16 +19,16 @@ export abstract class FormOrchestrator
   implements OnDestroy
 {
   private readonly _form = signal<FormGroup>(new FormGroup({}));
-  private readonly _handlerRegistry = signal<FormHandlerRegistry>([]);
-  private readonly _mapperRegistry = signal<MapperRegistry>({});
   private readonly _status = signal<FormStatus>('idle');
   private readonly _errorMessage = signal<string | null>(null);
+  private readonly _mapperRegistry = signal<FormMapperRegistry>({});
+  private readonly _handlerRegistry = signal<FormHandlerRegistry>([]);
 
   public readonly form = this._form.asReadonly();
-  public readonly handlerRegistry = this._handlerRegistry.asReadonly();
-  public readonly mapperRegistry = this._mapperRegistry.asReadonly();
   public readonly status = this._status.asReadonly();
   public readonly errorMessage = this._errorMessage.asReadonly();
+  public readonly mapperRegistry = this._mapperRegistry.asReadonly();
+  public readonly handlerRegistry = this._handlerRegistry.asReadonly();
 
   private _logicSubscription = new Subscription();
 
@@ -82,7 +82,10 @@ export abstract class FormOrchestrator
     this._errorMessage.set(message);
   }
 
-  public hydrateFromModel<TModel extends object>(model: TModel) {
+  public hydrateFromModel<TModel extends object>(
+    model: TModel,
+    emitEvents: boolean = false,
+  ) {
     const form = this.form();
     const registry = this.mapperRegistry();
 
@@ -94,14 +97,14 @@ export abstract class FormOrchestrator
 
       if (control instanceof FormControl) {
         const mapped = mapper ? mapper.fromModel(value) : value;
-        control.setValue(mapped, { emitEvent: false });
+        control.setValue(mapped, { emitEvent: emitEvents });
         return;
       }
 
       if (control instanceof FormGroup) {
         const mapped = mapper ? mapper.fromModel(value) : value;
         if (isRecord(mapped)) {
-          this.hydrator.hydrate(control, mapped, registry);
+          this.hydrator.hydrate(control, mapped, registry, emitEvents);
         }
       }
     });

@@ -1,24 +1,24 @@
 import { Injectable } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
-import type { MapperRegistry } from './types';
+import type { FormMapperRegistry } from './types';
 
 @Injectable({ providedIn: 'root' })
 export class FormSerializer {
   toRequest<TOptions extends object = object>(
     form: FormGroup,
-    registry?: MapperRegistry,
+    registry?: FormMapperRegistry,
     options?: TOptions,
   ): Record<string, unknown>;
 
   toRequest<TOptions extends object = object>(
     form: FormArray,
-    registry?: MapperRegistry,
+    registry?: FormMapperRegistry,
     options?: TOptions,
   ): unknown[];
 
   toRequest<TOptions extends object = object>(
     form: FormGroup | FormArray,
-    registry: MapperRegistry = {},
+    registry: FormMapperRegistry = {},
     options?: TOptions,
   ): Record<string, unknown> | unknown[] {
     if (form instanceof FormArray) {
