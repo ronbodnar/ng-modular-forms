@@ -9,6 +9,26 @@ describe('MatInputFileSelectorComponent', () => {
   let fixture: ComponentFixture<MatInputFileSelectorComponent>;
   let component: MatInputFileSelectorComponent;
 
+  function getWrapper(): HTMLElement {
+    return fixture.debugElement.query(By.css('mat-form-field')).nativeElement;
+  }
+
+  function createDropEvent(files: File[]): DragEvent {
+    const event = new Event('drop', {
+      bubbles: true,
+      cancelable: true,
+    }) as DragEvent;
+
+    Object.defineProperty(event, 'dataTransfer', {
+      configurable: true,
+      value: {
+        files,
+      },
+    });
+
+    return event;
+  }
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [MatInputFileSelectorComponent, NoopAnimationsModule],
@@ -123,5 +143,54 @@ describe('MatInputFileSelectorComponent', () => {
     button.triggerEventHandler('click');
 
     expect(clickSpy).toHaveBeenCalled();
+  });
+
+  it('does not update from drop events when drag/drop is disabled', () => {
+    fixture.componentRef.setInput('enableDragDrop', false);
+
+    const onChange = vi.fn();
+
+    component.registerOnChange(onChange);
+
+    fixture.detectChanges();
+
+    const file = new File(['content'], 'dropped.txt');
+
+    getWrapper().dispatchEvent(createDropEvent([file]));
+
+    expect(onChange).not.toHaveBeenCalled();
+  });
+
+  it('updates value from drop events when drag/drop is enabled', () => {
+    fixture.componentRef.setInput('enableDragDrop', true);
+
+    const onChange = vi.fn();
+
+    component.registerOnChange(onChange);
+
+    fixture.detectChanges();
+
+    const file = new File(['content'], 'dropped.txt');
+
+    getWrapper().dispatchEvent(createDropEvent([file]));
+
+    expect(onChange).toHaveBeenCalledWith(file);
+  });
+
+  it('adds visible drag-over feedback while dragging', () => {
+    fixture.componentRef.setInput('enableDragDrop', true);
+    fixture.detectChanges();
+
+    const wrapper = getWrapper();
+
+    wrapper.dispatchEvent(new Event('dragenter', { bubbles: true }));
+    fixture.detectChanges();
+
+    expect(wrapper.classList.contains('drag-over')).toBe(true);
+
+    wrapper.dispatchEvent(new Event('dragleave', { bubbles: true }));
+    fixture.detectChanges();
+
+    expect(wrapper.classList.contains('drag-over')).toBe(false);
   });
 });

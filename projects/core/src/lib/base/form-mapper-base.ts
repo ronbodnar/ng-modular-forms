@@ -1,14 +1,14 @@
 export abstract class FormMapperBase<
-  TIn = unknown,
-  TOut = TIn,
-  TForm = TIn,
+  TModel = unknown,
+  TRequest = TModel,
+  TForm = TModel,
   TOptions extends object = object,
 > {
-  public fromModel(model: TIn): TForm {
+  public fromModel(model: TModel): TForm {
     return structuredClone(model) as unknown as TForm;
   }
 
-  public toRequest(formValue: TForm, _options?: TOptions): TOut {
-    return formValue as unknown as TOut;
+  public toRequest(formValue: TForm, _options?: TOptions): TRequest {
+    return formValue as unknown as TRequest;
   }
 }

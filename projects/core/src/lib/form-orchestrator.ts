@@ -1,7 +1,6 @@
 import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { Directive, OnDestroy, signal } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { FormHandlerBase } from './base/form-handler-base';
 import { FormMapperBase } from './base/form-mapper-base';
 import { FormHydrator } from './form-hydrator';
 import { FormSerializer } from './form-serializer';
@@ -14,15 +13,26 @@ import type {
 import { isRecord } from './type-guards';
 
 @Directive()
-export abstract class FormOrchestrator
-  extends FormMapperBase
+export abstract class FormOrchestrator<
+  TModel = unknown,
+  TRequest = TModel,
+  TForm = TModel,
+  TOptions extends object = object,
+  TMapperRegistry extends FormMapperRegistry = FormMapperRegistry,
+  THandlerRegistry extends FormHandlerRegistry = FormHandlerRegistry,
+>
+  extends FormMapperBase<TModel, TRequest, TForm, TOptions>
   implements OnDestroy
 {
   private readonly _form = signal<FormGroup>(new FormGroup({}));
   private readonly _status = signal<FormStatus>('idle');
   private readonly _errorMessage = signal<string | null>(null);
-  private readonly _mapperRegistry = signal<FormMapperRegistry>({});
-  private readonly _handlerRegistry = signal<FormHandlerRegistry>([]);
+  private readonly _mapperRegistry = signal<TMapperRegistry>(
+    {} as TMapperRegistry,
+  );
+  private readonly _handlerRegistry = signal<THandlerRegistry>(
+    [] as unknown as THandlerRegistry,
+  );
 
   public readonly form = this._form.asReadonly();
   public readonly status = this._status.asReadonly();
@@ -43,11 +53,13 @@ export abstract class FormOrchestrator
    * Initializes orchestration state.
    * Must be called before any subform registration or handler execution.
    */
-  public orchestrate(options: FormOrchestratorOptions) {
-    const { form, mapperRegistry = {}, handlerRegistry = [] } = options;
+  public orchestrate(
+    options: FormOrchestratorOptions<TMapperRegistry, THandlerRegistry>,
+  ) {
+    const { form, mapperRegistry, handlerRegistry } = options;
     this._form.set(form);
-    this._mapperRegistry.set(mapperRegistry);
-    this._handlerRegistry.set(handlerRegistry);
+    this._mapperRegistry.set((mapperRegistry ?? {}) as TMapperRegistry);
+    this._handlerRegistry.set((handlerRegistry ?? []) as THandlerRegistry);
 
     Object.values(this.handlerRegistry()).forEach((handler) => {
       this._logicSubscription.add(handler.getReactiveLogic(form));
@@ -64,13 +76,14 @@ export abstract class FormOrchestrator
     return this.form().get(key) as T;
   }
 
-  public addHandlerToRegistry<TControls extends Record<string, FormControl>>(
-    handler: FormHandlerBase<TControls>,
-  ) {
+  public addHandlerToRegistry(handler: THandlerRegistry[number]) {
     if (handler == null || this.handlerRegistry().includes(handler)) {
       return;
     }
-    this._handlerRegistry.set([...this._handlerRegistry(), handler]);
+    this._handlerRegistry.set([
+      ...this._handlerRegistry(),
+      handler,
+    ] as THandlerRegistry);
     this._logicSubscription.add(handler.getReactiveLogic(this.form()));
   }
 
@@ -82,10 +95,11 @@ export abstract class FormOrchestrator
     this._errorMessage.set(message);
   }
 
-  public hydrateFromModel<TModel extends object>(
-    model: TModel,
-    emitEvents: boolean = false,
-  ) {
+  public hydrateFromModel(model: TModel, emitEvents: boolean = false) {
+    if (!isRecord(model)) {
+      return;
+    }
+
     const form = this.form();
     const registry = this.mapperRegistry();
 
@@ -93,7 +107,7 @@ export abstract class FormOrchestrator
       if (!(key in model)) return;
 
       const mapper = registry[key];
-      const value = (model as Record<string, unknown>)[key];
+      const value = model[key];
 
       if (control instanceof FormControl) {
         const mapped = mapper ? mapper.fromModel(value) : value;
@@ -110,14 +124,12 @@ export abstract class FormOrchestrator
     });
   }
 
-  public buildRequest<TOptions extends object>(
-    options?: TOptions,
-  ): Record<string, unknown> {
-    return this.serializer.toRequest<TOptions>(
+  public buildRequest(options?: TOptions): TRequest {
+    return this.serializer.toRequest(
       this.form(),
       this.mapperRegistry(),
       options,
-    );
+    ) as TRequest;
   }
 
   ngOnDestroy(): void {

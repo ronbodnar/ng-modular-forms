@@ -1,19 +1,25 @@
-import type { FormControl, FormGroup } from '@angular/forms';
+import type { AbstractControl, FormGroup } from '@angular/forms';
 import type { FormMapperBase } from './base/form-mapper-base';
 import type { FormHandlerBase } from './base/form-handler-base';
 
 export type FormStatus = 'idle' | 'submitting' | 'error' | 'success';
 
-export type FormMapperRegistry = Record<string, FormMapperBase<unknown>>;
+export type FormMapperRegistry = Record<
+  string,
+  FormMapperBase<unknown, unknown, unknown, object>
+>;
 
 export type FormHandlerRegistry = FormHandlerBase<
-  Record<string, FormControl<unknown>>
+  Record<string, AbstractControl>
 >[];
 
-export interface FormOrchestratorOptions {
+export interface FormOrchestratorOptions<
+  TMapperRegistry extends FormMapperRegistry = FormMapperRegistry,
+  THandlerRegistry extends FormHandlerRegistry = FormHandlerRegistry,
+> {
   form: FormGroup;
-  mapperRegistry?: FormMapperRegistry;
-  handlerRegistry?: FormHandlerRegistry;
+  mapperRegistry?: TMapperRegistry;
+  handlerRegistry?: THandlerRegistry;
 }
 
 export interface NmfTranslations {

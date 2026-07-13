@@ -20,6 +20,7 @@ import { InputFileSelectorComponent } from './file-selector.component';
         [accept]="accept"
         [multiple]="multiple"
         [selectionMode]="selectionMode"
+        [enableDragDrop]="enableDragDrop"
       />
     </form>
   `,
@@ -28,6 +29,7 @@ class HostComponent {
   accept: string | string[] | null = null;
   multiple = false;
   selectionMode: 'replace' | 'append' = 'replace';
+  enableDragDrop = false;
 
   form = new FormGroup({
     file: new FormControl<File | File[] | null>(null, Validators.required),
@@ -63,6 +65,11 @@ describe('InputFileSelectorComponent', () => {
       .componentInstance;
   }
 
+  function getControlWrapper(): HTMLElement {
+    return fixture.debugElement.query(By.css('.nmf-control-wrapper'))
+      .nativeElement;
+  }
+
   function createFile(
     name: string,
     type = 'text/plain',
@@ -79,6 +86,22 @@ describe('InputFileSelectorComponent', () => {
 
     input.dispatchEvent(new Event('change'));
     fixture.detectChanges();
+  }
+
+  function createDropEvent(files: File[]): DragEvent {
+    const event = new Event('drop', {
+      bubbles: true,
+      cancelable: true,
+    }) as DragEvent;
+
+    Object.defineProperty(event, 'dataTransfer', {
+      configurable: true,
+      value: {
+        files,
+      },
+    });
+
+    return event;
   }
 
   it('shows required error when touched and invalid', () => {
@@ -184,5 +207,43 @@ describe('InputFileSelectorComponent', () => {
     setFiles(input, [createFile('test.txt')]);
 
     expect(input.value).toBe('');
+  });
+
+  it('does not update from drop events when drag/drop is disabled', () => {
+    const file = createFile('dropped.txt');
+
+    getControlWrapper().dispatchEvent(createDropEvent([file]));
+    fixture.detectChanges();
+
+    expect(host.form.controls.file.value).toBeNull();
+  });
+
+  it('updates the form control when files are dropped and drag/drop is enabled', () => {
+    host.enableDragDrop = true;
+    fixture.detectChanges();
+
+    const file = createFile('dropped.txt');
+
+    getControlWrapper().dispatchEvent(createDropEvent([file]));
+    fixture.detectChanges();
+
+    expect(host.form.controls.file.value).toBe(file);
+  });
+
+  it('sets drag-over class while dragging when drag/drop is enabled', () => {
+    host.enableDragDrop = true;
+    fixture.detectChanges();
+
+    const wrapper = getControlWrapper();
+
+    wrapper.dispatchEvent(new Event('dragenter', { bubbles: true }));
+    fixture.detectChanges();
+    expect(wrapper.classList.contains('drag-over')).toBe(true);
+    expect(wrapper.style.boxShadow).toContain('var(--nmf-input-accent-color)');
+
+    wrapper.dispatchEvent(new Event('dragleave', { bubbles: true }));
+    fixture.detectChanges();
+    expect(wrapper.classList.contains('drag-over')).toBe(false);
+    expect(wrapper.style.boxShadow).toBe('');
   });
 });

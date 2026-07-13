@@ -92,3 +92,15 @@
     cursor: default;
   }
 }
+
+.nmf-mat-field.drag-drop-enabled .mat-mdc-text-field-wrapper {
+  cursor: pointer;
+}
+
+.nmf-mat-field.drag-drop-enabled.drag-over .mat-mdc-text-field-wrapper {
+  border-radius: var(
+    --mdc-outlined-text-field-container-shape,
+    var(--mdc-filled-text-field-container-shape, 4px)
+  );
+  box-shadow: 0 0 0 2px var(--nmf-input-accent-color);
+}

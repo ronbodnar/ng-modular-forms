@@ -26,6 +26,8 @@ export abstract class FormHandlerBase<
   public valueChangesOf<TKey extends keyof TControls>(
     key: TKey,
   ): Observable<TControls[TKey]['value']> {
-    return this.getControl(key).valueChanges;
+    return this.getControl(key).valueChanges as Observable<
+      TControls[TKey]['value']
+    >;
   }
 }

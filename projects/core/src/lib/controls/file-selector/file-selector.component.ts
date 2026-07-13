@@ -3,6 +3,7 @@ import {
   Component,
   computed,
   input,
+  signal,
 } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -36,6 +37,13 @@ import {
         class="nmf-control-wrapper"
         [class.error]="hasErrors()"
         [class.disabled]="disabled()"
+        [class.drag-drop-enabled]="enableDragDrop()"
+        [class.drag-over]="isDragOver()"
+        [style.box-shadow]="dragOverBoxShadow()"
+        (drop)="onFileDrop($event)"
+        (dragover)="onDragOver($event)"
+        (dragenter)="onDragEnter($event)"
+        (dragleave)="onDragLeave($event)"
       >
         <input
           #focusable
@@ -104,6 +112,10 @@ export class InputFileSelectorComponent extends FormControlBase<
   accept = input<string | string[] | null>(null);
   capture = input<FileSelectorCapture>(null);
   selectionMode = input<FileSelectorSelectionMode>('replace');
+  enableDragDrop = input<boolean>(true);
+
+  isDragOver = signal(false);
+  private dragDepth = 0;
 
   acceptAsString = computed(() => filesToAcceptString(this.accept()));
 
@@ -111,20 +123,74 @@ export class InputFileSelectorComponent extends FormControlBase<
     formatFileName(this.value(), this.translate.bind(this)),
   );
 
+  dragOverBoxShadow = computed(() =>
+    this.isDragOver() ? '0 0 0 2px var(--nmf-input-accent-color)' : null,
+  );
+
   onFileSelected(event: Event) {
     if (this._disabledByInput()) return;
 
     const input = event.target as HTMLInputElement;
 
+    this.selectFiles(Array.from(input.files ?? []));
+
+    input.value = '';
+  }
+
+  onDragOver(event: DragEvent) {
+    if (!this.enableDragDrop() || this._disabledByInput()) {
+      return;
+    }
+
+    event.preventDefault();
+    if (event.dataTransfer) {
+      event.dataTransfer.dropEffect = 'copy';
+    }
+  }
+
+  onDragEnter(event: DragEvent) {
+    if (!this.enableDragDrop() || this._disabledByInput()) {
+      return;
+    }
+
+    event.preventDefault();
+    this.dragDepth += 1;
+    this.isDragOver.set(true);
+  }
+
+  onDragLeave(event: DragEvent) {
+    if (!this.enableDragDrop() || this._disabledByInput()) {
+      return;
+    }
+
+    event.preventDefault();
+    this.dragDepth = Math.max(0, this.dragDepth - 1);
+
+    if (this.dragDepth === 0) {
+      this.isDragOver.set(false);
+    }
+  }
+
+  onFileDrop(event: DragEvent) {
+    if (!this.enableDragDrop() || this._disabledByInput()) {
+      return;
+    }
+
+    event.preventDefault();
+    this.dragDepth = 0;
+    this.isDragOver.set(false);
+
+    this.selectFiles(Array.from(event.dataTransfer?.files ?? []));
+  }
+
+  private selectFiles(files: File[]) {
     const selected = getSelectedFiles(
-      Array.from(input.files ?? []),
+      files,
       this.multiple(),
       this.selectionMode(),
       this.value(),
     );
 
     this.onChange(selected);
-
-    input.value = '';
   }
 }
