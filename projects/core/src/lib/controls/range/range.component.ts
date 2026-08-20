@@ -17,6 +17,12 @@ import { formatNumber, parseNumber } from '../../number-utils';
   imports: [CommonModule, ReactiveFormsModule, FormFieldComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./range.component.css'],
+  styles: `
+    :host {
+      display: block;
+      min-width: 0;
+    }
+  `,
   template: `
     <nmf-form-field
       [label]="translatedLabel()"

@@ -68,6 +68,8 @@ html.dark {
   display: flex;
   align-items: center;
 
+  min-width: 0;
+
   gap: 0.5rem;
 
   padding: 0 0.75rem;
@@ -124,7 +126,8 @@ html.dark {
 
 /** Standard control field **/
 .nmf-control {
-  flex: 1;
+  flex: 1 1 auto;
+  min-width: 0;
   height: var(--nmf-input-height);
 
   font-size: var(--nmf-font-size);

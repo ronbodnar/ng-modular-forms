@@ -23,6 +23,12 @@ import { LookupBehavior } from '../../behavior/lookup/lookup.behavior';
   exportAs: 'nmfLookup',
   imports: [CommonModule, ReactiveFormsModule, FormFieldComponent, AsyncPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  styles: `
+    :host {
+      display: block;
+      min-width: 0;
+    }
+  `,
   template: `
     <nmf-form-field
       [label]="translatedLabel()"

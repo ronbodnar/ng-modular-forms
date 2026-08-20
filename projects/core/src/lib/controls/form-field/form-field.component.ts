@@ -12,6 +12,18 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  styles: `
+    :host {
+      display: block;
+      width: 100%;
+      min-width: 0;
+    }
+
+    .nmf-field-wrapper {
+      width: 100%;
+      min-width: 0;
+    }
+  `,
   template: `
     <div class="nmf-field-wrapper" [class.loading]="loading()">
       @if (label()) {

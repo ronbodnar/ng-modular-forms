@@ -24,6 +24,12 @@ import {
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, FormFieldComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  styles: `
+    :host {
+      display: block;
+      min-width: 0;
+    }
+  `,
   template: `
     <nmf-form-field
       [label]="translatedLabel()"
