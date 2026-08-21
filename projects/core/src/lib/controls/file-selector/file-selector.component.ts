@@ -28,6 +28,7 @@ import {
     :host {
       display: block;
       min-width: 0;
+      flex: 1 1 0%;
     }
   `,
   template: `

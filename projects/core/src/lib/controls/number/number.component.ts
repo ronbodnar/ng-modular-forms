@@ -24,6 +24,7 @@ import { NmfSuffixDirective } from '../../directives/nmf-suffix.directive';
     :host {
       display: block;
       min-width: 0;
+      flex: 1 1 0%;
     }
   `,
   template: `

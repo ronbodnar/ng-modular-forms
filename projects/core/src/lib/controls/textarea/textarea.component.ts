@@ -13,6 +13,7 @@ import { FormFieldComponent } from '../form-field/form-field.component';
     :host {
       display: block;
       min-width: 0;
+      flex: 1 1 0%;
     }
   `,
   template: `
