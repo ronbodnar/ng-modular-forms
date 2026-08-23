@@ -41,6 +41,13 @@ export const routes: Routes = [
             (m) => m.MultiStepFormComponent,
           ),
       },
+      {
+        path: 'rebind-controls',
+        loadComponent: () =>
+          import('./examples/rebind-controls/rebind-controls.component').then(
+            (m) => m.RebindControlsComponent,
+          ),
+      },
     ],
   },
 ];

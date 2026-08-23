@@ -76,11 +76,14 @@ export abstract class FormControlBase<TValue> implements ControlValueAccessor {
     return classList.split(/\s+/).filter((className) => className.length > 0);
   });
 
-  protected readonly isRequired = signal(
-    this.ngControl?.control?.hasValidator(Validators.required) ?? false,
-  );
+  protected isRequired(): boolean {
+    return this.control?.hasValidator(Validators.required) ?? false;
+  }
 
-  protected readonly hasErrors = signal(false);
+  protected hasErrors(): boolean {
+    const control = this.control;
+    return !!control && control.invalid && control.touched;
+  }
 
   translatedLabel = computed(() => this.translate(this.label()));
   translatedHintLabel = computed(() => this.translate(this.hintLabel()));
@@ -128,15 +131,11 @@ export abstract class FormControlBase<TValue> implements ControlValueAccessor {
       });
   }
 
+  ngDoCheck(): void {
+    this.onControlStateChange();
+  }
+
   protected onControlStateChange(): void {
-    const control = this.control;
-    if (!control) {
-      return;
-    }
-
-    this.hasErrors.set(control.invalid && control.touched);
-    this.isRequired.set(control.hasValidator(Validators.required) ?? false);
-
     this.cdr.markForCheck();
   }
 
@@ -184,6 +183,7 @@ export abstract class FormControlBase<TValue> implements ControlValueAccessor {
     }
     this._focused.set(false);
     this.onTouched();
+    this.cdr.markForCheck();
   }
 
   onFocusIn(): void {
@@ -196,6 +196,7 @@ export abstract class FormControlBase<TValue> implements ControlValueAccessor {
   onFocusOut(): void {
     this._focused.set(false);
     this.onTouched();
+    this.cdr.markForCheck();
   }
 
   protected translatedErrorMessage(): string | null {

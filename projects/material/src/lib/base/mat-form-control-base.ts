@@ -1,4 +1,5 @@
-import { computed, Directive, inject, input } from '@angular/core';
+import { computed, Directive, inject, input, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl } from '@angular/forms';
 import { FormControlBase } from '@ng-modular-forms/core';
 import { NMF_MATERIAL_CONFIG } from '../providers/mat-config.provider';
@@ -7,7 +8,6 @@ import {
   MAT_FORM_FIELD_DEFAULT_OPTIONS,
   MatFormFieldAppearance,
 } from '@angular/material/form-field';
-import { toSignal } from '@angular/core/rxjs-interop';
 
 @Directive({
   host: {
@@ -87,16 +87,25 @@ export abstract class MatFormControlBase<
     disabled: false,
   });
 
-  protected readonly displayValue = toSignal(this.displayControl.valueChanges, {
-    initialValue: this.displayControl.value,
-  });
+  private readonly _displayValue = signal<TDisplayValue | null>(
+    this.displayControl.value,
+  );
+  protected readonly displayValue = this._displayValue.asReadonly();
+
+  constructor() {
+    super();
+
+    this.displayControl.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value) => this._displayValue.set(value));
+  }
 
   override writeValue(value: TValue | null): void {
     super.writeValue(value);
 
-    this.displayControl.setValue(value as unknown as TDisplayValue | null, {
-      emitEvent: false,
-    });
+    const displayValue = value as unknown as TDisplayValue | null;
+    this.displayControl.setValue(displayValue, { emitEvent: false });
+    this._displayValue.set(displayValue);
   }
 
   override setDisabledState(isDisabled: boolean): void {
@@ -119,9 +128,14 @@ export abstract class MatFormControlBase<
 
     if (control.touched) {
       this.displayControl.markAsTouched();
+    } else {
+      this.displayControl.markAsUntouched();
     }
+
     if (control.dirty) {
       this.displayControl.markAsDirty();
+    } else {
+      this.displayControl.markAsPristine();
     }
 
     this.displayControl.setErrors(control.errors);
