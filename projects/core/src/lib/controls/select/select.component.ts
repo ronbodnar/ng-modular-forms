@@ -98,7 +98,16 @@ export class InputSelectComponent extends FormControlBase<
   handleChange(event: Event): void {
     if (this.disabled()) return;
 
-    const input = event.target as HTMLSelectElement;
-    this.onChange(input.value || null);
+    const select = event.target as HTMLSelectElement;
+    const selectedIndex = select.selectedIndex;
+
+    if (selectedIndex === 0) {
+      this.onChange(null);
+      return;
+    }
+
+    const option = this.options()[selectedIndex - 1];
+
+    this.onChange(option?.value ?? null);
   }
 }

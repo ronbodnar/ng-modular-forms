@@ -197,6 +197,7 @@ select.nmf-control {
 
 .nmf-select > .nmf-control {
   padding: 0.5rem 0.75rem;
+  border-radius: var(--nmf-border-radius);
 }
 
 /** Textarea control **/
